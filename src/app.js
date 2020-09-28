@@ -5,7 +5,7 @@ import { Layout, Menu, Breadcrumb } from 'antd'
 const { Header, Content, Footer } = Layout
 
 export const App = () => {
-    return <div>HELLO</div>;
+    return <div>Hi!</div>;
 /*    
   return (
     <Router>
