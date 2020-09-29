@@ -9,7 +9,7 @@ var HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
 
 module.exports = {
   entry: [
-    "./src/app.js"
+    "./src/index.js"
   ],
   output: {
     path: path.resolve(__dirname, "../server/rs_core/static/rs_core/js"),

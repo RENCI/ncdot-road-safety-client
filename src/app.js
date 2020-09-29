@@ -1,17 +1,17 @@
-import React from 'react'
-import { BrowserRouter as Router, Switch, Route, Link, NavLink } from "react-router-dom"
-//import { HomeView, BrowseView, MapView, AboutView, ContactView } from './views'
-import { Layout, Menu, Breadcrumb } from 'antd'
-const { Header, Content, Footer } = Layout
+import React from "react";
+import { BrowserRouter as Router, Switch, Route, Link, NavLink } from "react-router-dom";
+//import { HomeView, BrowseView, MapView, AboutView, ContactView } from "./views";
+import { Layout, Menu, Breadcrumb } from "antd";
+const { Header, Content, Footer } = Layout;
 
 export const App = () => {
-    return <div>Hi!</div>;
+    return <div>Hi from reactland!</div>;
 /*    
   return (
     <Router>
       <Layout className="site-layout">
         <Header className="site-header">
-          <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']}>
+          <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["2"]}>
             <Menu.Item key="0"><NavLink to="/">Home</NavLink></Menu.Item>
             <Menu.Item key="1"><NavLink to="/about">About</NavLink></Menu.Item>
             <Menu.Item key="2"><NavLink to="/browse">Browse</NavLink></Menu.Item>
