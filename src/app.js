@@ -1,12 +1,10 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route, Link, NavLink } from "react-router-dom";
-//import { HomeView, BrowseView, MapView, AboutView, ContactView } from "./views";
+import { HomeView, BrowseView, MapView, AboutView, ContactView } from "./views";
 import { Layout, Menu, Breadcrumb } from "antd";
 const { Header, Content, Footer } = Layout;
 
-export const App = () => {
-    return <div>Hi from reactland!</div>;
-/*    
+export const App = () => { 
   return (
     <Router>
       <Layout className="site-layout">
@@ -35,6 +33,5 @@ export const App = () => {
         </Footer>
       </Layout>
     </Router>
-  )
-*/  
+  ) 
 }

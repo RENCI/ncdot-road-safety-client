@@ -1,0 +1,5 @@
+export * from './about'
+export * from './browse'
+export * from './contact'
+export * from './home'
+export * from './map'
