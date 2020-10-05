@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Button } from 'antd'
-import { LeftOutlined as PreviousIcon, RightOutlined as NextIcon } from '@ant-design/icons';
+import { LeftOutlined as PreviousIcon, RightOutlined as NextIcon } from '@ant-design/icons'
+import { AnnotationControls } from '../annotation-controls'
 import './image-browser.css'
 
 export const ImageBrowser = ({ images }) => {
@@ -29,6 +30,9 @@ export const ImageBrowser = ({ images }) => {
         <img src={ images[index].download_url } width="100%" height="auto" alt="" />
       </div>
 
+      <div className="image-annotations">
+        <AnnotationControls />
+      </div>
     </div>
   )
 }
