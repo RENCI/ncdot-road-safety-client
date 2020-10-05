@@ -1,20 +1,30 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route, Link, NavLink } from "react-router-dom";
 import { HomeView, BrowseView, MapView, AboutView, ContactView } from "./views";
-import { Layout, Menu, Breadcrumb } from "antd";
+import { Layout, Menu } from "antd";
+import { MenuOutlined } from "@ant-design/icons";
 const { Header, Content, Footer } = Layout;
+const { SubMenu } = Menu;
 
 export const App = () => { 
   return (
     <Router>
       <Layout className="site-layout">
         <Header className="site-header">
-          <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["2"]}>
-            <Menu.Item key="0"><NavLink to="/">Home</NavLink></Menu.Item>
-            <Menu.Item key="1"><NavLink to="/about">About</NavLink></Menu.Item>
-            <Menu.Item key="2"><NavLink to="/browse">Browse</NavLink></Menu.Item>
-            <Menu.Item key="3"><NavLink to="/map">Map</NavLink></Menu.Item>
-            <Menu.Item key="4"><NavLink to="/contact">Contact</NavLink></Menu.Item>
+          <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["0"]}>
+            <Menu.Item key="home"><NavLink to="/">Home</NavLink></Menu.Item>
+            <Menu.Item key="about"><NavLink to="/about">About</NavLink></Menu.Item>
+            <Menu.Item key="browse"><NavLink to="/browse">Browse</NavLink></Menu.Item>
+            <Menu.Item key="map"><NavLink to="/map">Map</NavLink></Menu.Item>
+            <Menu.Item key="contact"><NavLink to="/contact">Contact</NavLink></Menu.Item>
+            <SubMenu key="submenu" style={{float: "right"}} icon={<MenuOutlined />}>
+             <Menu.Item>
+              <a href="/accounts/update/2/">Profile</a>
+              </Menu.Item> 
+              <Menu.Item>
+              <a href="/logout/">Log Out</a>
+              </Menu.Item> 
+            </SubMenu>
           </Menu>
         </Header>
         <Content className="site-body">

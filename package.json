@@ -9,6 +9,7 @@
         "production": "webpack -p"
     },
     "dependencies": {
+        "@ant-design/icons": "^4.2.2",
         "antd": "^4.6.6",
         "axios": "^0.20.0",
         "react": "^16.13.1",
