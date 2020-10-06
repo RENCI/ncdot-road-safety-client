@@ -2,11 +2,8 @@ import React, { createContext, useReducer, useEffect } from "react";
 
 const initialState = [];
 
-const testAnnotations = [
-  { id: "label1", label: "guardrail" },
-  { id: "label2", label: "driveway" },
-  { id: "label3", label: "debris" },
-  { id: "label4", label: "sharp curve" }
+const testLabels = [
+  "guardrail", "driveway", "debris", "sharp curve", "tree", "sign"
 ];
 
 const reducer = (state, action) => {
@@ -29,10 +26,16 @@ export const AnnotationsProvider = ({ children }) => {
     (async () => {
       try {
         // XXX: Get from server
+        const annotations = testLabels.map((label, i) => {
+          return {
+            id: "label" + i,
+            label: label
+          };
+        });
 
         dispatch({ 
           type: "setAnnotations",
-          annotations: [...testAnnotations]
+          annotations: [...annotations]
         });
       }
       catch (error) {

@@ -6,6 +6,7 @@
   border: 1px solid #f99;
   text-align: center;
   min-height: 300px;
+  margin-bottom: 16px;
 }
 
 .image-actions {
@@ -15,8 +16,4 @@
 
 .image-actions > * {
   margin: 0 1rem;
-}
-
-.image-annotations {
-  margin-top: 20px;
 }

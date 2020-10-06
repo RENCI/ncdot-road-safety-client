@@ -1,5 +1,5 @@
 import React, { useContext, useReducer } from 'react';
-import { Row, Col, Select, Tag } from 'antd';
+import { Space, Select, Tag } from 'antd';
 import { AnnotationsContext } from '../../contexts';
 import './annotation-controls.css';
 
@@ -44,8 +44,7 @@ export const AnnotationControls = () => {
   return (
     <>
       <h3>Annotation Controls</h3>
-      <Row align="middle" gutter={ 10 }>
-        <Col>
+      <Space direction="vertical">
           <Select
             showSearch
             placeholder="Add an annotation"
@@ -63,14 +62,14 @@ export const AnnotationControls = () => {
               )) 
             }
           </Select>
-        </Col>
-        <Col>
+
+<div>
           { annotations.map((annotation, i) => (
               <Tag key={ i } closable onClose={ e => { e.preventDefault(); handleTagClose(annotation); }}>{ annotation.label }</Tag>
             )) 
           }
-        </Col>
-      </Row>      
+          </div>
+     </Space>
     </>
   );
 }
