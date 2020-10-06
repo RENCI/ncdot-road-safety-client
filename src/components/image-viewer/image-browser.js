@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Button, Row, Col } from 'antd'
 import { LeftOutlined as PreviousIcon, RightOutlined as NextIcon } from '@ant-design/icons'
 import { AnnotationControls } from '../annotation-controls'
+import { MapView } from '../map-view'
 import './image-browser.css'
 
 export const ImageBrowser = ({ images }) => {
@@ -35,7 +36,7 @@ export const ImageBrowser = ({ images }) => {
           <AnnotationControls />
         </Col>
         <Col span={ 12 }>
-          <h3>Map</h3>
+          <MapView />
         </Col>
       </Row>
     </div>
