@@ -43,7 +43,7 @@ export const AnnotationControls = () => {
 
   return (
     <>
-      <h3>Annotation Controls</h3>
+      <h3>Annotations</h3>
       <Space direction="vertical">
           <Select
             showSearch
