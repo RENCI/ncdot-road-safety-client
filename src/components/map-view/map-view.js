@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Spin } from 'antd'
+import { Spin, Select } from 'antd'
+import { loadModules } from 'esri-loader'
 import './map-view.css'
 
-import { loadModules } from 'esri-loader'
+const { Option } = Select;
 
 const ncLatLong = [
   [33.7666, -84.3201], 
@@ -11,9 +12,11 @@ const ncLatLong = [
 
 const routesGeoJSON = '/static/rs_core/gis/NCRural2LanePrimaryRoads.geojson'
 
+let layerView = null
+
 export const MapView = () => {
   const [loading, setLoading] = useState(true);
-
+  const [routeNames, setRouteNames] = useState([]);
   const mapRef = useRef()
 
   useEffect(() => {
@@ -23,10 +26,10 @@ export const MapView = () => {
         'esri/views/MapView', 
         'esri/geometry/Extent',
         'esri/layers/GeoJSONLayer',
-        'esri/views/layers/support/FeatureFilter'
+        'esri/smartMapping/statistics/uniqueValues'
       ], 
       { css: true }
-    ).then(([ArcGISMap, MapView, Extent, GeoJSONLayer, FeatureFilter]) => {
+    ).then(([ArcGISMap, MapView, Extent, GeoJSONLayer, uniqueValues]) => {
       const map = new ArcGISMap({
         basemap: 'gray-vector'
       })
@@ -47,14 +50,27 @@ export const MapView = () => {
         url: routesGeoJSON
       })
 
-      map.add(layer)
+      map.add(layer)      
 
-      view.whenLayerView(layer).then(layerView => {
-        console.log(layer)
+      view.whenLayerView(layer).then(layView => {
+        layerView = layView;
 
-        //layerView.filter = new FeatureFilter({
-        //  where: 'MPLength > 1'
-        //})
+        // Zoom when filtering
+        layerView.watch("updating", value => {
+          if (!value) {
+            layerView.queryExtent().then(response => {
+              view.goTo(response.extent);
+            });
+          }
+        });
+
+        // Get route names
+        uniqueValues({
+          layer: layer,
+          field: "RouteName"
+        }).then(response => {
+          setRouteNames(response.uniqueValueInfos.map(({ value }) => value))
+        })
 
         setLoading(false);
       })
@@ -67,6 +83,12 @@ export const MapView = () => {
     });
   }, []);
 
+  const handleRouteSelect = value => {
+    layerView.filter = value ? {
+      where: "RouteName = '" + value + "'"
+    } : null
+  }
+
   return (
     <>
       <h3>Map</h3>
@@ -74,7 +96,21 @@ export const MapView = () => {
         <div className='spinDiv'>
           <Spin tip='Loading...'/>
         </div> 
-      : null }
+      :
+        <Select
+          className='routeSelect'
+          showSearch
+          allowClear
+          placeholder='Filter routes'
+          onChange={handleRouteSelect}
+        >
+          {routeNames.map((name, i) => (
+            <Option key={ i } value={ name }>
+              { name }
+            </Option>
+          ))}
+        </Select> 
+      }
       <div 
         className='webmap routeMap' 
         style={{ visibility: loading ? 'hidden' : null }} 
