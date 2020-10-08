@@ -1,29 +1,120 @@
-import React, { useEffect } from 'react'
-import * as L from 'leaflet'
-import shp from 'shpjs'
-import 'leaflet/dist/leaflet.css'
+import React, { useState, useEffect, useRef } from 'react'
+import { Spin, Select } from 'antd'
+import { loadModules } from 'esri-loader'
 import './map-view.css'
 
+const { Option } = Select;
+
+const ncLatLong = [
+  [33.7666, -84.3201], 
+  [36.588, -75.4129]
+];
+
+const routesGeoJSON = '/static/rs_core/gis/NCRural2LanePrimaryRoads.geojson'
+
+let layerView = null
+
 export const MapView = () => {
+  const [loading, setLoading] = useState(true);
+  const [routeNames, setRouteNames] = useState([]);
+  const mapRef = useRef()
+
   useEffect(() => {
-    const map = L.map('mapid').fitBounds([[33.7666, -84.3201], [36.588, -75.4129]])
+    loadModules(
+      [
+        'esri/Map', 
+        'esri/views/MapView', 
+        'esri/geometry/Extent',
+        'esri/layers/GeoJSONLayer',
+        'esri/smartMapping/statistics/uniqueValues'
+      ], 
+      { css: true }
+    ).then(([ArcGISMap, MapView, Extent, GeoJSONLayer, uniqueValues]) => {
+      const map = new ArcGISMap({
+        basemap: 'gray-vector'
+      })
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map)
-/*
-    shp('/static/rs_core/shape/NCRural2LanePrimaryRoads.zip').then(geojson => {
-      console.log(geojson)
+      const view = new MapView({
+        container: mapRef.current,
+        map: map
+      })
 
-      L.geoJSON(geojson).addTo(map);
-    })
-*/    
-  }, [])
+      view.extent = new Extent({
+        xmin: ncLatLong[0][1],
+        ymin: ncLatLong[0][0], 
+        xmax: ncLatLong[1][1], 
+        ymax: ncLatLong[1][0]
+      })
+
+      const layer = new GeoJSONLayer({
+        url: routesGeoJSON
+      })
+
+      map.add(layer)      
+
+      view.whenLayerView(layer).then(layView => {
+        layerView = layView;
+
+        // Zoom when filtering
+        layerView.watch("updating", value => {
+          if (!value) {
+            layerView.queryExtent().then(response => {
+              view.goTo(response.extent);
+            });
+          }
+        });
+
+        // Get route names
+        uniqueValues({
+          layer: layer,
+          field: "RouteName"
+        }).then(response => {
+          setRouteNames(response.uniqueValueInfos.map(({ value }) => value))
+        })
+
+        setLoading(false);
+      })
+
+      return () => {
+        if (view) {
+          view.container = null;
+        }
+      }
+    });
+  }, []);
+
+  const handleRouteSelect = value => {
+    layerView.filter = value ? {
+      where: "RouteName = '" + value + "'"
+    } : null
+  }
 
   return (
     <>
       <h3>Map</h3>
-      <div id='mapid'></div>
+      { loading ? 
+        <div className='spinDiv'>
+          <Spin tip='Loading...'/>
+        </div> 
+      :
+        <Select
+          className='routeSelect'
+          showSearch
+          allowClear
+          placeholder='Filter routes'
+          onChange={handleRouteSelect}
+        >
+          {routeNames.map((name, i) => (
+            <Option key={ i } value={ name }>
+              { name }
+            </Option>
+          ))}
+        </Select> 
+      }
+      <div 
+        className='webmap routeMap' 
+        style={{ visibility: loading ? 'hidden' : null }} 
+        ref={mapRef} />
     </>
-  );
+  )
 }
