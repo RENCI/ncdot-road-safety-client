@@ -12,6 +12,7 @@
         "@ant-design/icons": "^4.2.2",
         "antd": "^4.6.6",
         "axios": "^0.20.0",
+        "esri-loader": "^2.15.0",
         "leaflet": "^1.7.1",
         "react": "^16.13.1",
         "react-dom": "^16.13.1",
