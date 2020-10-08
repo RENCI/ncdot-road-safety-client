@@ -1,8 +1,5 @@
-import React, { useEffect, useRef } from 'react'
-import axios from 'axios'
-import * as L from 'leaflet'
-import shp from 'shpjs'
-import 'leaflet/dist/leaflet.css'
+import React, { useState, useEffect, useRef } from 'react'
+import { Spin } from 'antd'
 import './map-view.css'
 
 import { loadModules } from 'esri-loader'
@@ -12,11 +9,11 @@ const ncLatLong = [
   [36.588, -75.4129]
 ];
 
-const routesShapeFile = '/static/rs_core/shape/NCRural2LanePrimaryRoads.zip'
-const routesGeoJSON = '/static/rs_core/shape/NCRural2LanePrimaryRoads.geojson'
+const routesGeoJSON = '/static/rs_core/gis/NCRural2LanePrimaryRoads.geojson'
 
 export const MapView = () => {
-/*  
+  const [loading, setLoading] = useState(true);
+
   const mapRef = useRef()
 
   useEffect(() => {
@@ -26,12 +23,12 @@ export const MapView = () => {
         'esri/views/MapView', 
         'esri/geometry/Extent',
         'esri/layers/GeoJSONLayer',
-        'esri/request'
+        'esri/views/layers/support/FeatureFilter'
       ], 
       { css: true }
-    ).then(([ArcGISMap, MapView, Extent, GeoJSONLayer, request]) => {
+    ).then(([ArcGISMap, MapView, Extent, GeoJSONLayer, FeatureFilter]) => {
       const map = new ArcGISMap({
-        basemap: 'topo-vector'
+        basemap: 'gray-vector'
       })
 
       const view = new MapView({
@@ -46,29 +43,21 @@ export const MapView = () => {
         ymax: ncLatLong[1][0]
       })
 
-      shp('/static/rs_core/shape/NCRural2LanePrimaryRoads.zip').then(geojson => {
-        console.log(geojson)
-  
-        const routes = []
-  
-        geojson.features.forEach(feature => {
-          const id = feature.properties.RouteID
-          let index = routes.findIndex(route => route.id === id)
-  
-          if (index === -1) index = routes.push({ id: id, count: 0 }) - 1
-  
-          routes[index].count += feature.geometry.coordinates.length        
-        })
-  
-        console.log(routes)
-        console.log(routes.reduce((p, c) => Math.max(p, c.count), 0))
-  
-        const layer = new GeoJSONLayer({
+      const layer = new GeoJSONLayer({
+        url: routesGeoJSON
+      })
 
-        })
+      map.add(layer)
 
-        map.add(layer);       
-      })          
+      view.whenLayerView(layer).then(layerView => {
+        console.log(layer)
+
+        //layerView.filter = new FeatureFilter({
+        //  where: 'MPLength > 1'
+        //})
+
+        setLoading(false);
+      })
 
       return () => {
         if (view) {
@@ -76,51 +65,20 @@ export const MapView = () => {
         }
       }
     });
-  });
+  }, []);
 
   return (
     <>
       <h3>Map</h3>
-      <div id='mapid' className="webmap" ref={mapRef} ></div>
+      { loading ? 
+        <div className='spinDiv'>
+          <Spin tip='Loading...'/>
+        </div> 
+      : null }
+      <div 
+        className='webmap routeMap' 
+        style={{ visibility: loading ? 'hidden' : null }} 
+        ref={mapRef} />
     </>
   )
-*/  
-  
-  useEffect(() => {
-    const map = L.map('mapid').fitBounds([[33.7666, -84.3201], [36.588, -75.4129]])
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map)
-
-//    shp('/static/rs_core/shape/NCRural2LanePrimaryRoads.zip').then(geojson => {
-    axios.get(routesGeoJSON).then(response => {
-      const geojson = response.data    
-
-      console.log(geojson)
-
-      const routes = []
-
-      geojson.features.forEach(feature => {
-        const id = feature.properties.RouteID
-        let index = routes.findIndex(route => route.id === id)
-
-        if (index === -1) index = routes.push({ id: id, count: 0 }) - 1
-
-        routes[index].count += feature.geometry.coordinates.length        
-      })
-
-      console.log(routes)
-      console.log(routes.reduce((p, c) => Math.max(p, c.count), 0))
-
-      L.geoJSON(geojson).addTo(map)
-    })    
-  }, [])
-
-  return (
-    <>
-      <h3>Map</h3>
-      <div id='mapid'></div>
-    </>
-  );
 }
