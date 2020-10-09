@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Spin, Space, Select } from 'antd'
 import { loadModules } from 'esri-loader'
+import { RoutesContext } from '../../contexts'
 import './map-view.css'
 
 const { Option } = Select;
@@ -17,7 +18,7 @@ let view = null
 let layerView = null
 let autoCenter = false
 
-export const MapView = () => {
+export const MapView = ({ height }) => {
   const [loading, setLoading] = useState(true)
   const [routeNames, setRouteNames] = useState([])
   //const [center, setCenter] = useState(true)
@@ -132,7 +133,7 @@ export const MapView = () => {
       }
       <div 
         className='webmap routeMap' 
-        style={{ visibility: loading ? 'hidden' : null }} 
+        style={{ height: height, visibility: loading ? 'hidden' : null }} 
         ref={mapRef} />
     </>
   )
