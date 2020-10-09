@@ -36,7 +36,7 @@ export const ImageBrowser = ({ images }) => {
           <AnnotationControls />
         </Col>
         <Col span={ 12 }>
-          <MapView />
+          <MapView height={ 300 } />
         </Col>
       </Row>
     </div>

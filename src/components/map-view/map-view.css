@@ -1,12 +1,7 @@
 .routeMap { 
-  height: 300px;
   width: 100%;
 }
 
 .spinDiv {
   text-align: center;
-}
-
-.routeSelectDiv {
-  text-align: right;
 }
