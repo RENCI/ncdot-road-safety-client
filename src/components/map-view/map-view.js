@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Spin, Select } from 'antd'
+import { Spin, Space, Select } from 'antd'
 import { loadModules } from 'esri-loader'
 import './map-view.css'
 
@@ -12,11 +12,15 @@ const ncLatLong = [
 
 const routesGeoJSON = '/static/rs_core/gis/NCRural2LanePrimaryRoads.geojson'
 
+// Handles to arcgis objects needed in callbacks
+let view = null
 let layerView = null
+let autoCenter = false
 
 export const MapView = () => {
-  const [loading, setLoading] = useState(true);
-  const [routeNames, setRouteNames] = useState([]);
+  const [loading, setLoading] = useState(true)
+  const [routeNames, setRouteNames] = useState([])
+  //const [center, setCenter] = useState(true)
   const mapRef = useRef()
 
   useEffect(() => {
@@ -34,7 +38,7 @@ export const MapView = () => {
         basemap: 'gray-vector'
       })
 
-      const view = new MapView({
+      view = new MapView({
         container: mapRef.current,
         map: map
       })
@@ -46,21 +50,32 @@ export const MapView = () => {
         ymax: ncLatLong[1][0]
       })
 
+      view.on('pointer-down', () => {
+        autoCenter = false
+      })
+
+      view.on('mouse-wheel', () => {
+        autoCenter = false
+      })
+
       const layer = new GeoJSONLayer({
         url: routesGeoJSON
       })
 
-      map.add(layer)      
+      map.add(layer)
 
-      view.whenLayerView(layer).then(layView => {
-        layerView = layView;
+      view.whenLayerView(layer).then(layer_view => {
+        layerView = layer_view;
 
-        // Zoom when filtering
         layerView.watch("updating", value => {
-          if (!value) {
-            layerView.queryExtent().then(response => {
-              view.goTo(response.extent);
-            });
+          if (autoCenter) {
+            if (!value) {
+              layerView.queryExtent().then(response => {
+                if (response.extent) {
+                  view.goTo(response.extent)
+                }
+              });
+            }    
           }
         });
 
@@ -84,9 +99,11 @@ export const MapView = () => {
   }, []);
 
   const handleRouteSelect = value => {
+    autoCenter = true
+
     layerView.filter = value ? {
       where: "RouteName = '" + value + "'"
-    } : null
+    } : null        
   }
 
   return (
@@ -97,19 +114,21 @@ export const MapView = () => {
           <Spin tip='Loading...'/>
         </div> 
       :
-        <Select
-          className='routeSelect'
-          showSearch
-          allowClear
-          placeholder='Filter routes'
-          onChange={handleRouteSelect}
-        >
-          {routeNames.map((name, i) => (
-            <Option key={ i } value={ name }>
-              { name }
-            </Option>
-          ))}
-        </Select> 
+        <Space>
+          <Select
+            className='routeSelect'
+            showSearch
+            allowClear
+            placeholder='Filter routes'
+            onChange={ handleRouteSelect }
+          >
+            {routeNames.map((name, i) => (
+              <Option key={ i } value={ name }>
+                { name }
+              </Option>
+            ))}
+          </Select> 
+        </Space>
       }
       <div 
         className='webmap routeMap' 
