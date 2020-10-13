@@ -4,6 +4,20 @@ import { LeftOutlined as PreviousIcon, RightOutlined as NextIcon } from '@ant-de
 import { AnnotationControls } from '../annotation-controls'
 import { MapView } from '../map-view'
 import './image-browser.css'
+import { Scene } from '../scene'
+
+const someTimeStamps = [
+  '10000174727',
+  '10000174808',
+  '10000174819',
+  '10000174829',
+  '10000174909',
+  '10000174920',
+  '10000174920',
+  '10000175011',
+  '10000175022',
+  '10000175103',
+]
 
 export const ImageBrowser = ({ images }) => {
   const [index, setIndex] = useState(0)
@@ -26,10 +40,7 @@ export const ImageBrowser = ({ images }) => {
 
       <br />
 
-      <h3>Image { index + 1 } of { images.length }</h3>
-      <div className="image-container">
-        <img src={ images[index].download_url } width="100%" height="auto" alt="" />
-      </div>
+      <Scene timestamp={ someTimeStamps[index] } />
 
       <Row gutter={ 16 }>
         <Col span={ 12 }>
