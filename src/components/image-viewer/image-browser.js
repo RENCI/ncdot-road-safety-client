@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import { Button, Row, Col } from 'antd'
+import React, { useState } from 'react'
+import { Button } from 'antd'
 import { LeftOutlined as PreviousIcon, RightOutlined as NextIcon } from '@ant-design/icons'
-import { AnnotationControls } from '../annotation-controls'
-import { MapView } from '../map-view'
 import './image-browser.css'
 import { Scene } from '../scene'
 
@@ -19,7 +17,7 @@ const someTimeStamps = [
   '10000175103',
 ]
 
-export const ImageBrowser = ({ images }) => {
+export const ImageBrowser = () => {
   const [index, setIndex] = useState(0)
 
   const handleClickPrevious = () => {
@@ -27,29 +25,19 @@ export const ImageBrowser = ({ images }) => {
   }
 
   const handleClickNext = () => {
-    setIndex(index => Math.min(index + 1, images.length - 1))
+    setIndex(index => Math.min(index + 1, someTimeStamps.length - 1))
   }
 
   return (
     <div className="image-viewer">
-      
       <div className="image-actions">
         <Button type="primary" onClick={ handleClickPrevious } disabled={ index === 0 }><PreviousIcon /></Button>
-        <Button type="primary" onClick={ handleClickNext } disabled={ index === images.length - 1 }><NextIcon /></Button>
+        <Button type="primary" onClick={ handleClickNext } disabled={ index === someTimeStamps.length - 1 }><NextIcon /></Button>
       </div>
 
       <br />
 
       <Scene timestamp={ someTimeStamps[index] } />
-
-      <Row gutter={ 16 }>
-        <Col span={ 12 }>
-          <AnnotationControls />
-        </Col>
-        <Col span={ 12 }>
-          <MapView height={ 300 } />
-        </Col>
-      </Row>
     </div>
   )
 }
