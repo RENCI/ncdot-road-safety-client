@@ -1,16 +1,13 @@
 import React, { createContext, useReducer, useEffect } from 'react'
+import axios from 'axios'
+import { api } from '../api'
 
 const initialState = []
 
-const testLabels = [
-  'guardrail', 'driveway', 'debris', 'sharp curve', 'tree', 'sign'
-]
-
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'setAnnotations': { 
+    case 'setAnnotations':
       return [...action.annotations]
-    }
 
     default: 
       throw new Error('Invalid annotations context action: ' + action.type)
@@ -25,17 +22,15 @@ export const AnnotationsProvider = ({ children }) => {
   useEffect(() => {
     (async () => {
       try {
-        // XXX: Get from server
-        const annotations = testLabels.map((label, i) => {
-          return {
-            id: 'label' + i,
-            label: label
-          }
-        })
-
+        const response = await axios.get(api.getAnnotationSet);
         dispatch({ 
           type: 'setAnnotations',
-          annotations: [...annotations]
+          annotations: response.data.annotation_names.map(label => {
+            return {
+              id: label,
+              label: label
+            }
+          })
         })
       }
       catch (error) {

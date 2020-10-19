@@ -5,9 +5,8 @@ const initialState = []
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'setRoutes': { 
+    case 'setRoutes':
       return [...action.routes]
-    }
 
     default: 
       throw new Error('Invalid routes context action: ' + action.type)
