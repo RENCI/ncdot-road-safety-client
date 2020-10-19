@@ -1,45 +1,59 @@
-import React, { useContext, useReducer } from 'react';
-import { Space, Select, Tag } from 'antd';
-import { AnnotationsContext } from '../../contexts';
-import './annotation-controls.css';
+import React, { useContext, useReducer, useEffect } from 'react'
+import { Space, Select, Tag, Button } from 'antd'
+import { AnnotationsContext, ImageContext } from '../../contexts'
+import './annotation-controls.css'
 
-const Option = Select.Option;
+const Option = Select.Option
 
 export const AnnotationControls = () => {
-  const [allAnnotations] = useContext(AnnotationsContext);
+  const [allAnnotations] = useContext(AnnotationsContext)
+  const [image] = useContext(ImageContext)
+
   const [annotations, annotationsDispatch] = useReducer((state, action) => {
     switch (action.type) {
+      case "set": {
+        return [...action.annotations]
+      }
+
       case "add": { 
         return state.find(({ id }) => id === action.annotation.id) ? 
-          [...state] : [...state, action.annotation];
+          [...state] : [...state, action.annotation]
       }
 
       case "remove": {
-        const index = state.findIndex(({ id }) => id === action.annotation.id);
+        const index = state.findIndex(({ id }) => id === action.annotation.id)
 
-        if (index === -1) return [...state];
+        if (index === -1) return [...state]
 
-        const newState = [...state];
+        const newState = [...state]
 
-        newState.splice(index, 1);
+        newState.splice(index, 1)
 
-        return newState;
+        return newState
       }
   
       default: 
-        throw new Error("Invalid action: " + action.type);
+        throw new Error("Invalid action: " + action.type)
     }
-  }, []);
+  }, [])
+
+  useEffect(() => {
+    annotationsDispatch({ type: 'set', annotations: image.annotations })
+  }, [image])
 
   const handleSelectChange = value => {
-    const annotation = allAnnotations.find(({ id }) => id === value);
+    const annotation = allAnnotations.find(({ id }) => id === value)
 
-    if (annotation) annotationsDispatch({ type: "add", annotation: annotation });
+    if (annotation) annotationsDispatch({ type: "add", annotation: annotation })
   }
 
   const handleTagClose = annotation => {
-    annotationsDispatch({ type: "remove", annotation: annotation });
-  };
+    annotationsDispatch({ type: "remove", annotation: annotation })
+  }
+
+  const handleSaveClick = () => {
+    console.log("SAVE")
+  }
 
   return (
     <>
@@ -63,13 +77,24 @@ export const AnnotationControls = () => {
             }
           </Select>
 
-<div>
+          <div>
           { annotations.map((annotation, i) => (
-              <Tag key={ i } closable onClose={ e => { e.preventDefault(); handleTagClose(annotation); }}>{ annotation.label }</Tag>
+              <Tag 
+                key={ i } 
+                closable 
+                onClose={ e => { 
+                  e.preventDefault() 
+                  handleTagClose(annotation) 
+                }}
+              >
+                { annotation.label }
+              </Tag>
             )) 
           }
           </div>
+
+        <Button onClick={ handleSaveClick }>Save</Button>
      </Space>
     </>
-  );
+  )
 }

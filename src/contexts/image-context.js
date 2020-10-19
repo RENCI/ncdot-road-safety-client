@@ -11,19 +11,7 @@ const reducer = (state, action) => {
     case 'setImage':     
       return {
         id: action.id,
-        metadata: null,
-        annotations: null
-      }
-
-    case 'setMetadata':
-      return {
-        ...state, 
-        metadata: action.metadata 
-      }
-
-    case 'setAnnotations':
-      return {
-        ...state,
+        metadata: action.metadata,
         annotations: action.annotations
       }
 
