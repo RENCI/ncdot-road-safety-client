@@ -23,9 +23,6 @@ export const AnnotationsProvider = ({ children }) => {
     (async () => {
       try {
         const response = await axios.get(api.getAnnotationSet);
-
-        console.log(response);
-
         dispatch({ 
           type: 'setAnnotations',
           annotations: response.data.annotation_names.map(label => {

@@ -3,7 +3,7 @@ import { Button } from 'antd'
 import { LeftOutlined as PreviousIcon, RightOutlined as NextIcon } from '@ant-design/icons'
 import './image-browser.css'
 import { Scene } from '../scene'
-import { ImageProvider } from '../../contexts'
+import { ImageContext } from '../../contexts'
 
 const someTimeStamps = [
   '10000174727',
@@ -19,7 +19,7 @@ const someTimeStamps = [
 ]
 
 export const ImageBrowser = () => {
-  const [image, imageDispatch] = useContext(ImageProvider)
+  const [image, imageDispatch] = useContext(ImageContext)
   const [index, setIndex] = useState(0)
 
   const handleClickPrevious = () => {
