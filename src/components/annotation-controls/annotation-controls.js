@@ -1,5 +1,5 @@
 import React, { useState, useContext, useReducer, useEffect } from 'react'
-import { Space, Select, Tag, Button } from 'antd'
+import { Space, Select, Tag, Button, notification } from 'antd'
 import axios from 'axios'
 import { AnnotationsContext, ImageContext } from '../../contexts'
 import { api } from '../../api'
@@ -9,6 +9,7 @@ const Option = Select.Option
 
 export const AnnotationControls = () => {
   const [saving, setSaving] = useState(false)
+  const [saveEnabled, setSaveEnabled] = useState(true)
   const [allAnnotations] = useContext(AnnotationsContext)
   const [image] = useContext(ImageContext)
 
@@ -41,17 +42,28 @@ export const AnnotationControls = () => {
   }, [])
 
   useEffect(() => {
-    annotationsDispatch({ type: 'set', annotations: image.annotations })
+    const annotations = image.annotations.map(({ annotation_name }) => {
+      return {
+        id: annotation_name,
+        label: annotation_name
+      }
+    })
+
+    annotationsDispatch({ type: 'set', annotations: annotations })
   }, [image])
 
-  const handleSelectChange = value => {
+  const handleSelectChange = value => {    
     const annotation = allAnnotations.find(({ id }) => id === value)
 
-    if (annotation) annotationsDispatch({ type: "add", annotation: annotation })
+    if (annotation) {
+      annotationsDispatch({ type: "add", annotation: annotation })
+      setSaveEnabled(true)
+    }
   }
 
   const handleTagClose = annotation => {
     annotationsDispatch({ type: "remove", annotation: annotation })
+    setSaveEnabled(true)
   }
 
   const handleSaveClick = async () => {    
@@ -74,6 +86,13 @@ export const AnnotationControls = () => {
       })
 
       setSaving(false)
+      setSaveEnabled(false)
+
+      notification.success({
+        message: 'Annotations saved',
+        placement: 'bottomLeft',
+        duration: 2
+      })
     }
     catch (error) {
       console.log(error)
@@ -120,6 +139,7 @@ export const AnnotationControls = () => {
 
         <Button 
           loading={ saving }
+          disabled={ !saveEnabled }
           onClick={ handleSaveClick }
         >
           Save
