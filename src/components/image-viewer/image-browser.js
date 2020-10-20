@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { Button, Typography } from 'antd'
 import { LeftOutlined as PreviousIcon, RightOutlined as NextIcon } from '@ant-design/icons'
-import './image-browser.css'
+import axios from 'axios'
 import { Scene } from '../scene'
 import { ImageContext } from '../../contexts'
 import { api } from '../../api'
-import axios from 'axios'
+import './image-browser.css'
 
 const { Text } = Typography
 

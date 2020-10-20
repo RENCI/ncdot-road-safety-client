@@ -1,11 +1,14 @@
-import React, { useContext, useReducer, useEffect } from 'react'
+import React, { useState, useContext, useReducer, useEffect } from 'react'
 import { Space, Select, Tag, Button } from 'antd'
+import axios from 'axios'
 import { AnnotationsContext, ImageContext } from '../../contexts'
+import { api } from '../../api'
 import './annotation-controls.css'
 
 const Option = Select.Option
 
 export const AnnotationControls = () => {
+  const [saving, setSaving] = useState(false)
   const [allAnnotations] = useContext(AnnotationsContext)
   const [image] = useContext(ImageContext)
 
@@ -51,8 +54,30 @@ export const AnnotationControls = () => {
     annotationsDispatch({ type: "remove", annotation: annotation })
   }
 
-  const handleSaveClick = () => {
-    console.log("SAVE")
+  const handleSaveClick = async () => {    
+    try {     
+      setSaving(true);
+
+      axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
+      axios.defaults.xsrfCookieName = 'csrftoken'
+
+      // XXX: Not handling "false" annotations   
+      await axios.post(api.saveAnnotations, {
+        annotations: annotations.map(({ id }) => {
+          return {
+            image_base_name: image.id,
+            annotation_name: id,
+            is_present: true,
+            comment: 'test'
+          }
+        })
+      })
+
+      setSaving(false)
+    }
+    catch (error) {
+      console.log(error)
+    }
   }
 
   return (
@@ -93,7 +118,12 @@ export const AnnotationControls = () => {
           }
           </div>
 
-        <Button onClick={ handleSaveClick }>Save</Button>
+        <Button 
+          loading={ saving }
+          onClick={ handleSaveClick }
+        >
+          Save
+        </Button>
      </Space>
     </>
   )
