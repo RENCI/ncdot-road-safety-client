@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Spin, Space, Select } from 'antd'
 import { loadModules } from 'esri-loader'
 import { RoutesContext } from '../../contexts'
-import './map-view.css'
+import './map-viewer.css'
 
 const { Option } = Select;
 
@@ -18,11 +18,17 @@ let view = null
 let layerView = null
 let autoCenter = false
 
-export const MapView = ({ height }) => {
+export const MapViewer = ({ height }) => {
   const [loading, setLoading] = useState(true)
   const [routeNames, setRouteNames] = useState([])
   //const [center, setCenter] = useState(true)
   const mapRef = useRef()
+
+  const routeFilter = routeName => {
+    return  {
+      where: "RouteName = '" + (routeName ? routeName : "") + "'"
+    }
+  }
 
   useEffect(() => {
     loadModules(
@@ -88,10 +94,13 @@ export const MapView = ({ height }) => {
           setRouteNames(response.uniqueValueInfos.map(({ value }) => value))
         })
 
+        layerView.filter = routeFilter()
+
         setLoading(false);
       })
 
       return () => {
+        // XXX: Need more cleanup here?
         if (view) {
           view.container = null;
         }
@@ -102,9 +111,7 @@ export const MapView = ({ height }) => {
   const handleRouteSelect = value => {
     autoCenter = true
 
-    layerView.filter = value ? {
-      where: "RouteName = '" + value + "'"
-    } : null        
+    layerView.filter = routeFilter(value)
   }
 
   return (
@@ -120,7 +127,7 @@ export const MapView = ({ height }) => {
             className='routeSelect'
             showSearch
             allowClear
-            placeholder='Filter routes'
+            placeholder='Show route'
             onChange={ handleRouteSelect }
           >
             {routeNames.map((name, i) => (
