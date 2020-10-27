@@ -7,7 +7,6 @@ import { MapViewer } from '../map-viewer'
 export const RouteBrowser = () => {
   return (
     <>
-
       <Row>
         <Col span={ 24 }>
           <ImageBrowser />

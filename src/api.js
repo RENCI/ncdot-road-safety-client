@@ -12,7 +12,7 @@ export const api = {
   getImageNamesByLocation: (long, lat, count) => `/get_image_names_by_loc/${ long }/${ lat }/${ count }/`,
   getImageMetadata: id => `/get_image_metadata/${ id }/`,
   getImageNamesByAnnotation: label => `/get_image_base_names_by_annot/${ label }/`,
-  getNextImageNamesForAnnotation: label => `/get_next_images_for_annot/${ label }/${ count }/`,
+  getNextImageNamesForAnnotation: (label, count) => `/get_next_images_for_annot/${ label }/${ count }/`,
   getAllRoutes: '/get_all_routes/',
   getRouteInfo: id => `/get_route_info/${ id }/`,
   getAnnotationSet: '/get_annotation_set/',
