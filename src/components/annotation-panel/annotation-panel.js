@@ -1,17 +1,20 @@
 import React from 'react'
-import { Row, Col, Switch } from 'antd'
+import { Switch } from 'antd'
 import { Scene } from '../scene'
 import './annotation-panel.css'
 
-export const AnnotationPanel = ({ id, annotation }) => {
+export const AnnotationPanel = ({ image, annotation, handleChange }) => {
   return (    
     <div className='panel'>
-      <Scene id={ id } />
-
       <div className='toggle'>
-        <div>Contains&nbsp;{ annotation }?</div>
-        <div><Switch /></div>
+        <div>Contains&nbsp;{ annotation }?</div>        
+        <br />
+        <Switch           
+          checked={ image.checked }
+          onChange={ handleChange } />
       </div>
+
+      <Scene id={ image.id } />
     </div>
   )
 }
