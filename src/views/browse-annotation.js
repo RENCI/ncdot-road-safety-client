@@ -7,7 +7,7 @@ const { Title } = Typography
 export const BrowseAnnotationView = () => {
   return (
     <>
-      <Title level={ 1 }>Browse By Annotation</Title>
+      <Title level={ 1 }>Browse by Annotation</Title>
 
       <AnnotationBrowser />
     </>

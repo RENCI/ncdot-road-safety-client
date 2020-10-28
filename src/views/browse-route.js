@@ -7,7 +7,7 @@ const { Title } = Typography
 export const BrowseRouteView = () => {
   return (
     <>
-      <Title level={ 1 }>Browse By Route</Title>
+      <Title level={ 1 }>Browse by Route</Title>
 
       <RouteBrowser />
     </>
