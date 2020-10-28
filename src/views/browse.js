@@ -1,32 +1,34 @@
-import React from 'react'
-import { Typography, Row, Col } from 'antd'
-import { ImageBrowser } from '../components/image-viewer'
-import { AnnotationControls } from '../components/annotation-controls'
-import { MapView } from '../components/map-view'
+import React, { useState } from 'react'
+import { Typography, Form, Select } from 'antd'
+import { AnnotationBrowser } from '../components/annotation-browser'
+import { RouteBrowser } from '../components/route-browser'
 
 const { Title } = Typography
 
 export const BrowseView = () => {
+  const [mode, setMode] = useState('annotation')
+
+  const handleChange = value => {
+    setMode(value)
+  }
+
   return (
     <>
       <Title level={ 1 }>Browse</Title>
 
-      <Row>
-        <Col span={ 24 }>
-          <ImageBrowser />
-        </Col>
-      </Row>
+      <Form>         
+        <Form.Item label='Browse by'>
+          <Select onChange={ handleChange } value={ mode }>
+            <Select.Option value='annotation'>Annotation</Select.Option>
+            <Select.Option value='route'>Route</Select.Option>
+          </Select>
+        </Form.Item>
+      </Form>
 
-      <br />
-
-      <Row gutter={ 16  }>
-        <Col span={ 12 }>
-          <AnnotationControls />
-        </Col>
-        <Col span={ 12 }>
-          <MapView height={ 300 } />
-        </Col>
-      </Row>
+      { mode === 'annotation' ? 
+        <AnnotationBrowser /> :
+        <RouteBrowser />
+      }
     </>
   )
 }
