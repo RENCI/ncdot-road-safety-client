@@ -9,7 +9,7 @@ import './annotation-browser.css'
 export const AnnotationBrowser = () => {
   const [allAnnotations] = useContext(AnnotationsContext)
   const [annotation, setAnnotation] = useState(null)
-  const [numLoad, setNumLoad] = useState(10)
+  const [numLoad, setNumLoad] = useState(5)
   const [saving, setSaving] = useState(false)
 
   const [images, imagesDispatch] = useReducer((state, action) => {
