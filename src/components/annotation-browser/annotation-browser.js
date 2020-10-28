@@ -6,6 +6,8 @@ import { AnnotationPanel } from '../annotation-panel'
 import { api } from '../../api'
 import './annotation-browser.css'
 
+const { Option } = Select
+
 export const AnnotationBrowser = () => {
   const [allAnnotations] = useContext(AnnotationsContext)
   const [annotation, setAnnotation] = useState(null)
@@ -134,9 +136,9 @@ export const AnnotationBrowser = () => {
             onChange={ handleAnnotationChange }
           >
             { allAnnotations.map((annotation, i) => (
-              <Select.Option key={ i } value={ annotation.id }>
-                { annotation.label }
-              </Select.Option>
+              <Option key={ i } value={ annotation }>
+                { annotation }
+              </Option>
             ))}
           </Select>
         </Form.Item>
@@ -172,8 +174,6 @@ export const AnnotationBrowser = () => {
             handleChange={ checked => handlePresentChange(image.id, checked) } />
         ))}        
       </Space>
-
-
     </>
   )
 }

@@ -4,7 +4,7 @@ import { loadModules } from 'esri-loader'
 import { RoutesContext } from '../../contexts'
 import './map-viewer.css'
 
-const { Option } = Select;
+const { Option } = Select
 
 const ncLatLong = [
   [33.7666, -84.3201], 
@@ -122,21 +122,19 @@ export const MapViewer = ({ height }) => {
           <Spin tip='Loading...'/>
         </div> 
       :
-        <Space>
-          <Select
-            className='routeSelect'
-            showSearch
-            allowClear
-            placeholder='Show route'
-            onChange={ handleRouteSelect }
-          >
-            {routeNames.map((name, i) => (
-              <Option key={ i } value={ name }>
-                { name }
-              </Option>
-            ))}
-          </Select> 
-        </Space>
+        <Select
+          className='routeSelect'
+          showSearch
+          allowClear
+          placeholder='Show route'
+          onChange={ handleRouteSelect }
+        >
+          {routeNames.map((name, i) => (
+            <Option key={ i } value={ name }>
+              { name }
+            </Option>
+          ))}
+        </Select> 
       }
       <div 
         className='webmap routeMap' 
