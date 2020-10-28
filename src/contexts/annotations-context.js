@@ -26,12 +26,7 @@ export const AnnotationsProvider = ({ children }) => {
         
         dispatch({ 
           type: 'setAnnotations',
-          annotations: response.data.annotation_names.map(label => {
-            return {
-              id: label,
-              label: label
-            }
-          })
+          annotations: response.data.annotation_names.map(annotation => annotation)
         })
       }
       catch (error) {
