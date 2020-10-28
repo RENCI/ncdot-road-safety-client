@@ -99,17 +99,6 @@ export const AnnotationBrowser = () => {
 
       axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
       axios.defaults.xsrfCookieName = 'csrftoken'
-
-      console.log({
-        annotations: images.map(({ id, present }) => {
-          return {
-            image_base_name: id,
-            annotation_name: annotation,
-            is_present: present,
-            comment: 'test'
-          }
-        })
-      })
    
       await axios.post(api.saveAnnotations, {
         annotations: images.map(({ id, present }) => {
