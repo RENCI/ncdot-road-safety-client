@@ -34,7 +34,7 @@ export const AnnotationControls = () => {
 
       // XXX: Not handling "false" annotations   
       await axios.post(api.saveAnnotations, {
-        annotations: annotations.map(({ annotation }) => {
+        annotations: annotations.map(annotation => {
           return {
             image_base_name: image.id,
             annotation_name: annotation,
