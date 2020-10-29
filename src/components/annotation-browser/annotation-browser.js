@@ -32,7 +32,7 @@ export const AnnotationBrowser = () => {
       case 'setAnnotationPresent': {
         const newState = [...state]
 
-        const index = newState.indexOf(({ id }) => id === action.id)
+        const index = newState.findIndex(({ id }) => id === action.id)
 
         newState[index] = {
           ...newState[index],
