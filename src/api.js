@@ -1,7 +1,7 @@
 const direction = {
   front: 1,
-  left: 2,
-  right: 5,
+  left: 5,
+  right: 2,
   back: 6,
 }
 
