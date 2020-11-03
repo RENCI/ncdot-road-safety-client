@@ -3,4 +3,11 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  width: 100%;
+}
+
+.imageDiv {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 33%;
 }

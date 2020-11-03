@@ -1,5 +1,5 @@
 import React, { useState, useContext, useReducer } from 'react'
-import { Form, Space, Select, InputNumber, Button, notification } from 'antd'
+import { Form, Space, Select, InputNumber, Button, Spin, notification } from 'antd'
 import axios from 'axios'
 import { AnnotationsContext } from '../../contexts'
 import { AnnotationPanel } from '../annotation-panel'
@@ -13,6 +13,7 @@ export const AnnotationBrowser = () => {
   const [annotation, setAnnotation] = useState(null)
   const [numLoad, setNumLoad] = useState(5)
   const [saving, setSaving] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   const [images, imagesDispatch] = useReducer((state, action) => {
     switch (action.type) {
@@ -48,6 +49,8 @@ export const AnnotationBrowser = () => {
   }, [])
 
   const getImages = async value => {
+    setLoading(true)
+
     imagesDispatch({ type: 'clearImages' })
 
     try {
@@ -67,6 +70,8 @@ export const AnnotationBrowser = () => {
           metadata: metadataResult.data.metadata
         })
       }
+
+      setLoading(false)
     }
     catch (error) {
       console.log(error)
@@ -165,15 +170,17 @@ export const AnnotationBrowser = () => {
         </Form.Item>
       </Form>
 
-      <Space direction='vertical'>
-        { images.map((image, i) => (
-          <AnnotationPanel 
-            key={ i } 
-            image={ image } 
-            annotation={ annotation }
-            handleChange={ checked => handlePresentChange(image.id, checked) } />
-        ))}        
-      </Space>
+      { loading ? <Spin className='spin' /> :
+        <Space direction='vertical' className='panels'>
+          { images.map((image, i) => (
+            <AnnotationPanel 
+              key={ i } 
+              image={ image } 
+              annotation={ annotation }
+              handleChange={ checked => handlePresentChange(image.id, checked) } />
+          ))}
+        </Space> 
+      }  
     </>
   )
 }
