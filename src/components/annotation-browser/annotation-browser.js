@@ -13,7 +13,7 @@ export const AnnotationBrowser = () => {
   const [annotation, setAnnotation] = useState(null)
   const [numLoad, setNumLoad] = useState(5)
   const [saving, setSaving] = useState(false)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
 
   const [images, imagesDispatch] = useReducer((state, action) => {
     switch (action.type) {
