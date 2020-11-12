@@ -68,7 +68,22 @@ const Image = ({ url, present, handleClick }) => {
         onPointerUp={ handlePointerUp }
         onKeyUp={ handleKeyUp }
         onLoad={ handleLoad } />     
-      { present ? <CheckCircleOutlined className='checkIcon' /> : null }
+        { present ? 
+          <CheckCircleOutlined 
+            style={{ 
+              margin: 0,
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              zIndex: 1,
+              textAlign: 'center',
+              fontSize: '64px',
+              transform: 'translate(-50%, -50%)',
+              color: '#52c41a',
+              pointerEvents: 'none',
+              filter: 'drop-shadow(5px 5px 4px #000' 
+            }} /> 
+        : null }
     </div>
   )
 }
