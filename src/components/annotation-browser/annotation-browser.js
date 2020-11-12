@@ -26,22 +26,31 @@ export const AnnotationBrowser = () => {
             id: action.id,
             metadata: action.metadata,
             annotations: action.annotations,
-            present: false
+            present: {
+              left: false,
+              front: false,
+              right: false
+            }
           }
-        ]
+        ]        
 
-      case 'setAnnotationPresent': {
+      case 'toggleAnnotationPresent': {
         const newState = [...state]
 
         const index = newState.findIndex(({ id }) => id === action.id)
 
+        if (index === -1) return newState
+
+        const present = { ...newState[index].present }
+        present[action.which] = !present[action.which]
+
         newState[index] = {
           ...newState[index],
-          present: action.present
+          present: present
         }
 
         return newState
-      }        
+      }
   
       default: 
         throw new Error('Invalid images action: ' + action.type)
@@ -88,11 +97,13 @@ export const AnnotationBrowser = () => {
     setNumLoad(value)
   }
 
-  const handlePresentChange = (id, checked) => {
+  const handleClick = (id, which) => {
+    console.log(id, which)
+
     imagesDispatch({
-      type: 'setAnnotationPresent',
+      type: 'toggleAnnotationPresent',
       id: id,
-      present: checked
+      which: which
     })
   }
 
@@ -177,7 +188,7 @@ export const AnnotationBrowser = () => {
               key={ i } 
               image={ image } 
               annotation={ annotation }
-              handleChange={ checked => handlePresentChange(image.id, checked) } />
+              handleClick={ handleClick } />
           ))}
         </Space> 
       }  

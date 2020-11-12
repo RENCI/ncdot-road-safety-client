@@ -1,42 +1,51 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { Spin } from 'antd'
+import { CheckCircleOutlined } from '@ant-design/icons'
 import { api } from '../../api'
 import './scene.css'
 
-const Image = ({ url }) => {  
-  const [down, setDown] = useState(false)
+const Image = ({ url, present, handleClick }) => {  
+  const [editMode, setEditMode] = useState(false)
   const [brightness, setBrightness] = useState(1)
   const [contrast, setContrast] = useState(1)
   const [loading, setLoading] = useState(true)
 
   const movementScale = 0.01;
 
-  console.log(brightness, contrast)
-
   useEffect(() => {
     setLoading(true)
   }, [url])
 
   const handlePointerDown = evt => {
-    setDown(true)
-    evt.target.setPointerCapture(evt.pointerId)
+    if (evt.shiftKey) {
+      setEditMode(true)
+
+      evt.target.setPointerCapture(evt.pointerId)
+    }
   }
 
   const handlePointerMove = evt => {
-    if (down) {
+    if (editMode) {
       setBrightness(brightness - evt.movementY * movementScale)
       setContrast(contrast + evt.movementX * movementScale)
     }
   }
   
   const handlePointerUp = () => {
-    setDown(false)
+    if (editMode) {
+      setEditMode(false)
+    }
+    if (!editMode && handleClick) {
+      handleClick()
+    }
   }
 
-  const handleDoubleClick = () => {
-    setBrightness(1)
-    setContrast(1)
+  const handleKeyUp = evt => {
+    if (evt.key === 'r') {
+      setBrightness(1)
+      setContrast(1)
+    }
   }
 
   const handleLoad = () => {
@@ -50,29 +59,43 @@ const Image = ({ url }) => {
       { loading && <Spin /> }
       <img 
         src={ url } 
+        tabIndex='-1'
         width='100%' 
         style={{ filter: filterString }}
         draggable='false'
         onPointerDown={ handlePointerDown }
         onPointerMove={ handlePointerMove }
         onPointerUp={ handlePointerUp }
-        onDoubleClick={ handleDoubleClick }
-        onLoad={ handleLoad }
-      />     
+        onKeyUp={ handleKeyUp }
+        onLoad={ handleLoad } />     
+      { present ? <CheckCircleOutlined className='checkIcon' /> : null }
     </div>
   )
 }
 
-export const Scene = ({ id }) => {
+export const Scene = ({ id, present, handleClick }) => {
+  console.log(id, present)
+
   return (
     <div className='scene'>
-      <Image url={ api.getImage(id, 'left') } />
-      <Image url={ api.getImage(id, 'front') } />
-      <Image url={ api.getImage(id, 'right') } />
+      <Image 
+        url={ api.getImage(id, 'left') } 
+        present={ present['left'] }
+        handleClick={ handleClick ? () => handleClick(id, 'left') : null } />
+      <Image 
+        url={ api.getImage(id, 'front') } 
+        present={ present['front'] }
+        handleClick={ handleClick ? () => handleClick(id, 'front') : null } />
+      <Image 
+        url={ api.getImage(id, 'right') } 
+        present={ present['right'] }
+        handleClick={ handleClick ? () => handleClick(id, 'right') : null } />
     </div>
   )
 }
 
 Scene.propTypes = {
   id: PropTypes.string.isRequired,
+  present: PropTypes.object,
+  handleClick: PropTypes.func
 }
