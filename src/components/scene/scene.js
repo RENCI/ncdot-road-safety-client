@@ -68,22 +68,23 @@ const Image = ({ url, present, handleClick }) => {
         onPointerUp={ handlePointerUp }
         onKeyUp={ handleKeyUp }
         onLoad={ handleLoad } />     
-        { present ? 
-          <CheckCircleOutlined 
-            style={{ 
-              margin: 0,
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              zIndex: 1,
-              textAlign: 'center',
-              fontSize: '64px',
-              transform: 'translate(-50%, -50%)',
-              color: '#52c41a',
-              pointerEvents: 'none',
-              filter: 'drop-shadow(5px 5px 4px #000' 
-            }} /> 
-        : null }
+      { present ? 
+        // XXX: Move some of this to a container div with a class?
+        <CheckCircleOutlined 
+          style={{ 
+            margin: 0,
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            zIndex: 1,
+            textAlign: 'center',
+            fontSize: '64px',
+            transform: 'translate(-50%, -50%)',
+            color: '#52c41a',
+            pointerEvents: 'none',
+            filter: 'drop-shadow(5px 5px 4px #000' 
+          }} /> 
+      : null }
     </div>
   )
 }
@@ -99,8 +100,7 @@ export const Scene = ({ id, present, handleClick }) => {
         handleClick={ handleClick ? () => handleClick(id, 'left') : null } />
       <Image 
         url={ api.getImage(id, 'front') } 
-        present={ present['front'] }
-        handleClick={ handleClick ? () => handleClick(id, 'front') : null } />
+        present={ present['front'] } />
       <Image 
         url={ api.getImage(id, 'right') } 
         present={ present['right'] }
