@@ -5,8 +5,10 @@ import { CheckCircleOutlined } from '@ant-design/icons'
 import { api } from '../../api'
 import './scene.css'
 
-const Image = ({ url, present, handleClick }) => {  
-  const [editMode, setEditMode] = useState(false)
+const pointerDown = false;
+const drag = false;
+
+const Image = ({ url, present, handleClick }) => { 
   const [brightness, setBrightness] = useState(1)
   const [contrast, setContrast] = useState(1)
   const [loading, setLoading] = useState(true)
@@ -18,27 +20,27 @@ const Image = ({ url, present, handleClick }) => {
   }, [url])
 
   const handlePointerDown = evt => {
-    // XXX: Don't worry about shift key, and just check for mouse move?
-
-    if (evt.shiftKey) {
-      setEditMode(true)
+    if (evt.pointerId === 0) {
+      pointerDown = true;
+      drag = false;
 
       evt.target.setPointerCapture(evt.pointerId)
     }
   }
 
-  const handlePointerMove = evt => {
-    if (editMode) {
+  const handlePointerMove = evt => {    
+    if (pointerDown) {
+      drag = true;
+
       setBrightness(brightness - evt.movementY * movementScale)
       setContrast(contrast + evt.movementX * movementScale)
     }
   }
   
   const handlePointerUp = () => {
-    if (editMode) {
-      setEditMode(false)
-    }
-    if (!editMode && handleClick) {
+    pointerDown = false;
+
+    if (!drag && handleClick) {
       handleClick()
     }
   }
