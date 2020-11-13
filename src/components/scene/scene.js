@@ -5,10 +5,9 @@ import { CheckCircleOutlined } from '@ant-design/icons'
 import { api } from '../../api'
 import './scene.css'
 
-let pointerDown = false;
-let drag = false;
-
 const Image = ({ url, present, handleClick }) => { 
+  const [pointerDown, setPointerDown] = useState(false)
+  const [drag, setDrag] = useState(false)
   const [brightness, setBrightness] = useState(1)
   const [contrast, setContrast] = useState(1)
   const [loading, setLoading] = useState(true)
@@ -21,32 +20,40 @@ const Image = ({ url, present, handleClick }) => {
 
   const handlePointerDown = evt => {
     if (evt.button === 0) {
-      pointerDown = true;
-      drag = false;
-
       evt.target.setPointerCapture(evt.pointerId)
+
+      setPointerDown(true)
+
+      if (evt.shiftKey) {
+        setDrag(true)
+      }
     }
   }
 
   const handlePointerMove = evt => {    
-    if (pointerDown) {
-      drag = true;
-
+    if (pointerDown && evt.shiftKey) {
       setBrightness(brightness - evt.movementY * movementScale)
       setContrast(contrast + evt.movementX * movementScale)
+      setDrag(true)
+    }
+    else if (drag) {
+      setDrag(false)
     }
   }
   
   const handlePointerUp = () => {
-    pointerDown = false;
+    setPointerDown(false)
+    setDrag(false)
+  }
 
-    if (!drag && handleClick) {
+  const onClick = evt => {
+    if (!evt.shiftKey && evt.button === 0) {
       handleClick()
     }
   }
 
-  const handleKeyUp = evt => {
-    if (evt.key === 'r') {
+  const handleDoubleClick = evt => {
+    if (evt.shiftKey && evt.button === 0) {
       setBrightness(1)
       setContrast(1)
     }
@@ -67,15 +74,16 @@ const Image = ({ url, present, handleClick }) => {
         width='100%' 
         style={{ 
           filter: filterString,  
-          cursor: handleClick ? 'pointer' : null 
+          cursor: drag ? 'move' : handleClick ? 'pointer' : 'default' 
         }}
         draggable='false'
         onPointerDown={ handlePointerDown }
         onPointerMove={ handlePointerMove }
         onPointerUp={ handlePointerUp }
-        onKeyUp={ handleKeyUp }
+        onClick={ handleClick ? onClick : null }
+        onDoubleClick={ handleDoubleClick }
         onLoad={ handleLoad } />     
-      { present ? <CheckCircleOutlined className="checkIcon"/> : null }
+      { present ? <CheckCircleOutlined className='checkIcon' /> : null }
     </div>
   )
 }
@@ -85,14 +93,14 @@ export const Scene = ({ id, present, handleClick }) => {
     <div className='scene'>
       <Image 
         url={ api.getImage(id, 'left') } 
-        present={ present['left'] }
+        present={ present ? present['left'] : null }
         handleClick={ handleClick ? () => handleClick(id, 'left') : null } />
       <Image 
         url={ api.getImage(id, 'front') } 
-        present={ present['front'] } />
+        present={ present ? present['front'] : null } />
       <Image 
         url={ api.getImage(id, 'right') } 
-        present={ present['right'] }
+        present={ present ? present['right'] : null }
         handleClick={ handleClick ? () => handleClick(id, 'right') : null } />
     </div>
   )

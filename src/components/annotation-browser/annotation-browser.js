@@ -1,5 +1,5 @@
 import React, { useState, useContext, useReducer } from 'react'
-import { Form, Space, Select, InputNumber, Button, Spin, notification } from 'antd'
+import { Form, Space, Select, InputNumber, Button, Spin, Alert, notification } from 'antd'
 import axios from 'axios'
 import { AnnotationsContext } from '../../contexts'
 import { AnnotationPanel } from '../annotation-panel'
@@ -181,18 +181,18 @@ export const AnnotationBrowser = () => {
       </Form>
       { loading ? 
         <Spin className='spin' /> : annotation ?
-        <>
-          <h5>Select left and right images containing: <strong>{ annotation }</strong></h5>
-          <Space direction='vertical' className='panels'>            
-            { images.map((image, i) => (
-              <AnnotationPanel 
-                key={ i } 
-                image={ image } 
-                annotation={ annotation }
-                handleClick={ handleClick } />
-            ))}
-          </Space> 
-        </> 
+        <Space direction='vertical' className='panels'>  
+          <Alert message={ 
+            <>Select <strong>left</strong> and <strong>right</strong> images containing: <strong>{ annotation }</strong></> 
+          } />          
+          { images.map((image, i) => (
+            <AnnotationPanel 
+              key={ i } 
+              image={ image } 
+              annotation={ annotation }
+              handleClick={ handleClick } />
+          ))}
+        </Space> 
       : null }  
     </>
   )
