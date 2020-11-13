@@ -18,6 +18,8 @@ const Image = ({ url, present, handleClick }) => {
   }, [url])
 
   const handlePointerDown = evt => {
+    // XXX: Don't worry about shift key, and just check for mouse move?
+
     if (evt.shiftKey) {
       setEditMode(true)
 
@@ -68,23 +70,7 @@ const Image = ({ url, present, handleClick }) => {
         onPointerUp={ handlePointerUp }
         onKeyUp={ handleKeyUp }
         onLoad={ handleLoad } />     
-      { present ? 
-        // XXX: Move some of this to a container div with a class?
-        <CheckCircleOutlined 
-          style={{ 
-            margin: 0,
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            zIndex: 1,
-            textAlign: 'center',
-            fontSize: '64px',
-            transform: 'translate(-50%, -50%)',
-            color: '#52c41a',
-            pointerEvents: 'none',
-            filter: 'drop-shadow(5px 5px 4px #000' 
-          }} /> 
-      : null }
+      { present ? <CheckCircleOutlined className="checkIcon"/> : null }
     </div>
   )
 }
