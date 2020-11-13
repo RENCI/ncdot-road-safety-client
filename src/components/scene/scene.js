@@ -23,29 +23,37 @@ const Image = ({ url, present, handleClick }) => {
       evt.target.setPointerCapture(evt.pointerId)
 
       setPointerDown(true)
-      setDrag(false)
+
+      if (evt.shiftKey) {
+        setDrag(true)
+      }
     }
   }
 
   const handlePointerMove = evt => {    
-    if (pointerDown) {
-      setDrag(true)
+    if (pointerDown && evt.shiftKey) {
       setBrightness(brightness - evt.movementY * movementScale)
       setContrast(contrast + evt.movementX * movementScale)
+      setDrag(true)
+    }
+    else if (drag) {
+      setDrag(false)
     }
   }
   
   const handlePointerUp = () => {
-    if (pointerDown && !drag && handleClick) {
-      handleClick()
-    }
-
     setPointerDown(false)
     setDrag(false)
   }
 
-  const handleKeyUp = evt => {
-    if (evt.key === 'r') {
+  const onClick = evt => {
+    if (!evt.shiftKey && evt.button === 0) {
+      handleClick()
+    }
+  }
+
+  const handleDoubleClick = evt => {
+    if (evt.shiftKey && evt.button === 0) {
       setBrightness(1)
       setContrast(1)
     }
@@ -72,7 +80,8 @@ const Image = ({ url, present, handleClick }) => {
         onPointerDown={ handlePointerDown }
         onPointerMove={ handlePointerMove }
         onPointerUp={ handlePointerUp }
-        onKeyUp={ handleKeyUp }
+        onClick={ handleClick ? onClick : null }
+        onDoubleClick={ handleDoubleClick }
         onLoad={ handleLoad } />     
       { present ? <CheckCircleOutlined className='checkIcon' /> : null }
     </div>
