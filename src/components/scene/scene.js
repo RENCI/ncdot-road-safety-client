@@ -5,8 +5,8 @@ import { CheckCircleOutlined } from '@ant-design/icons'
 import { api } from '../../api'
 import './scene.css'
 
-const pointerDown = false;
-const drag = false;
+let pointerDown = false;
+let drag = false;
 
 const Image = ({ url, present, handleClick }) => { 
   const [brightness, setBrightness] = useState(1)
@@ -20,7 +20,7 @@ const Image = ({ url, present, handleClick }) => {
   }, [url])
 
   const handlePointerDown = evt => {
-    if (evt.pointerId === 0) {
+    if (evt.button === 0) {
       pointerDown = true;
       drag = false;
 
