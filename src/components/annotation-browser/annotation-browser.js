@@ -181,7 +181,7 @@ export const AnnotationBrowser = () => {
       </Form>
       { loading ? 
         <Spin className='spin' /> : annotation ?
-        <Space direction='vertical' className='panels'>  
+        <Space direction='vertical' size='middle' className='panels'>  
           <Alert message={ 
             <>Select <strong>left</strong> and <strong>right</strong> images containing: <strong>{ annotation }</strong></> 
           } />          
