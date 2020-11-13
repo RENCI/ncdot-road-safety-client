@@ -36,7 +36,7 @@ const Image = ({ url, present, handleClick }) => {
   }
   
   const handlePointerUp = () => {
-    if (!drag && handleClick) {
+    if (pointerDown && !drag && handleClick) {
       handleClick()
     }
 
@@ -74,7 +74,7 @@ const Image = ({ url, present, handleClick }) => {
         onPointerUp={ handlePointerUp }
         onKeyUp={ handleKeyUp }
         onLoad={ handleLoad } />     
-      { present ? <CheckCircleOutlined className="checkIcon"/> : null }
+      { present ? <CheckCircleOutlined className='checkIcon' /> : null }
     </div>
   )
 }
