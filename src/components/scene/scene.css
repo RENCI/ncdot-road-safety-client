@@ -9,7 +9,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  flex: 1 1 auto;
+  flex: 0 0 33.3%;
 }
 
 .checkIcon {
