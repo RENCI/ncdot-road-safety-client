@@ -3,7 +3,7 @@ import { Form, Space, Select, InputNumber, Button, Spin, notification } from 'an
 import axios from 'axios'
 import { AnnotationsContext } from '../../contexts'
 import { AnnotationPanel } from '../annotation-panel'
-import { api } from '../../api'
+import { api, views } from '../../api'
 import './annotation-browser.css'
 
 const { Option } = Select
@@ -98,8 +98,6 @@ export const AnnotationBrowser = () => {
   }
 
   const handleClick = (id, which) => {
-    console.log(id, which)
-
     imagesDispatch({
       type: 'toggleAnnotationPresent',
       id: id,
@@ -123,7 +121,8 @@ export const AnnotationBrowser = () => {
           return {
             image_base_name: id,
             annotation_name: annotation,
-            is_present: present,
+            is_present: present.left || present.front || present.right,
+            is_present_views: Object.entries(present).filter(([,value]) => value).map(([key,]) => views[key]),
             comment: 'test'
           }
         })
@@ -180,18 +179,21 @@ export const AnnotationBrowser = () => {
           </Button>
         </Form.Item>
       </Form>
-
-      { loading ? <Spin className='spin' /> :
-        <Space direction='vertical' className='panels'>
-          { images.map((image, i) => (
-            <AnnotationPanel 
-              key={ i } 
-              image={ image } 
-              annotation={ annotation }
-              handleClick={ handleClick } />
-          ))}
-        </Space> 
-      }  
+      { loading ? 
+        <Spin className='spin' /> : annotation ?
+        <>
+          <h5>Select left and right images containing: <strong>{ annotation }</strong></h5>
+          <Space direction='vertical' className='panels'>            
+            { images.map((image, i) => (
+              <AnnotationPanel 
+                key={ i } 
+                image={ image } 
+                annotation={ annotation }
+                handleClick={ handleClick } />
+            ))}
+          </Space> 
+        </> 
+      : null }  
     </>
   )
 }

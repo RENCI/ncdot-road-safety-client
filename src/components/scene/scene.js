@@ -81,8 +81,6 @@ const Image = ({ url, present, handleClick }) => {
 }
 
 export const Scene = ({ id, present, handleClick }) => {
-  console.log(id, present)
-
   return (
     <div className='scene'>
       <Image 
