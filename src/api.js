@@ -1,4 +1,4 @@
-const direction = {
+export const views = {
   front: 1,
   left: 5,
   right: 2,
@@ -8,7 +8,7 @@ const direction = {
 export const api = {
   logout: '/logout/',
   updateAccount: '/accounts/update/2/',
-  getImage: (id, dir) => `/get_image_by_name/${ id }${ direction[dir] }.jpg`,
+  getImage: (id, dir) => `/get_image_by_name/${ id }${ views[dir] }.jpg`,
   getImageNamesByLocation: (long, lat, count) => `/get_image_names_by_loc/${ long }/${ lat }/${ count }/`,
   getImageMetadata: id => `/get_image_metadata/${ id }/`,
   getImageNamesByAnnotation: label => `/get_image_base_names_by_annot/${ label }/`,

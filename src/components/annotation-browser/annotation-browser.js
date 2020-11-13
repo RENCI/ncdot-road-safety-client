@@ -3,7 +3,7 @@ import { Form, Space, Select, InputNumber, Button, Spin, notification } from 'an
 import axios from 'axios'
 import { AnnotationsContext } from '../../contexts'
 import { AnnotationPanel } from '../annotation-panel'
-import { api } from '../../api'
+import { api, views } from '../../api'
 import './annotation-browser.css'
 
 const { Option } = Select
@@ -13,7 +13,7 @@ export const AnnotationBrowser = () => {
   const [annotation, setAnnotation] = useState(null)
   const [numLoad, setNumLoad] = useState(5)
   const [saving, setSaving] = useState(false)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
 
   const [images, imagesDispatch] = useReducer((state, action) => {
     switch (action.type) {
@@ -26,22 +26,31 @@ export const AnnotationBrowser = () => {
             id: action.id,
             metadata: action.metadata,
             annotations: action.annotations,
-            present: false
+            present: {
+              left: false,
+              front: false,
+              right: false
+            }
           }
-        ]
+        ]        
 
-      case 'setAnnotationPresent': {
+      case 'toggleAnnotationPresent': {
         const newState = [...state]
 
         const index = newState.findIndex(({ id }) => id === action.id)
 
+        if (index === -1) return newState
+
+        const present = { ...newState[index].present }
+        present[action.which] = !present[action.which]
+
         newState[index] = {
           ...newState[index],
-          present: action.present
+          present: present
         }
 
         return newState
-      }        
+      }
   
       default: 
         throw new Error('Invalid images action: ' + action.type)
@@ -88,11 +97,11 @@ export const AnnotationBrowser = () => {
     setNumLoad(value)
   }
 
-  const handlePresentChange = (id, checked) => {
+  const handleClick = (id, which) => {
     imagesDispatch({
-      type: 'setAnnotationPresent',
+      type: 'toggleAnnotationPresent',
       id: id,
-      present: checked
+      which: which
     })
   }
 
@@ -112,7 +121,8 @@ export const AnnotationBrowser = () => {
           return {
             image_base_name: id,
             annotation_name: annotation,
-            is_present: present,
+            is_present: present.left || present.front || present.right,
+            is_present_views: Object.entries(present).filter(([,value]) => value).map(([key,]) => views[key]),
             comment: 'test'
           }
         })
@@ -169,18 +179,21 @@ export const AnnotationBrowser = () => {
           </Button>
         </Form.Item>
       </Form>
-
-      { loading ? <Spin className='spin' /> :
-        <Space direction='vertical' className='panels'>
-          { images.map((image, i) => (
-            <AnnotationPanel 
-              key={ i } 
-              image={ image } 
-              annotation={ annotation }
-              handleChange={ checked => handlePresentChange(image.id, checked) } />
-          ))}
-        </Space> 
-      }  
+      { loading ? 
+        <Spin className='spin' /> : annotation ?
+        <>
+          <h5>Select left and right images containing: <strong>{ annotation }</strong></h5>
+          <Space direction='vertical' className='panels'>            
+            { images.map((image, i) => (
+              <AnnotationPanel 
+                key={ i } 
+                image={ image } 
+                annotation={ annotation }
+                handleClick={ handleClick } />
+            ))}
+          </Space> 
+        </> 
+      : null }  
     </>
   )
 }
