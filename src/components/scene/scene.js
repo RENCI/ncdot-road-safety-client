@@ -63,7 +63,10 @@ const Image = ({ url, present, handleClick }) => {
         src={ url } 
         tabIndex='-1'
         width='100%' 
-        style={{ filter: filterString }}
+        style={{ 
+          filter: filterString,  
+          cursor: handleClick ? 'pointer' : null 
+        }}
         draggable='false'
         onPointerDown={ handlePointerDown }
         onPointerMove={ handlePointerMove }
