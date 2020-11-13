@@ -5,10 +5,9 @@ import { CheckCircleOutlined } from '@ant-design/icons'
 import { api } from '../../api'
 import './scene.css'
 
-let pointerDown = false;
-let drag = false;
-
 const Image = ({ url, present, handleClick }) => { 
+  const [pointerDown, setPointerDown] = useState(false)
+  const [drag, setDrag] = useState(false)
   const [brightness, setBrightness] = useState(1)
   const [contrast, setContrast] = useState(1)
   const [loading, setLoading] = useState(true)
@@ -21,28 +20,28 @@ const Image = ({ url, present, handleClick }) => {
 
   const handlePointerDown = evt => {
     if (evt.button === 0) {
-      pointerDown = true;
-      drag = false;
-
       evt.target.setPointerCapture(evt.pointerId)
+
+      setPointerDown(true)
+      setDrag(false)
     }
   }
 
   const handlePointerMove = evt => {    
     if (pointerDown) {
-      drag = true;
-
+      setDrag(true)
       setBrightness(brightness - evt.movementY * movementScale)
       setContrast(contrast + evt.movementX * movementScale)
     }
   }
   
   const handlePointerUp = () => {
-    pointerDown = false;
-
     if (!drag && handleClick) {
       handleClick()
     }
+
+    setPointerDown(false)
+    setDrag(false)
   }
 
   const handleKeyUp = evt => {
@@ -67,7 +66,7 @@ const Image = ({ url, present, handleClick }) => {
         width='100%' 
         style={{ 
           filter: filterString,  
-          cursor: handleClick ? 'pointer' : null 
+          cursor: drag ? 'move' : handleClick ? 'pointer' : 'default' 
         }}
         draggable='false'
         onPointerDown={ handlePointerDown }
