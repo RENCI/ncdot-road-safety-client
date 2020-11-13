@@ -85,14 +85,14 @@ export const Scene = ({ id, present, handleClick }) => {
     <div className='scene'>
       <Image 
         url={ api.getImage(id, 'left') } 
-        present={ present['left'] }
+        present={ present ? present['left'] : null }
         handleClick={ handleClick ? () => handleClick(id, 'left') : null } />
       <Image 
         url={ api.getImage(id, 'front') } 
-        present={ present['front'] } />
+        present={ present ? present['front'] : null } />
       <Image 
         url={ api.getImage(id, 'right') } 
-        present={ present['right'] }
+        present={ present ? present['right'] : null }
         handleClick={ handleClick ? () => handleClick(id, 'right') : null } />
     </div>
   )
