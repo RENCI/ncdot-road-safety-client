@@ -89,8 +89,15 @@ const Image = ({ url, present, handleClick }) => {
 }
 
 export const Scene = ({ id, present, handleClick }) => {
+  const hasAnnotation = Object.values(present).reduce((p, c) => p || c, false)
+
   return (
-    <div className='scene'>
+    <div 
+      className='scene' 
+      style={{ 
+        outline: hasAnnotation ? "6px solid #52c41a" : null
+      }}
+    >
       <Image 
         url={ api.getImage(id, 'left') } 
         present={ present ? present['left'] : null }
@@ -101,7 +108,7 @@ export const Scene = ({ id, present, handleClick }) => {
       <Image 
         url={ api.getImage(id, 'right') } 
         present={ present ? present['right'] : null }
-        handleClick={ handleClick ? () => handleClick(id, 'right') : null } />
+        handleClick={ handleClick ? () => handleClick(id, 'right') : null } />        
     </div>
   )
 }
