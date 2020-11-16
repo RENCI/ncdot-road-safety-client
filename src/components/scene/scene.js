@@ -89,7 +89,7 @@ const Image = ({ url, present, handleClick }) => {
 }
 
 export const Scene = ({ id, present, handleClick }) => {
-  const hasAnnotation = Object.values(present).reduce((p, c) => p || c, false)
+  const hasAnnotation = present ? Object.values(present).reduce((p, c) => p || c, false) : false
 
   return (
     <div 
