@@ -25,37 +25,43 @@ export const ImageBrowser = () => {
   const [index, setIndex] = useState(0)
   const [image, imageDispatch] = useContext(ImageContext)
 
-  useEffect(() => {
-    (async () => {
-      const id = someTimeStamps[index];
+  const getImage = async index => {
+    const id = someTimeStamps[index];
 
-      try {    
-        const annotationsResult = await axios.get(api.getImageAnnotations(id))
-        const metadataResult = await axios.get(api.getImageMetadata(id))
-  
-        imageDispatch({ 
-          type: 'setImage', 
-          id: id,
-          annotations: annotationsResult.data.annotations,
-          metadata: metadataResult.data.metadata 
-        })
-      }
-      catch (error) {
-        console.log(error)
-      }
-    })()
-  }, [index])
+    try {    
+      const annotationsResult = await axios.get(api.getImageAnnotations(id))
+      const metadataResult = await axios.get(api.getImageMetadata(id))
+
+      imageDispatch({ 
+        type: 'setImage', 
+        id: id,
+        annotations: annotationsResult.data.annotations,
+        metadata: metadataResult.data.metadata 
+      })
+    }
+    catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    console.log(image)
+
+    if (!image || image.id === null) getImage(index)
+  }, [])
 
   const handleClickPrevious = () => {
-    // XXX: Get previous image based on mode
-    // XXX: Does this make sense for annotation-based? Might want ability to go back, but might
-    // need to save that in the client
-    setIndex(index => Math.max(0, index - 1))
+    const newIndex = Math.max(0, index - 1)
+
+    setIndex(newIndex)
+    getImage(newIndex)
   }
 
   const handleClickNext = () => {
-    // XXX: Get next image based on mode
-    setIndex(index => Math.min(index + 1, someTimeStamps.length - 1))
+    const newIndex = Math.min(index + 1, someTimeStamps.length - 1)
+
+    setIndex(newIndex)
+    getImage(newIndex)
   }
 
   return (
