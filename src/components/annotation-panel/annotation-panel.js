@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { useHistory } from 'react-router-dom'
-import { Space, Button, Tooltip } from 'antd'
+import { Button, Tooltip } from 'antd'
 import { FundViewOutlined } from '@ant-design/icons'
 import { Scene } from '../scene'
 import { ImageContext } from '../../contexts'
@@ -22,7 +22,7 @@ export const AnnotationPanel = ({ image, handleClick }) => {
   }
 
   return (    
-    <Space direction='horizontal'>
+    <div className='annotationPanel'>
       <Scene 
         id={ image.id } 
         present={ image.present } 
@@ -35,6 +35,6 @@ export const AnnotationPanel = ({ image, handleClick }) => {
             onClick={ handleRouteClick } />
         </Tooltip>
       </div>
-    </Space>
+    </div>
   )
 }
