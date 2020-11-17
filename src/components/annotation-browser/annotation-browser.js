@@ -105,10 +105,6 @@ export const AnnotationBrowser = () => {
     })
   }
 
-  const handleGetNewImagesClick = () => {
-    getImages(annotation)
-  }
-
   const handleSaveClick = async () => {
     try {     
       setSaving(true);
@@ -135,6 +131,8 @@ export const AnnotationBrowser = () => {
         placement: 'bottomLeft',
         duration: 2
       })
+
+      getImages(annotation)
     }
     catch (error) {
       console.log(error)
@@ -164,35 +162,36 @@ export const AnnotationBrowser = () => {
             value={ numLoad }
             onChange={ handleNumLoadChange } />
         </Form.Item>
-        <Form.Item>
-          <Button 
-            type='primary' 
-            loading={ saving }
-            disabled={ !annotation }
-            onClick={ handleSaveClick }>
-            Save
-          </Button>
-          <Button  
-            disabled={ !annotation }
-            onClick={ handleGetNewImagesClick }>
-            Get new images
-          </Button>
-        </Form.Item>
+        { annotation ? 
+          <>
+            <Form.Item>
+              <Alert message={ 
+                <>Select <strong>left</strong> and <strong>right</strong> images containing: <strong>{ annotation }</strong></> 
+              } /> 
+            </Form.Item>
+            <Form.Item>
+              <Button 
+                type='primary' 
+                loading={ saving }
+                disabled={ !annotation }
+                onClick={ handleSaveClick }>
+                Save and advance
+              </Button>
+            </Form.Item>
+          </> : null }
       </Form>
-      { loading ? 
-        <Spin className='spin' /> : annotation ?
-        <Space direction='vertical' size='middle' className='panels'>  
-          <Alert message={ 
-            <>Select <strong>left</strong> and <strong>right</strong> images containing: <strong>{ annotation }</strong></> 
-          } />          
-          { images.map((image, i) => (
-            <AnnotationPanel 
-              key={ i } 
-              image={ image } 
-              annotation={ annotation }
-              handleClick={ handleClick } />
-          ))}
-        </Space> 
+      { loading ?  
+          <Spin className='spin' tip='Loading...' /> : 
+        annotation ?
+          <Space direction='vertical' size='middle' className='panels'>            
+            { images.map((image, i) => (
+              <AnnotationPanel 
+                key={ i } 
+                image={ image } 
+                annotation={ annotation }
+                handleClick={ handleClick } />
+            ))}
+          </Space> 
       : null }  
     </>
   )
