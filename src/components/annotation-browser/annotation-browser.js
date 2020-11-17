@@ -1,5 +1,6 @@
 import React, { useState, useContext, useReducer } from 'react'
 import { Form, Space, Select, InputNumber, Button, Spin, Alert, notification } from 'antd'
+import { DownloadOutlined } from '@ant-design/icons'
 import axios from 'axios'
 import { AnnotationsContext } from '../../contexts'
 import { AnnotationPanel } from '../annotation-panel'
@@ -162,7 +163,7 @@ export const AnnotationBrowser = () => {
             value={ numLoad }
             onChange={ handleNumLoadChange } />
         </Form.Item>
-        { annotation ? 
+        { annotation && 
           <>
             <Form.Item>
               <Alert message={ 
@@ -174,11 +175,13 @@ export const AnnotationBrowser = () => {
                 type='primary' 
                 loading={ saving }
                 disabled={ !annotation }
+                size='large'
+                icon={ <DownloadOutlined /> }
                 onClick={ handleSaveClick }>
-                Save and advance
+                  Save and advance
               </Button>
             </Form.Item>
-          </> : null }
+          </> }
       </Form>
       { loading ?  
           <Spin className='spin' tip='Loading...' /> : 
