@@ -45,8 +45,6 @@ export const ImageBrowser = () => {
   }
 
   useEffect(() => {
-    console.log(image)
-
     if (!image || image.id === null) getImage(index)
   }, [])
 
