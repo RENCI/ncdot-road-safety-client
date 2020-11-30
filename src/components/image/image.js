@@ -89,6 +89,6 @@ export const Image = ({ url, present, handleClick }) => {
 
 Image.propTypes = {
   url: PropTypes.string.isRequired,
-  present: PropTypes.object,
+  present: PropTypes.bool,
   handleClick: PropTypes.func
 }
