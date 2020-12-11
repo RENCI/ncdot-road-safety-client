@@ -16,7 +16,7 @@ const reducer = (state, action) => {
       }
 
     default: 
-      throw new Error('Invalid image context action: ' + action.type)
+      throw new Error('Invalid route browser context action: ' + action.type)
   }
 }
 
