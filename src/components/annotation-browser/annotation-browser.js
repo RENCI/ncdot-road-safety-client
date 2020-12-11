@@ -1,8 +1,8 @@
-import React, { useState, useContext, useReducer } from 'react'
+import React, { useState, useContext } from 'react'
 import { Form, Space, Select, InputNumber, Button, Spin, Alert, notification } from 'antd'
 import { DownloadOutlined } from '@ant-design/icons'
 import axios from 'axios'
-import { AnnotationsContext } from '../../contexts'
+import { AnnotationsContext, AnnotationBrowserContext } from '../../contexts'
 import { AnnotationPanel } from '../annotation-panel'
 import { api, views } from '../../api'
 import './annotation-browser.css'
@@ -11,57 +11,16 @@ const { Option } = Select
 
 export const AnnotationBrowser = () => {
   const [allAnnotations] = useContext(AnnotationsContext)
-  const [annotation, setAnnotation] = useState(null)
-  const [numLoad, setNumLoad] = useState(5)
+  const [state, dispatch] = useContext(AnnotationBrowserContext)
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const [images, imagesDispatch] = useReducer((state, action) => {
-    switch (action.type) {
-      case 'clearImages':
-        return []
-
-      case 'addImage':     
-        return [
-          ...state, {
-            id: action.id,
-            metadata: action.metadata,
-            annotations: action.annotations,
-            present: {
-              left: false,
-              front: false,
-              right: false
-            }
-          }
-        ]        
-
-      case 'toggleAnnotationPresent': {
-        const newState = [...state]
-
-        const index = newState.findIndex(({ id }) => id === action.id)
-
-        if (index === -1) return newState
-
-        const present = { ...newState[index].present }
-        present[action.which] = !present[action.which]
-
-        newState[index] = {
-          ...newState[index],
-          present: present
-        }
-
-        return newState
-      }
-  
-      default: 
-        throw new Error('Invalid images action: ' + action.type)
-    }
-  }, [])
+  const { images, numLoad, annotation } = {...state}
 
   const getImages = async value => {
     setLoading(true)
 
-    imagesDispatch({ type: 'clearImages' })
+    dispatch({ type: 'clearImages' })
 
     try {
       const result = await axios.get(api.getNextImageNamesForAnnotation(value, numLoad))
@@ -69,15 +28,17 @@ export const AnnotationBrowser = () => {
       const baseNames = result.data.image_base_names
 
       for (const id of baseNames) {
-        const annotationsResult = await axios.get(api.getImageAnnotations(id))
-        const metadataResult = await axios.get(api.getImageMetadata(id))
-
         // XXX: Do we want to get the annotations/metadata for this view?
-        imagesDispatch({ 
+        //const annotationsResult = await axios.get(api.getImageAnnotations(id))
+        //const metadataResult = await axios.get(api.getImageMetadata(id))
+
+        dispatch({ 
           type: 'addImage', 
           id: id,
-          annotations: annotationsResult.data.annotations,
-          metadata: metadataResult.data.metadata
+          //annotations: annotationsResult.data.annotations,
+          //metadata: metadataResult.data.metadata
+          annotations: [],
+          metadata: {}
         })
       }
 
@@ -89,17 +50,17 @@ export const AnnotationBrowser = () => {
   }
 
   const handleAnnotationChange = value => {
-    setAnnotation(value)
+    dispatch({ type: "setAnnotation", annotation: value })
 
     getImages(value)
   }
 
   const handleNumLoadChange = value => {
-    setNumLoad(value)
+    dispatch({ type: "setNumLoad", numLoad: value })
   }
 
   const handleClick = (id, which) => {
-    imagesDispatch({
+    dispatch({
       type: 'toggleAnnotationPresent',
       id: id,
       which: which

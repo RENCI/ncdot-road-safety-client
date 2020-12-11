@@ -1,23 +1,68 @@
 import React, { createContext, useReducer } from 'react'
 
 const initialState = {
-  images: []
+  images: [],
+  numLoad: 5,
+  annotation: null
 };
-/*
-const initialState = {
-  id: null,
-  metadata: null,
-  annotations: []
-}
-*/
 
 const reducer = (state, action) => {
-  switch (action.type) {
-    case 'setImage':     
+  switch (action.type) {    
+
+    case 'clearImages':
       return {
-        id: action.id,
-        metadata: action.metadata,
-        annotations: action.annotations
+        ...state, 
+        images: []
+      }
+
+    case 'addImage':     
+      return {
+        ...state,
+        images: [
+          ...state.images, {
+            id: action.id,
+            metadata: action.metadata,
+            annotations: action.annotations,
+            present: {
+              left: false,
+              front: false,
+              right: false
+            }
+          }
+        ]        
+      }       
+
+    case 'toggleAnnotationPresent': {
+      const index = state.images.findIndex(({ id }) => id === action.id)
+
+      if (index === -1) return {...state}
+
+      const newImages = [...state.images]
+
+      const present = {...newImages[index].present}
+      present[action.which] = !present[action.which]
+
+      newImages[index] = {
+        ...newImages[index],
+        present: present
+      }
+
+      return {
+        ...state, 
+        images: newImages
+      }
+    }
+
+    case 'setNumLoad':
+      return {
+        ...state,
+        numLoad: action.numLoad
+      } 
+
+    case 'setAnnotation':
+      return {
+        ...state,
+        annotation: action.annotation
       }
 
     default: 
