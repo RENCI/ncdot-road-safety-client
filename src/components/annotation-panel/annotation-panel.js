@@ -3,11 +3,11 @@ import { useHistory } from 'react-router-dom'
 import { Button, Tooltip } from 'antd'
 import { FundViewOutlined } from '@ant-design/icons'
 import { Scene } from '../scene'
-import { ImageContext } from '../../contexts'
+import { RouteBrowserContext } from '../../contexts'
 import './annotation-panel.css'
 
 export const AnnotationPanel = ({ image, handleClick }) => {
-  const [, imageDispatch] = useContext(ImageContext)
+  const [, imageDispatch] = useContext(RouteBrowserContext)
   const history = useHistory()
 
   const handleRouteClick = () => {
