@@ -20,14 +20,14 @@ const reducer = (state, action) => {
   }
 }
 
-export const ImageContext = createContext(initialState)
+export const RouteBrowserContext = createContext(initialState)
 
-export const ImageProvider = ({ children }) => {
+export const RouteBrowserProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState)
  
   return (
-    <ImageContext.Provider value={ [state, dispatch] }>
+    <RouteBrowserContext.Provider value={ [state, dispatch] }>
       { children }
-    </ImageContext.Provider>
+    </RouteBrowserContext.Provider>
   )
 } 

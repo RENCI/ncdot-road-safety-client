@@ -3,7 +3,7 @@ import { Button, Typography } from 'antd'
 import { LeftOutlined as PreviousIcon, RightOutlined as NextIcon } from '@ant-design/icons'
 import axios from 'axios'
 import { Scene } from '../scene'
-import { ImageContext } from '../../contexts'
+import { RouteBrowserContext } from '../../contexts'
 import { api } from '../../api'
 import './image-browser.css'
 
@@ -23,7 +23,7 @@ const someTimeStamps = [
 
 export const ImageBrowser = () => {
   const [index, setIndex] = useState(0)
-  const [image, imageDispatch] = useContext(ImageContext)
+  const [image, imageDispatch] = useContext(RouteBrowserContext)
 
   const getImage = async index => {
     const id = someTimeStamps[index];

@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Switch, Route, NavLink } from "react-router-do
 import { HomeView, BrowseAnnotationView, BrowseRouteView, MapView, AboutView, ContactView } from "./views"
 import { RoutesProvider, AnnotationsProvider, ImageProvider } from "./contexts"
 import { api } from "./api"
+import { RouteBrowserProvider } from "./contexts/route-browser-context"
 const { Header, Content, Footer } = Layout
 const { SubMenu } = Menu
 
@@ -12,7 +13,7 @@ export const App = () => {
   return (
     <RoutesProvider>
       <AnnotationsProvider>
-        <ImageProvider>
+        <RouteBrowserProvider>
           <Router>
             <Layout className="site-layout">
               <Header className="site-header">
@@ -56,7 +57,7 @@ export const App = () => {
               </Footer>
             </Layout>
           </Router>
-        </ImageProvider>
+        </RouteBrowserProvider>
       </AnnotationsProvider>
     </RoutesProvider>
   ) 
