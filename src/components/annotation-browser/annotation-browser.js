@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, Fragment } from 'react'
 import { Form, Space, Select, InputNumber, Button, Spin, Alert, notification } from 'antd'
 import { DownloadOutlined } from '@ant-design/icons'
 import axios from 'axios'
@@ -15,48 +15,54 @@ export const AnnotationBrowser = () => {
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const { images, numLoad, annotation } = {...state}
+  const { images, nextImages, numLoad, annotation } = {...state}
 
-  const getImages = async value => {
+  const getNewImages = async annotation => {
     setLoading(true)
 
-    dispatch({ type: 'clearImages' })
-
     try {
-      const result = await axios.get(api.getNextImageNamesForAnnotation(value, numLoad))
+      const response = await axios.get(api.getNextImageNamesForAnnotation(annotation, numLoad))
 
-      const baseNames = result.data.image_base_names
+      console.log(response.data.image_base_names)
 
-      for (const id of baseNames) {
-        // XXX: Do we want to get the annotations/metadata for this view?
-        //const annotationsResult = await axios.get(api.getImageAnnotations(id))
-        //const metadataResult = await axios.get(api.getImageMetadata(id))
+      dispatch({ 
+        type: 'setImages', 
+        ids: response.data.image_base_names.slice(0, numLoad),
+        nextIds: response.data.image_base_names.slice(-numLoad) 
+      })
 
-        dispatch({ 
-          type: 'addImage', 
-          id: id,
-          //annotations: annotationsResult.data.annotations,
-          //metadata: metadataResult.data.metadata
-          annotations: [],
-          metadata: {}
-        })
-      }
-
-      setLoading(false)
+      setLoading(false)  
     }
     catch (error) {
       console.log(error)
-    }
+    }  
+  }  
+
+  const updateImages = () => {
+    dispatch({ type: 'updateImages' })
+
+    // Get next images, but don't wait for them
+    axios.get(api.getNextImageNamesForAnnotation(annotation, numLoad))
+      .then(response => {
+        console.log(response.data.image_base_names)
+
+        dispatch({ type: 'setNextImages', ids: response.data.image_base_names })
+      })
+      .catch(error => {
+        console.log(error)
+      });
   }
 
   const handleAnnotationChange = value => {
-    dispatch({ type: "setAnnotation", annotation: value })
+    dispatch({ type: 'setAnnotation', annotation: value })
 
-    getImages(value)
+    getNewImages(value)
   }
 
   const handleNumLoadChange = value => {
-    dispatch({ type: "setNumLoad", numLoad: value })
+    dispatch({ type: 'setNumLoad', numLoad: value })
+
+    // XXX: Need to handle update for this
   }
 
   const handleClick = (id, which) => {
@@ -94,7 +100,8 @@ export const AnnotationBrowser = () => {
         duration: 2
       })
 
-      getImages(annotation)
+      updateImages()
+      //getNewImages(annotation)
     }
     catch (error) {
       console.log(error)
@@ -157,6 +164,13 @@ export const AnnotationBrowser = () => {
             ))}
           </Space> 
       : null }  
+      { nextImages.map(({ id }, i) => (
+        <Fragment key={ i }>
+          <link rel='prefetch' href={ api.getImage(id, 'left') } />
+          <link rel='prefetch' href={ api.getImage(id, 'front') } />
+          <link rel='prefetch' href={ api.getImage(id, 'right') } />
+        </Fragment>
+      ))}
     </>
   )
 }

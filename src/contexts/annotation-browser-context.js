@@ -2,9 +2,23 @@ import React, { createContext, useReducer } from 'react'
 
 const initialState = {
   images: [],
+  nextImages: [],
   numLoad: 5,
   annotation: null
 };
+
+const createImage = id => {
+  return {
+    id: id,
+    metadata: {},
+    annotations: [],
+    present: {
+      left: false,
+      front: false,
+      right: false
+    }
+  }
+}
 
 const reducer = (state, action) => {
   switch (action.type) {    
@@ -12,7 +26,28 @@ const reducer = (state, action) => {
     case 'clearImages':
       return {
         ...state, 
-        images: []
+        images: [],
+        nextImages: []
+      }
+
+    case 'setImages':
+      return {
+        ...state,
+        images: action.ids.map(createImage),
+        nextImages: action.nextIds.map(createImage)
+      }
+
+    case 'setNextImages':
+      return {
+        ...state,
+        nextImages: action.ids.map(createImage)
+      }
+
+    case 'updateImages':
+      return {
+        ...state,
+        images: [...state.nextImages],
+        nextImages: []
       }
 
     case 'addImage':     
