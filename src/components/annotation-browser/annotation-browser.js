@@ -21,10 +21,8 @@ export const AnnotationBrowser = () => {
     setLoading(true)
 
     try {
-      const response = await axios.get(api.getNextImageNamesForAnnotation(annotation, numLoad))
-
-      console.log(response.data.image_base_names)
-
+      const response = await axios.get(api.getNextImageNamesForAnnotation(annotation, numLoad * 2))
+      
       dispatch({ 
         type: 'setImages', 
         ids: response.data.image_base_names.slice(0, numLoad),
@@ -38,19 +36,21 @@ export const AnnotationBrowser = () => {
     }  
   }  
 
-  const updateImages = () => {
+  const updateImages = async () => {
     dispatch({ type: 'updateImages' })
 
     // Get next images, but don't wait for them
-    axios.get(api.getNextImageNamesForAnnotation(annotation, numLoad))
+    // XXX: Would be more efficient to get next images returned in save response
+    axios.get(api.getNextImageNamesForAnnotation(annotation, numLoad * 2))
       .then(response => {
-        console.log(response.data.image_base_names)
-
-        dispatch({ type: 'setNextImages', ids: response.data.image_base_names })
+        dispatch({ 
+          type: 'setNextImages', 
+          ids: response.data.image_base_names.slice(-numLoad) 
+        }) 
       })
       .catch(error => {
         console.log(error)
-      });
+      }) 
   }
 
   const handleAnnotationChange = value => {
@@ -73,13 +73,13 @@ export const AnnotationBrowser = () => {
     })
   }
 
-  const handleSaveClick = async () => {
-    try {     
-      setSaving(true);
+  const handleSaveClick = async () => {    
+    setSaving(true);
 
-      axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
-      axios.defaults.xsrfCookieName = 'csrftoken'
-   
+    axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
+    axios.defaults.xsrfCookieName = 'csrftoken'
+
+    try {
       await axios.post(api.saveAnnotations, {
         annotations: images.map(({ id, present }) => {
           return {
@@ -91,7 +91,7 @@ export const AnnotationBrowser = () => {
           }
         })
       })
-
+      
       setSaving(false)
 
       notification.success({
@@ -101,7 +101,6 @@ export const AnnotationBrowser = () => {
       })
 
       updateImages()
-      //getNewImages(annotation)
     }
     catch (error) {
       console.log(error)
