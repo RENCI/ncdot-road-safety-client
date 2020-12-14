@@ -1,6 +1,6 @@
 import React, { useState, useContext, Fragment } from 'react'
 import { Form, Space, Select, InputNumber, Button, Spin, Alert, notification } from 'antd'
-import { DownloadOutlined } from '@ant-design/icons'
+import { CloudUploadOutlined } from '@ant-design/icons'
 import axios from 'axios'
 import { AnnotationsContext, AnnotationBrowserContext } from '../../contexts'
 import { AnnotationPanel } from '../annotation-panel'
@@ -61,8 +61,6 @@ export const AnnotationBrowser = () => {
 
   const handleNumLoadChange = value => {
     dispatch({ type: 'setNumLoad', numLoad: value })
-
-    // XXX: Need to handle update for this
   }
 
   const handleClick = (id, which) => {
@@ -107,9 +105,15 @@ export const AnnotationBrowser = () => {
     }
   }
 
+  const handleKeyPress = event => {
+    if (event.key == 'Enter') {
+      handleSaveClick()
+    }
+  }
+
   return (
     <>
-      <Form>         
+      <Form onKeyPress={ handleKeyPress }>         
         <Form.Item label='Select annotation'>
           <Select
             placeholder='Select annotation'
@@ -140,16 +144,17 @@ export const AnnotationBrowser = () => {
             <Form.Item>
               <Button 
                 type='primary' 
+                htmlType='submit'
                 loading={ saving }
                 disabled={ !annotation }
                 size='large'
-                icon={ <DownloadOutlined /> }
+                block
+                icon={ <CloudUploadOutlined /> }
                 onClick={ handleSaveClick }>
                   Save and advance
               </Button>
             </Form.Item>
           </> }
-      </Form>
       { loading ?  
           <Spin className='spin' tip='Loading...' /> : 
         annotation ?
@@ -170,6 +175,7 @@ export const AnnotationBrowser = () => {
           <link rel='prefetch' href={ api.getImage(id, 'right') } />
         </Fragment>
       ))}
+      </Form>
     </>
   )
 }
