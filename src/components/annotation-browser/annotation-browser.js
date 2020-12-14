@@ -1,8 +1,8 @@
-import React, { useState, useContext, useReducer } from 'react'
+import React, { useState, useContext, Fragment } from 'react'
 import { Form, Space, Select, InputNumber, Button, Spin, Alert, notification } from 'antd'
 import { DownloadOutlined } from '@ant-design/icons'
 import axios from 'axios'
-import { AnnotationsContext } from '../../contexts'
+import { AnnotationsContext, AnnotationBrowserContext } from '../../contexts'
 import { AnnotationPanel } from '../annotation-panel'
 import { api, views } from '../../api'
 import './annotation-browser.css'
@@ -11,108 +11,75 @@ const { Option } = Select
 
 export const AnnotationBrowser = () => {
   const [allAnnotations] = useContext(AnnotationsContext)
-  const [annotation, setAnnotation] = useState(null)
-  const [numLoad, setNumLoad] = useState(5)
+  const [state, dispatch] = useContext(AnnotationBrowserContext)
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const [images, imagesDispatch] = useReducer((state, action) => {
-    switch (action.type) {
-      case 'clearImages':
-        return []
+  const { images, nextImages, numLoad, annotation } = {...state}
 
-      case 'addImage':     
-        return [
-          ...state, {
-            id: action.id,
-            metadata: action.metadata,
-            annotations: action.annotations,
-            present: {
-              left: false,
-              front: false,
-              right: false
-            }
-          }
-        ]        
-
-      case 'toggleAnnotationPresent': {
-        const newState = [...state]
-
-        const index = newState.findIndex(({ id }) => id === action.id)
-
-        if (index === -1) return newState
-
-        const present = { ...newState[index].present }
-        present[action.which] = !present[action.which]
-
-        newState[index] = {
-          ...newState[index],
-          present: present
-        }
-
-        return newState
-      }
-  
-      default: 
-        throw new Error('Invalid images action: ' + action.type)
-    }
-  }, [])
-
-  const getImages = async value => {
+  const getNewImages = async annotation => {
     setLoading(true)
 
-    imagesDispatch({ type: 'clearImages' })
-
     try {
-      const result = await axios.get(api.getNextImageNamesForAnnotation(value, numLoad))
+      const response = await axios.get(api.getNextImageNamesForAnnotation(annotation, numLoad * 2))
+      
+      dispatch({ 
+        type: 'setImages', 
+        ids: response.data.image_base_names.slice(0, numLoad),
+        nextIds: response.data.image_base_names.slice(-numLoad) 
+      })
 
-      const baseNames = result.data.image_base_names
-
-      for (const id of baseNames) {
-        const annotationsResult = await axios.get(api.getImageAnnotations(id))
-        const metadataResult = await axios.get(api.getImageMetadata(id))
-
-        // XXX: Do we want to get the annotations/metadata for this view?
-        imagesDispatch({ 
-          type: 'addImage', 
-          id: id,
-          annotations: annotationsResult.data.annotations,
-          metadata: metadataResult.data.metadata
-        })
-      }
-
-      setLoading(false)
+      setLoading(false)  
     }
     catch (error) {
       console.log(error)
-    }
+    }  
+  }  
+
+  const updateImages = async () => {
+    dispatch({ type: 'updateImages' })
+
+    // Get next images, but don't wait for them
+    // XXX: Would be more efficient to get next images returned in save response
+    axios.get(api.getNextImageNamesForAnnotation(annotation, numLoad * 2))
+      .then(response => {
+        dispatch({ 
+          type: 'setNextImages', 
+          ids: response.data.image_base_names.slice(-numLoad) 
+        }) 
+      })
+      .catch(error => {
+        console.log(error)
+      }) 
   }
 
   const handleAnnotationChange = value => {
-    setAnnotation(value)
+    dispatch({ type: 'setAnnotation', annotation: value })
 
-    getImages(value)
+    getNewImages(value)
   }
 
   const handleNumLoadChange = value => {
-    setNumLoad(value)
+    dispatch({ type: 'setNumLoad', numLoad: value })
+
+    // XXX: Need to handle update for this
   }
 
   const handleClick = (id, which) => {
-    imagesDispatch({
+    dispatch({
       type: 'toggleAnnotationPresent',
       id: id,
       which: which
     })
   }
 
-  const handleSaveClick = async () => {
-    try {     
-      setSaving(true);
+  const handleSaveClick = async () => {    
+    setSaving(true);
 
-      axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
-      axios.defaults.xsrfCookieName = 'csrftoken'
-   
+    axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
+    axios.defaults.xsrfCookieName = 'csrftoken'
+
+    try {
       await axios.post(api.saveAnnotations, {
         annotations: images.map(({ id, present }) => {
           return {
@@ -124,7 +91,7 @@ export const AnnotationBrowser = () => {
           }
         })
       })
-
+      
       setSaving(false)
 
       notification.success({
@@ -133,7 +100,7 @@ export const AnnotationBrowser = () => {
         duration: 2
       })
 
-      getImages(annotation)
+      updateImages()
     }
     catch (error) {
       console.log(error)
@@ -196,6 +163,13 @@ export const AnnotationBrowser = () => {
             ))}
           </Space> 
       : null }  
+      { nextImages.map(({ id }, i) => (
+        <Fragment key={ i }>
+          <link rel='prefetch' href={ api.getImage(id, 'left') } />
+          <link rel='prefetch' href={ api.getImage(id, 'front') } />
+          <link rel='prefetch' href={ api.getImage(id, 'right') } />
+        </Fragment>
+      ))}
     </>
   )
 }
