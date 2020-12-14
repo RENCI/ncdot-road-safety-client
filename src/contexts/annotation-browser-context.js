@@ -91,13 +91,15 @@ const reducer = (state, action) => {
     case 'setNumLoad':
       return {
         ...state,
-        numLoad: action.numLoad
+        numLoad: action.numLoad,
+        nextImages: []
       } 
 
     case 'setAnnotation':
       return {
         ...state,
-        annotation: action.annotation
+        annotation: action.annotation,
+        nextImages: []
       }
 
     default: 

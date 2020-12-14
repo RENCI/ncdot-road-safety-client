@@ -100,7 +100,7 @@ export const AnnotationBrowser = () => {
         duration: 2
       })
 
-      updateImages()
+      images.length === nextImages.length ? updateImages() : getNewImages(annotation)
     }
     catch (error) {
       console.log(error)
