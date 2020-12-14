@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
+import { Spin } from 'antd'
 import { Image } from '../image'
 import { api } from '../../api'
 import './scene.css'
@@ -27,6 +28,7 @@ export const Scene = ({ id, present, handleClick }) => {
         outline: hasAnnotation ? "6px solid #52c41a" : null
       }}
     >
+      { loading && <Spin /> }
       <Image 
         url={ api.getImage(id, 'left') } 
         loading={ loading }

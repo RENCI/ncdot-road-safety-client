@@ -57,7 +57,6 @@ export const Image = ({ url, loading, present, handleLoad, handleClick }) => {
 
   return (
     <div className='imageDiv'>
-      { loading && <Spin /> }
       <img 
         src={ url } 
         tabIndex='-1'
