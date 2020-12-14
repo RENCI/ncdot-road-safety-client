@@ -13,8 +13,6 @@ export const Scene = ({ id, present, handleClick }) => {
     setLoadedCount(0)
   }, [id])
 
-  console.log(loadedCount)
-
   const loading = loadedCount < 3
 
   const handleLoad = () => {
@@ -28,7 +26,7 @@ export const Scene = ({ id, present, handleClick }) => {
         outline: hasAnnotation ? "6px solid #52c41a" : null
       }}
     >
-      { loading && <Spin /> }
+      { loading && <Spin className="spinner"/> }
       <Image 
         url={ api.getImage(id, 'left') } 
         loading={ loading }
