@@ -1,4 +1,4 @@
-import React, { useState, useContext, Fragment } from 'react'
+import React, { useState, useContext, useRef, useEffect, Fragment } from 'react'
 import { Form, Space, Select, InputNumber, Button, Spin, Alert, notification } from 'antd'
 import { CloudUploadOutlined } from '@ant-design/icons'
 import axios from 'axios'
@@ -14,6 +14,7 @@ export const AnnotationBrowser = () => {
   const [state, dispatch] = useContext(AnnotationBrowserContext)
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(false)
+  const button = useRef(null)
 
   const { images, nextImages, numLoad, annotation } = {...state}
 
@@ -99,6 +100,8 @@ export const AnnotationBrowser = () => {
       })
 
       images.length === nextImages.length ? updateImages() : getNewImages(annotation)
+
+      button.current.focus()
     }
     catch (error) {
       console.log(error)
@@ -113,7 +116,9 @@ export const AnnotationBrowser = () => {
 
   return (
     <>
-      <Form onKeyPress={ handleKeyPress }>         
+      <Form 
+        onKeyPress={ handleKeyPress }
+      >         
         <Form.Item label='Select annotation'>
           <Select
             placeholder='Select annotation'
@@ -143,6 +148,7 @@ export const AnnotationBrowser = () => {
             </Form.Item>
             <Form.Item>
               <Button 
+                ref={ button }
                 type='primary' 
                 htmlType='submit'
                 loading={ saving }
