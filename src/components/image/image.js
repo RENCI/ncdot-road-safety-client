@@ -4,18 +4,13 @@ import { Spin } from 'antd'
 import { CheckCircleOutlined } from '@ant-design/icons'
 import './image.css'
 
-export const Image = ({ url, present, handleClick }) => { 
+export const Image = ({ url, loading, present, handleLoad, handleClick }) => { 
   const [pointerDown, setPointerDown] = useState(false)
   const [drag, setDrag] = useState(false)
   const [brightness, setBrightness] = useState(1)
   const [contrast, setContrast] = useState(1)
-  const [loading, setLoading] = useState(true)
 
   const movementScale = 0.01;
-
-  useEffect(() => {
-    setLoading(true)
-  }, [url])
 
   const handlePointerDown = evt => {
     if (evt.button === 0) {
@@ -58,10 +53,6 @@ export const Image = ({ url, present, handleClick }) => {
     }
   }
 
-  const handleLoad = () => {
-    setLoading(false)
-  }
-
   const filterString = `brightness(${ brightness * 100 }%) contrast(${ contrast * 100}%)`
 
   return (
@@ -72,16 +63,17 @@ export const Image = ({ url, present, handleClick }) => {
         tabIndex='-1'
         width='100%' 
         style={{ 
+          visibility: loading ? "hidden" : "visible",
           filter: filterString,  
           cursor: drag ? 'move' : handleClick ? 'pointer' : 'default' 
         }}
         draggable='false'
+        onLoad={ handleLoad } 
         onPointerDown={ handlePointerDown }
         onPointerMove={ handlePointerMove }
         onPointerUp={ handlePointerUp }
         onClick={ handleClick ? onClick : null }
-        onDoubleClick={ handleDoubleClick }
-        onLoad={ handleLoad } />     
+        onDoubleClick={ handleDoubleClick }/>     
       { present ? <CheckCircleOutlined className='checkIcon' /> : null }
     </div>
   )
@@ -89,6 +81,8 @@ export const Image = ({ url, present, handleClick }) => {
 
 Image.propTypes = {
   url: PropTypes.string.isRequired,
+  loading: PropTypes.bool.isRequired,
   present: PropTypes.bool,
+  handleLoad: PropTypes.func.isRequired,
   handleClick: PropTypes.func
 }
