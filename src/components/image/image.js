@@ -72,7 +72,7 @@ export const Image = ({ url, loading, present, handleLoad, handleClick }) => {
         onPointerUp={ handlePointerUp }
         onClick={ handleClick ? onClick : null }
         onDoubleClick={ handleDoubleClick }/>     
-      { present ? <CheckCircleOutlined className='checkIcon' /> : null }
+      { present && !loading ? <CheckCircleOutlined className='checkIcon' /> : null }
     </div>
   )
 }

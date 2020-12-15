@@ -3,6 +3,7 @@ import React, { createContext, useReducer } from 'react'
 const initialState = {
   images: [],
   nextImages: [],
+  oldImages: [],
   numLoad: 5,
   annotation: null
 };
@@ -27,7 +28,8 @@ const reducer = (state, action) => {
       return {
         ...state, 
         images: [],
-        nextImages: []
+        nextImages: [],
+        oldImages: []
       }
 
     case 'setImages':
@@ -46,7 +48,16 @@ const reducer = (state, action) => {
       return {
         ...state,
         images: state.nextImages.slice(0, state.numLoad),
-        nextImages: state.nextImages.slice(state.numLoad)
+        nextImages: state.nextImages.slice(state.numLoad),
+        oldImages: [...state.images]
+      }
+
+    case 'goBack':
+      return {
+        ...state,
+        images: [...state.oldImages],
+        nextImages: state.images.concat(state.nextImages.slice(0, -state.numLoad)),
+        oldImages: []
       }
 
     case 'addImage':     

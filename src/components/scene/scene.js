@@ -23,7 +23,7 @@ export const Scene = ({ id, present, handleClick }) => {
     <div 
       className='scene' 
       style={{ 
-        outline: hasAnnotation ? "6px solid #52c41a" : null
+        outline: hasAnnotation && !loading ? "6px solid #52c41a" : null
       }}
     >
       { loading && <Spin className="spinner"/> }
