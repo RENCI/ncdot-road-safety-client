@@ -1,6 +1,6 @@
-import React, { useState, useContext, useRef, useEffect, Fragment } from 'react'
+import React, { useState, useContext, useRef, Fragment } from 'react'
 import { Form, Space, Select, InputNumber, Button, Spin, Alert, notification } from 'antd'
-import { CloudUploadOutlined } from '@ant-design/icons'
+import { CloudUploadOutlined, ArrowLeftOutlined } from '@ant-design/icons'
 import axios from 'axios'
 import { AnnotationsContext, AnnotationBrowserContext } from '../../contexts'
 import { AnnotationPanel } from '../annotation-panel'
@@ -14,9 +14,9 @@ export const AnnotationBrowser = () => {
   const [state, dispatch] = useContext(AnnotationBrowserContext)
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(false)
-  const button = useRef(null)
+  const saveButton = useRef(null)
 
-  const { images, nextImages, numLoad, annotation } = {...state}
+  const { images, nextImages, oldImages, numLoad, annotation } = {...state}
 
   const cacheSize = numLoad * 4;
 
@@ -72,12 +72,16 @@ export const AnnotationBrowser = () => {
     dispatch({ type: 'setNumLoad', numLoad: value })
   }
 
-  const handleClick = (id, which) => {
+  const handleImageClick = (id, which) => {
     dispatch({
       type: 'toggleAnnotationPresent',
       id: id,
       which: which
     })
+  }
+
+  const handleBackClick = async () => {
+    dispatch({ type: 'goBack' })
   }
 
   const handleSaveClick = async () => {    
@@ -109,7 +113,7 @@ export const AnnotationBrowser = () => {
 
       images.length <= nextImages.length ? updateImages() : getNewImages(annotation)
 
-      button.current.focus()
+      saveButton.current.focus()
     }
     catch (error) {
       console.log(error)
@@ -117,7 +121,7 @@ export const AnnotationBrowser = () => {
   }
 
   const handleKeyPress = event => {
-    if (event.key == 'Enter') {
+    if (event.key === 'Enter' || event.key === 's') {
       handleSaveClick()
     }
   }
@@ -155,18 +159,29 @@ export const AnnotationBrowser = () => {
               } /> 
             </Form.Item>
             <Form.Item>
-              <Button 
-                ref={ button }
-                type='primary' 
-                htmlType='submit'
-                loading={ saving }
-                disabled={ !annotation }
-                size='large'
-                block
-                icon={ <CloudUploadOutlined /> }
-                onClick={ handleSaveClick }>
-                  Save and advance
-              </Button>
+              <div className='buttonBox'>
+                <Button
+                  className='iconButton'
+                  type='primary'
+                  ghost
+                  htmlType='button'
+                  disabled={ oldImages.length === 0 }
+                  size='large'
+                  icon={ <ArrowLeftOutlined /> }
+                  onClick={ handleBackClick } />
+                <Button               
+                  className='iconButton saveButton' 
+                  ref={ saveButton }
+                  type='primary' 
+                  htmlType='submit'
+                  loading={ saving }
+                  disabled={ !annotation }
+                  size='large'                
+                  icon={ <CloudUploadOutlined /> }
+                  onClick={ handleSaveClick }>
+                    Save and advance
+                </Button>
+              </div>
             </Form.Item>
           </> }
       { loading ?  
@@ -178,7 +193,7 @@ export const AnnotationBrowser = () => {
                 key={ i } 
                 image={ image } 
                 annotation={ annotation }
-                handleClick={ handleClick } />
+                handleClick={ handleImageClick } />
             ))}
           </Space> 
       : null }  

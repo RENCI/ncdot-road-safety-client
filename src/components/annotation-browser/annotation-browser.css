@@ -5,3 +5,18 @@
 .spin {
   width: 100%;
 }
+
+.buttonBox {
+  display: flex;
+  flex-direction: row;
+}
+
+.iconButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.saveButton {
+  flex: 1
+}
