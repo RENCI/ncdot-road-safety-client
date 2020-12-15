@@ -14,15 +14,45 @@ export const AnnotationBrowser = () => {
   const [state, dispatch] = useContext(AnnotationBrowserContext)
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [caching, setCaching] = useState(false)
   const button = useRef(null)
 
   const { images, nextImages, numLoad, annotation } = {...state}
+
+  const cacheSize = numLoad * 2;
+
+  useEffect(() => {
+    if (caching || !annotation) return;
+
+    const n = images.length + nextImages.length;
+
+    if (n >= cacheSize) {
+      setCaching(false)
+      return
+    }
+
+    // Get next images, but don't wait for them
+    axios.get(api.getNextImageNamesForAnnotation(annotation, numLoad, {
+      offset: n
+    }))
+      .then(response => {     
+        dispatch({ 
+          type: 'addNextImages', 
+          ids: response.data.image_base_names
+        }) 
+      })
+      .catch(error => {
+        console.log(error)
+      }) 
+
+    setCaching(true);
+  })
 
   const getNewImages = async annotation => {
     setLoading(true)
 
     try {
-      const response = await axios.get(api.getNextImageNamesForAnnotation(annotation, numLoad * 2))
+      const response = await axios.get(api.getNextImageNamesForAnnotation(annotation, numLoad))
       
       dispatch({ 
         type: 'setImages', 
@@ -31,6 +61,8 @@ export const AnnotationBrowser = () => {
       })
 
       setLoading(false)  
+
+
     }
     catch (error) {
       console.log(error)
@@ -39,19 +71,6 @@ export const AnnotationBrowser = () => {
 
   const updateImages = async () => {
     dispatch({ type: 'updateImages' })
-
-    // Get next images, but don't wait for them
-    // XXX: Would be more efficient to get next images returned in save response
-    axios.get(api.getNextImageNamesForAnnotation(annotation, numLoad * 2))
-      .then(response => {
-        dispatch({ 
-          type: 'setNextImages', 
-          ids: response.data.image_base_names.slice(-numLoad) 
-        }) 
-      })
-      .catch(error => {
-        console.log(error)
-      }) 
   }
 
   const handleAnnotationChange = value => {

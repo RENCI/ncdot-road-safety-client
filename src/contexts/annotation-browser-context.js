@@ -37,17 +37,20 @@ const reducer = (state, action) => {
         nextImages: action.nextIds.map(createImage)
       }
 
-    case 'setNextImages':
+    case 'addNextImages':
       return {
         ...state,
-        nextImages: action.ids.map(createImage)
+        nextImages: [
+          ...state.nextImages,
+          action.ids.map(createImage)
+        ]
       }
 
     case 'updateImages':
       return {
         ...state,
         images: [...state.nextImages],
-        nextImages: []
+        nextImages: state.nextImages.slice(state.numLoad)
       }
 
     case 'addImage':     
@@ -91,14 +94,13 @@ const reducer = (state, action) => {
     case 'setNumLoad':
       return {
         ...state,
-        numLoad: action.numLoad,
-        nextImages: []
+        numLoad: action.numLoad
       } 
 
     case 'setAnnotation':
       return {
         ...state,
-        annotation: action.annotation,
+        annotation: action.annotation,        
         nextImages: []
       }
 
