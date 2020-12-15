@@ -18,16 +18,35 @@ export const AnnotationBrowser = () => {
 
   const { images, nextImages, numLoad, annotation } = {...state}
 
+  const cacheSize = numLoad * 4;
+
+  const getNextImages = (annotation, offset, numImages) => {
+    // Get next images, but don't wait for them
+    axios.get(api.getNextImageNamesForAnnotation(annotation, numImages), {
+      params: { offset: offset }
+    }).then(response => {     
+        dispatch({ 
+          type: 'addNextImages', 
+          ids: response.data.image_base_names
+        }) 
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }
+
   const getNewImages = async annotation => {
     setLoading(true)
 
+    // Start loading cache
+    getNextImages(annotation, numLoad, cacheSize);
+
     try {
-      const response = await axios.get(api.getNextImageNamesForAnnotation(annotation, numLoad * 2))
+      const response = await axios.get(api.getNextImageNamesForAnnotation(annotation, numLoad))
       
       dispatch({ 
         type: 'setImages', 
-        ids: response.data.image_base_names.slice(0, numLoad),
-        nextIds: response.data.image_base_names.slice(-numLoad) 
+        ids: response.data.image_base_names
       })
 
       setLoading(false)  
@@ -40,18 +59,7 @@ export const AnnotationBrowser = () => {
   const updateImages = async () => {
     dispatch({ type: 'updateImages' })
 
-    // Get next images, but don't wait for them
-    // XXX: Would be more efficient to get next images returned in save response
-    axios.get(api.getNextImageNamesForAnnotation(annotation, numLoad * 2))
-      .then(response => {
-        dispatch({ 
-          type: 'setNextImages', 
-          ids: response.data.image_base_names.slice(-numLoad) 
-        }) 
-      })
-      .catch(error => {
-        console.log(error)
-      }) 
+    getNextImages(annotation, cacheSize, numLoad)
   }
 
   const handleAnnotationChange = value => {
@@ -99,7 +107,7 @@ export const AnnotationBrowser = () => {
         duration: 2
       })
 
-      images.length === nextImages.length ? updateImages() : getNewImages(annotation)
+      images.length <= nextImages.length ? updateImages() : getNewImages(annotation)
 
       button.current.focus()
     }
