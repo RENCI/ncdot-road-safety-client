@@ -14,28 +14,17 @@ export const AnnotationBrowser = () => {
   const [state, dispatch] = useContext(AnnotationBrowserContext)
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [caching, setCaching] = useState(false)
   const button = useRef(null)
 
   const { images, nextImages, numLoad, annotation } = {...state}
 
-  const cacheSize = numLoad * 2;
+  const cacheSize = numLoad * 4;
 
-  useEffect(() => {
-    if (caching || !annotation) return;
-
-    const n = images.length + nextImages.length;
-
-    if (n >= cacheSize) {
-      setCaching(false)
-      return
-    }
-
+  const getNextImages = (annotation, offset, numImages) => {
     // Get next images, but don't wait for them
-    axios.get(api.getNextImageNamesForAnnotation(annotation, numLoad, {
-      offset: n
-    }))
-      .then(response => {     
+    axios.get(api.getNextImageNamesForAnnotation(annotation, numImages), {
+      params: { offset: offset }
+    }).then(response => {     
         dispatch({ 
           type: 'addNextImages', 
           ids: response.data.image_base_names
@@ -43,26 +32,24 @@ export const AnnotationBrowser = () => {
       })
       .catch(error => {
         console.log(error)
-      }) 
-
-    setCaching(true);
-  })
+      })
+  }
 
   const getNewImages = async annotation => {
     setLoading(true)
+
+    // Start loading cache
+    getNextImages(annotation, numLoad, cacheSize);
 
     try {
       const response = await axios.get(api.getNextImageNamesForAnnotation(annotation, numLoad))
       
       dispatch({ 
         type: 'setImages', 
-        ids: response.data.image_base_names.slice(0, numLoad),
-        nextIds: response.data.image_base_names.slice(-numLoad) 
+        ids: response.data.image_base_names
       })
 
       setLoading(false)  
-
-
     }
     catch (error) {
       console.log(error)
@@ -71,6 +58,8 @@ export const AnnotationBrowser = () => {
 
   const updateImages = async () => {
     dispatch({ type: 'updateImages' })
+
+    getNextImages(annotation, cacheSize, numLoad)
   }
 
   const handleAnnotationChange = value => {
@@ -118,7 +107,7 @@ export const AnnotationBrowser = () => {
         duration: 2
       })
 
-      images.length === nextImages.length ? updateImages() : getNewImages(annotation)
+      images.length <= nextImages.length ? updateImages() : getNewImages(annotation)
 
       button.current.focus()
     }
