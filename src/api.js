@@ -7,7 +7,7 @@ export const views = {
 
 export const api = {
   logout: '/logout/',
-  updateAccount: '/accounts/update/2/',
+  updateAccount: key => `/accounts/update/${ key }/`,
   getImage: (id, dir) => `/get_image_by_name/${ id }${ views[dir] }.jpg`,
   getImageNamesByLocation: (long, lat, count) => `/get_image_names_by_loc/${ long }/${ lat }/${ count }/`,
   getImageMetadata: id => `/get_image_metadata/${ id }/`,

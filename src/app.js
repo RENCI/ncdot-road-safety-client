@@ -17,23 +17,9 @@ export const App = () => {
             <Router>
               <Layout className="site-layout">
                 <Header className="site-header">
-                  <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["home"]}>
-                    <Menu.Item key="home"><NavLink to="/">Home</NavLink></Menu.Item>
-                    <Menu.Item key="about"><NavLink to="/about">About</NavLink></Menu.Item>
-                    <SubMenu key="browse" title="Browse">
-                      <Menu.Item>
-                        <NavLink to="/browse/annotation">Annotation</NavLink>
-                      </Menu.Item> 
-                      <Menu.Item>
-                        <NavLink to="/browse/route">Route</NavLink>
-                      </Menu.Item> 
-                    </SubMenu>
-                    <Menu.Item key="map"><NavLink to="/map">Map</NavLink></Menu.Item>
-                    <Menu.Item key="contact"><NavLink to="/contact">Contact</NavLink></Menu.Item>
+                  <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["annotate"]}>
+                    <Menu.Item key="annotate"><NavLink to="/">Annotate</NavLink></Menu.Item>
                     <SubMenu key="profile" style={{float: "right"}} icon={<MenuOutlined />}>
-                      <Menu.Item>
-                        <a href={ api.updateAccount }>Profile</a>
-                      </Menu.Item> 
                       <Menu.Item>
                         <a href={ api.logout }>Log Out</a>
                       </Menu.Item> 
@@ -43,12 +29,7 @@ export const App = () => {
                 <Content className="site-body">
                   <div className="site-content">
                     <Switch>
-                      <Route exact path="/"><HomeView /></Route>
-                      <Route path="/about"><AboutView /></Route>
-                      <Route path="/browse/annotation"><BrowseAnnotationView /></Route>
-                      <Route path="/browse/route"><BrowseRouteView /></Route>
-                      <Route path="/map"><MapView /></Route>
-                      <Route path="/contact"><ContactView /></Route>
+                      <Route exact path="/"><BrowseAnnotationView /></Route>
                     </Switch>
                   </div>
                 </Content>
