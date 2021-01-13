@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef, Fragment } from 'react'
+import React, { useState, useContext, useRef, useEffect, Fragment } from 'react'
 import { Form, Space, Select, InputNumber, Button, Spin, Alert, notification } from 'antd'
 import { CloudUploadOutlined, ArrowLeftOutlined } from '@ant-design/icons'
 import axios from 'axios'
@@ -67,6 +67,12 @@ export const AnnotationBrowser = () => {
 
     getNewImages(value)
   }
+
+  useEffect(() => {
+    if (allAnnotations.length > 0) {
+      handleAnnotationChange(allAnnotations[0])
+    } 
+  }, [allAnnotations])
 
   const handleNumLoadChange = value => {
     dispatch({ type: 'setNumLoad', numLoad: value })
