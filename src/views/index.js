@@ -1,6 +1,6 @@
 export * from './about'
 export * from './browse-annotation'
-export * from './browse-route'
+export * from './routes'
 export * from './contact'
 export * from './home'
 export * from './map'

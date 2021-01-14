@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { Button, Typography } from 'antd'
 import { LeftOutlined as PreviousIcon, RightOutlined as NextIcon } from '@ant-design/icons'
-import axios from 'axios'
 import { Scene } from '../scene'
 import { RouteBrowserContext } from '../../contexts'
 import { api } from '../../api'
@@ -29,8 +28,8 @@ export const ImageBrowser = () => {
     const id = someTimeStamps[index];
 
     try {    
-      const annotationsResult = await axios.get(api.getImageAnnotations(id))
-      const metadataResult = await axios.get(api.getImageMetadata(id))
+      const annotationsResult = await api.getImageAnnotations(id)
+      const metadataResult = await api.getImageMetadata(id)
 
       imageDispatch({ 
         type: 'setImage', 
