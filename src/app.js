@@ -2,7 +2,7 @@ import React from "react"
 import { Layout, Menu } from "antd"
 import { MenuOutlined } from "@ant-design/icons"
 import { BrowserRouter as Router, Switch, Route, NavLink } from "react-router-dom"
-import { HomeView, BrowseAnnotationView, BrowseRouteView, MapView, AboutView, ContactView } from "./views"
+import { BrowseAnnotationView } from "./views"
 import { RoutesProvider, AnnotationsProvider, RouteBrowserProvider, AnnotationBrowserProvider } from "./contexts"
 import { api } from "./api"
 const { Header, Content, Footer } = Layout
