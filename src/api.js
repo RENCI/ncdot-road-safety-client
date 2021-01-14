@@ -1,3 +1,8 @@
+import axios from 'axios'
+
+axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
+axios.defaults.xsrfCookieName = 'csrftoken'
+
 export const views = {
   front: 1,
   left: 5,
@@ -14,7 +19,7 @@ export const api = {
   getImageNamesByAnnotation: label => `/get_image_base_names_by_annot/${ label }/`,
   getNextImageNamesForAnnotation: (label, count) => `/get_next_images_for_annot/${ label }/${ count }/`,
   getAllRoutes: '/get_all_routes/',
-  getRouteInfo: id => `/get_route_info/${ id }/`,
+  getRouteInfo: id => axios.get(`/get_route_info/${ id }/`),
   getAnnotationSet: '/get_annotation_set/',
   saveAnnotations: '/save_annotations/',
   getImageAnnotations: id => `/get_image_annotations/${ id }/`
