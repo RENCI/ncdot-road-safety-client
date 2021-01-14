@@ -33,6 +33,10 @@ export const App = () => {
                   <div className="site-content">
                     <Switch>
                       <Route exact path="/"><BrowseAnnotationView /></Route>
+<<<<<<< Updated upstream
+=======
+                      <Route path="/routes/:routeID?/:imageIndex?"><BrowseRouteView /></Route>
+>>>>>>> Stashed changes
                     </Switch>
                   </div>
                 </Content>
