@@ -2,8 +2,8 @@ import React from "react"
 import { Layout, Menu } from "antd"
 import { MenuOutlined } from "@ant-design/icons"
 import { BrowserRouter as Router, Switch, Route, NavLink } from "react-router-dom"
-import { HomeView, BrowseAnnotationView, BrowseRouteView, MapView, AboutView, ContactView } from "./views"
-import { RoutesProvider, AnnotationsProvider, RouteBrowserProvider, AnnotationBrowserProvider } from "./contexts"
+import { BrowseAnnotationView } from "./views"
+import { RoutesProvider, AnnotationsProvider, AnnotationBrowserProvider } from "./contexts"
 import { api } from "./api"
 const { Header, Content, Footer } = Layout
 const { SubMenu } = Menu
@@ -12,34 +12,32 @@ export const App = () => {
   return (
     <RoutesProvider>
       <AnnotationsProvider>
-        <RouteBrowserProvider>
-          <AnnotationBrowserProvider>
-            <Router>
-              <Layout className="site-layout">
-                <Header className="site-header">
-                  <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["annotate"]}>
-                    <Menu.Item key="annotate"><NavLink to="/">Annotate</NavLink></Menu.Item>
-                    <SubMenu key="profile" style={{float: "right"}} icon={<MenuOutlined />}>
-                      <Menu.Item>
-                        <a href={ api.logout }>Log Out</a>
-                      </Menu.Item> 
-                    </SubMenu>
-                  </Menu>
-                </Header>
-                <Content className="site-body">
-                  <div className="site-content">
-                    <Switch>
-                      <Route exact path="/"><BrowseAnnotationView /></Route>
-                    </Switch>
-                  </div>
-                </Content>
-                <Footer className="site-footer">
-                  &copy; { new Date().getFullYear() }
-                </Footer>
-              </Layout>
-            </Router>
-          </AnnotationBrowserProvider>
-        </RouteBrowserProvider>
+        <AnnotationBrowserProvider>
+          <Router>
+            <Layout className="site-layout">
+              <Header className="site-header">
+                <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["annotate"]}>
+                  <Menu.Item key="annotate"><NavLink to="/">Annotate</NavLink></Menu.Item>
+                  <SubMenu key="profile" style={{float: "right"}} icon={<MenuOutlined />}>
+                    <Menu.Item>
+                      <a href={ api.logout }>Log Out</a>
+                    </Menu.Item> 
+                  </SubMenu>
+                </Menu>
+              </Header>
+              <Content className="site-body">
+                <div className="site-content">
+                  <Switch>
+                    <Route exact path="/"><BrowseAnnotationView /></Route>
+                  </Switch>
+                </div>
+              </Content>
+              <Footer className="site-footer">
+                &copy; { new Date().getFullYear() }
+              </Footer>
+            </Layout>
+          </Router>
+        </AnnotationBrowserProvider>
       </AnnotationsProvider>
     </RoutesProvider>
   ) 
