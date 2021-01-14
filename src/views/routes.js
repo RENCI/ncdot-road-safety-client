@@ -187,7 +187,7 @@ export const BrowseRouteView = () => {
     }
 
     return (
-      <Select defaultValue={ routeID } onChange={ handleChangeRoute }>
+      <Select defaultValue={ routeID } onChange={ handleChangeRoute } bordered={ false } size="large">
         { routes.sort().map(id => <Option value={ id }>{ id }</Option>) }
       </Select>
     )
@@ -277,11 +277,13 @@ export const BrowseRouteView = () => {
 
   return (
     <RouteBrowseContext.Provider value={{ routeID, imageIDs, setImageIDs, index, currentLocation, previousLocations }}>
-      <div style={{ border: '1px solid #f99', display: 'flex', justifyContent: 'flex-start' }}>
-        <Title level={ 1 }>Browsing route</Title>
-        { routes && RouteSelect }
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+        <Title level={ 1 }>Route Browser</Title>
+        <Title level={ 4 }>Current route{ routes && RouteSelect }</Title>
       </div>
       
+      <br /><br />
+
       <RouteNavigation />
 
       <br />
