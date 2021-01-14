@@ -1,4 +1,4 @@
-import React, { createContext, useReducer } from 'react'
+import React, { createContext, useContext, useReducer } from 'react'
 
 const initialState = {
   id: null,
@@ -31,3 +31,5 @@ export const RouteBrowserProvider = ({ children }) => {
     </RouteBrowserContext.Provider>
   )
 } 
+
+export const useRouteBrowserContext = () => useContext(RouteBrowserContext)
