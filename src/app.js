@@ -20,6 +20,9 @@ export const App = () => {
                   <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["annotate"]}>
                     <Menu.Item key="annotate"><NavLink to="/">Annotate</NavLink></Menu.Item>
                     <SubMenu key="profile" style={{float: "right"}} icon={<MenuOutlined />}>
+	              <Menu.Item>	
+                        <a href={ api.updateAccount(document.getElementById('user_id').value) }>Profile</a>	
+                      </Menu.Item> 
                       <Menu.Item>
                         <a href={ api.logout }>Log Out</a>
                       </Menu.Item> 
