@@ -188,7 +188,7 @@ export const BrowseRouteView = () => {
 
     return (
       <Select defaultValue={ routeID } onChange={ handleChangeRoute } bordered={ false } size="large">
-        { routes.sort().map(id => <Option value={ id }>{ id }</Option>) }
+        { routes.sort().map(id => <Option key={ id } value={ id }>{ id }</Option>) }
       </Select>
     )
   }, [routes])
