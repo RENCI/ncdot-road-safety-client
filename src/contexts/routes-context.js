@@ -1,5 +1,5 @@
-import React, { createContext, useReducer, useEffect } from 'react'
-import axios from 'axios'
+import React, { createContext, useContext, useReducer, useEffect } from 'react'
+import { api } from '../api'
 
 const initialState = []
 
@@ -21,7 +21,7 @@ export const RoutesProvider = ({ children }) => {
   useEffect(() => {
     (async () => {
       try {
-        const response = await axios.get('/get_all_routes/')
+        const response = api.getAllRoutes()
 
         dispatch({ 
           type: 'setRoutes',
@@ -40,3 +40,5 @@ export const RoutesProvider = ({ children }) => {
     </RoutesContext.Provider>
   )
 } 
+
+export const useRoutes = () => useContext(initialState)
