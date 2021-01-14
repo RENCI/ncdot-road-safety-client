@@ -18,7 +18,7 @@ export const api = {
   getImageMetadata: id => axios.get(`/get_image_metadata/${ id }/`),
   getImageNamesByAnnotation: label => `/get_image_base_names_by_annot/${ label }/`,
   getNextImageNamesForAnnotation: (label, count) => `/get_next_images_for_annot/${ label }/${ count }/`,
-  getAllRoutes: '/get_all_routes/',
+  getAllRoutes: () => axios.get('/get_all_routes/'),
   getRouteInfo: id => axios.get(`/get_route_info/${ id }/`),
   getAnnotationSet: '/get_annotation_set/',
   saveAnnotations: '/save_annotations/',
