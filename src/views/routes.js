@@ -2,13 +2,15 @@ import React, { Fragment, useContext, useEffect, useMemo, useRef, useState } fro
 import PropTypes from 'prop-types'
 import { Link, useHistory, useParams } from 'react-router-dom'
 import { api } from '../api'
-import { Button, InputNumber, Slider, Tooltip, Typography } from 'antd'
+import { Button, InputNumber, Select, Slider, Tooltip, Typography } from 'antd'
 import { FastBackwardOutlined, StepBackwardOutlined, StepForwardOutlined, FastForwardOutlined } from '@ant-design/icons'
 import { Scene } from '../components/scene'
 import { loadModules } from 'esri-loader'
 import { Map as EsriMap } from '@esri/react-arcgis'
+import { useRoutes } from '../contexts'
 
 const { Paragraph, Title } = Typography
+const { Option } = Select
 
 // context
 
@@ -172,11 +174,27 @@ const MapMarker = ({ view, lat, long, color = '#1890ff', size = 15 }) => {
 // main view
 
 export const BrowseRouteView = () => {
+  const { routes } = useRoutes()
   const history = useHistory()
   const { routeID, imageIndex } = useParams()
   const [imageIDs, setImageIDs] = useState([])
   const [currentLocation, setCurrentLocation] = useState({})
   const [previousLocations, setPreviousLocations] = useState([])
+
+  const RouteSelect = useMemo(() => {
+    const handleChangeRoute = routeID => {
+      history.push(`/routes/${ routeID }/1`)
+    }
+
+    return (
+      <Select defaultValue={ routeID } onChange={ handleChangeRoute }>
+        <Option value="1">1</Option>
+        <Option value="2">2</Option>
+        <Option value="3">3</Option>
+        { routes.sort().map(id => <Option value={ id }>{ id }</Option>) }
+      </Select>
+    )
+  }, [routes])
   
   // index for current location along route.
   // first picture is index 1, ...
@@ -215,6 +233,8 @@ export const BrowseRouteView = () => {
     const fetchRouteImageBaseNames = async () => await api.getRouteInfo(routeID)
       .then(response => {
         if (response?.data?.route_image_base_names) {
+          console.log('image ids')
+          console.log(response.data.route_image_base_names)
           setImageIDs(response.data.route_image_base_names)
         }
       })
@@ -231,12 +251,14 @@ export const BrowseRouteView = () => {
   // when image (index) changes,
   // fetch metadata for the current location's scene
   useEffect(() => {
-    const fetchSceneMetadata = async () => await api.getImageMetadata(imageIDs[imageIndex])
+    const fetchSceneMetadata = async () => await api.getImageMetadata(imageIDs[index])
       .then(response => {
         setCurrentLocation(response.data.metadata)
       })
       .catch(error => console.error(error))
-    fetchSceneMetadata()
+    if (imageIDs.length && index) {
+      fetchSceneMetadata()
+    }
   }, [index])
 
   // when current location changes,
@@ -247,12 +269,21 @@ export const BrowseRouteView = () => {
     }
   }, [currentLocation])
 
+  useEffect(() => {
+    if (routes && routes?.state) {
+      console.log(routes.state)
+    }
+  }, [routes])
+
   // wait for routeID and its imageIDs
   if (!imageIDs.length || !routeID) return <div>...</div>
 
   return (
     <RouteBrowseContext.Provider value={{ routeID, imageIDs, setImageIDs, index, currentLocation, previousLocations }}>
-      <Title level={ 1 }>Browsing route { routeID }</Title>
+      <div style={{ border: '1px solid #f99', display: 'flex', justifyContent: 'flex-start' }}>
+        <Title level={ 1 }>Browsing route</Title>
+        { routes && RouteSelect }
+      </div>
       
       <RouteNavigation />
 
