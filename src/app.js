@@ -2,7 +2,7 @@ import React from "react"
 import { Layout, Menu } from "antd"
 import { MenuOutlined } from "@ant-design/icons"
 import { BrowserRouter as Router, Switch, Route, NavLink } from "react-router-dom"
-import { HomeView, BrowseAnnotationView, BrowseRouteView, MapView, AboutView, ContactView } from "./views"
+import { BrowseAnnotationView } from "./views"
 import { RoutesProvider, AnnotationsProvider, RouteBrowserProvider, AnnotationBrowserProvider } from "./contexts"
 import { api } from "./api"
 const { Header, Content, Footer } = Layout
@@ -20,8 +20,8 @@ export const App = () => {
                   <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["annotate"]}>
                     <Menu.Item key="annotate"><NavLink to="/">Annotate</NavLink></Menu.Item>
                     <SubMenu key="profile" style={{float: "right"}} icon={<MenuOutlined />}>
-	              <Menu.Item>	
-                        <a href={ api.updateAccount(document.getElementById('user_id').value) }>Profile</a>	
+	                    <Menu.Item>	
+                        <a href={ api.updateAccount(document.getElementById('user_id').value) }>View Profile</a>	
                       </Menu.Item> 
                       <Menu.Item>
                         <a href={ api.logout }>Log Out</a>
