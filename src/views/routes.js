@@ -230,8 +230,6 @@ export const BrowseRouteView = () => {
     const fetchRouteImageBaseNames = async () => await api.getRouteInfo(routeID)
       .then(response => {
         if (response?.data?.route_image_base_names) {
-          console.log('image ids')
-          console.log(response.data.route_image_base_names)
           setImageIDs(response.data.route_image_base_names)
         }
       })
@@ -265,12 +263,6 @@ export const BrowseRouteView = () => {
       setPreviousLocations([...previousLocations, currentLocation])
     }
   }, [currentLocation])
-
-  useEffect(() => {
-    if (routes && routes?.state) {
-      console.log(routes.state)
-    }
-  }, [routes])
 
   // wait for routeID and its imageIDs
   if (!imageIDs.length || !routeID) return <div>...</div>
