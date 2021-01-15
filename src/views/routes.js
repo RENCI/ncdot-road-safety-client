@@ -50,6 +50,20 @@ ScenePrefetch.propTypes = {
   imageBaseName: PropTypes.string,
 }
 
+const RouteSelect = ({ currentRouteID, routeIDs, routeChangeHandler }) => {
+  return (
+    <Select defaultValue={ currentRouteID } onChange={ routeChangeHandler } size="large">
+      { routeIDs.map(id => <Option key={ id } value={ id }>{ id }</Option>) }
+    </Select>
+  )
+}
+
+RouteSelect.propTypes = {
+  currentRouteID: PropTypes.string.isRequired,
+  routeIDs: PropTypes.array.isRequired,
+  routeChangeHandler: PropTypes.func.isRequired,
+}
+
 const SceneMetaData = () => {
   const { imageIDs, currentLocation, index, routeID } = useRouteBrowseContext()
   return (
@@ -181,18 +195,6 @@ export const BrowseRouteView = () => {
   const [currentLocation, setCurrentLocation] = useState({})
   const [previousLocations, setPreviousLocations] = useState([])
 
-  const RouteSelect = useMemo(() => {
-    const handleChangeRoute = routeID => {
-      history.push(`/routes/${ routeID }/1`)
-    }
-
-    return (
-      <Select defaultValue={ routeID } onChange={ handleChangeRoute } bordered={ false } size="large">
-        { routes.sort().map(id => <Option key={ id } value={ id }>{ id }</Option>) }
-      </Select>
-    )
-  }, [routes])
-  
   // index for current location along route.
   // first picture is index 1, ...
   // not starting at 0, as that may be confusing for some users seeing the URL
@@ -212,6 +214,10 @@ export const BrowseRouteView = () => {
   // allow route navigation by clicking on slider component
   const handleSliderChange = newIndex => {
     history.push(`/routes/${ routeID }/${ newIndex }`)
+  }
+
+  const handleChangeRoute = routeID => {
+    history.push(`/routes/${ routeID }/1`)
   }
 
   // on render,
@@ -271,7 +277,16 @@ export const BrowseRouteView = () => {
     <RouteBrowseContext.Provider value={{ routeID, imageIDs, setImageIDs, index, currentLocation, previousLocations }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
         <Title level={ 1 }>Route Browser</Title>
-        <Title level={ 4 }>Current route{ routes && RouteSelect }</Title>
+        <Title level={ 4 }>
+          Current route: &nbsp;&nbsp;
+          {
+            routes && <RouteSelect
+                        routeIDs={ routes.sort() }
+                        currentRouteID={ routeID }
+                        routeChangeHandler={ handleChangeRoute }
+                      />
+          }
+        </Title>
       </div>
       
       <br /><br />
