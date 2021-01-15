@@ -296,13 +296,7 @@ export const BrowseRouteView = () => {
         <Title level={ 1 }>Route Browser</Title>
         <Title level={ 4 }>
           Current route: &nbsp;&nbsp;
-          {
-            routes && <RouteSelect
-                        routeIDs={ routes.sort() }
-                        currentRouteID={ routeID }
-                        routeChangeHandler={ handleChangeRoute }
-                      />
-          }
+          { routes && <RouteSelect routeIDs={ routes.sort() } currentRouteID={ routeID } routeChangeHandler={ handleChangeRoute } /> }
         </Title>
       </div>
       
