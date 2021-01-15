@@ -164,17 +164,6 @@ export const BrowseRouteView = () => {
     history.push(`/routes/${ routeID }/1`)
   }
 
-  // on render,
-  // fetch all routes for populating route selction component
-  // useEffect(() => {
-  //   const fetchallRoutes = async () => await api.getAllRoutes()
-  //     .then(response => {
-  //       console.log(response)
-  //     })
-  //     .catch(error => console.error(error))
-  //   fetchallRoutes()
-  // }, [])
-
   // get all the images on this route
   useEffect(() => {
     const fetchRouteImageBaseNames = async () => await api.getRouteInfo(routeID)
@@ -283,5 +272,3 @@ export const BrowseRouteView = () => {
     </RouteBrowseContext.Provider>
   )
 }
-
-      // points={ [[currentLocation.lat, currentLocation.long]] } />
