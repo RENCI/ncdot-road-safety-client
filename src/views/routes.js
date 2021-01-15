@@ -207,9 +207,22 @@ export const BrowseRouteView = () => {
           name: `Route ${ id }`,
         })) }
         columns={ [
-          { title: 'ID', dataIndex: 'id', key: 'id' },
-          { title: 'Name', dataIndex: 'name', key: 'name' },
-          { title: 'Actions', key: 'actions', render: (text, record) => <Space size="middle"><Button link href={ `/routes/${ record.id }/1` } >Browse</Button></Space> },
+          {
+            title: 'ID',
+            dataIndex: 'id',
+            key: 'id',
+          },
+          {
+            title: 'Name',
+            dataIndex: 'name',
+            key: 'name',
+          },
+          {
+            title: 'Actions',
+            key: 'actions',
+            render: (text, record) =>
+              <Space size="middle" align="center"><Link to={ `/routes/${ record.id }/1` }>Browse <ArrowRightOutlined /></Link></Space>,
+          },
         ] }
       />
     )
