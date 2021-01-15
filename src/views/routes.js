@@ -304,7 +304,15 @@ export const BrowseRouteView = () => {
 
       <br />
 
-      <Slider defaultValue={ 1 } value={ index } min={ 1 } max={ imageIDs.length } onChange={ handleSliderChange } tipFormatter={ value => `${ value } of ${ imageIDs.length }`} />
+      <Slider
+        defaultValue={ 1 }
+        value={ index }
+        min={ 1 }
+        max={ imageIDs.length }
+        onChange={ handleSliderChange }
+        tipFormatter={ value => `${ value } of ${ imageIDs.length }`}
+        tooltipPlacement="bottom"
+      />
 
       <br /><br />
 
