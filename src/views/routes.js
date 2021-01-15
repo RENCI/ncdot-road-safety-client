@@ -199,16 +199,13 @@ export const BrowseRouteView = () => {
   // first picture is index 1, ...
   // not starting at 0, as that may be confusing for some users seeing the URL
   const index = useMemo(() => {
-    if (!routeID || imageIDs.length === 0) {
-      return 0
-    }
-    if (imageIndex < 1 || imageIndex > imageIDs.length) {
-      return 0
-    }
-    if (/^\d+$/.test(imageIndex)) {
-      return +imageIndex
-    }
-    return 0
+    // if no route or no images on route
+    if (!routeID || imageIDs.length === 0) { return 0 }
+    // if image index lies outside 0..(# of images)
+    if (imageIndex < 1 || imageIndex > imageIDs.length) { return 0 }
+    // if the image index contains only digits
+    if (/^\d+$/.test(imageIndex)) { return +imageIndex }
+    return 1
   }, [imageIDs, imageIndex])
 
   // allow route navigation by clicking on slider component
