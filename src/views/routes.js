@@ -2,7 +2,7 @@ import React, { Fragment, useContext, useEffect, useMemo, useRef, useState } fro
 import PropTypes from 'prop-types'
 import { Link, useHistory, useParams } from 'react-router-dom'
 import { api } from '../api'
-import { Button, InputNumber, Select, Slider, Space, Table, Tooltip, Typography } from 'antd'
+import { Button, Card, InputNumber, Select, Slider, Space, Table, Tooltip, Typography } from 'antd'
 import { ArrowRightOutlined, FastBackwardOutlined, StepBackwardOutlined, StepForwardOutlined, FastForwardOutlined } from '@ant-design/icons'
 import { Scene } from '../components/scene'
 import { loadModules } from 'esri-loader'
@@ -332,7 +332,7 @@ export const BrowseRouteView = () => {
 
       <div style={{ height: '400px' }}>
         <EsriMap
-          style={{ border: '2px solid var(--primary)', borderRadius: '5px', overflow: 'hidden' }}
+          style={{ border: '1px solid var(--primary)', borderRadius: '3px', overflow: 'hidden' }}
           mapProperties={{ basemap: 'gray-vector' }}
           viewProperties={{
             center: [currentLocation.long, currentLocation.lat],
