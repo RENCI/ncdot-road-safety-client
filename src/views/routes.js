@@ -213,6 +213,7 @@ export const BrowseRouteView = () => {
     history.push(`/routes/${ routeID }/${ newIndex }`)
   }
 
+  // when user selects route in route select component
   const handleChangeRoute = routeID => {
     history.push(`/routes/${ routeID }/1`)
   }
