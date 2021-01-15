@@ -2,8 +2,8 @@ import React, { Fragment, useContext, useEffect, useMemo, useRef, useState } fro
 import PropTypes from 'prop-types'
 import { Link, useHistory, useParams } from 'react-router-dom'
 import { api } from '../api'
-import { Button, InputNumber, Select, Slider, Tooltip, Typography } from 'antd'
-import { FastBackwardOutlined, StepBackwardOutlined, StepForwardOutlined, FastForwardOutlined } from '@ant-design/icons'
+import { Button, InputNumber, List, Select, Slider, Tooltip, Typography } from 'antd'
+import { ArrowRightOutlined, FastBackwardOutlined, StepBackwardOutlined, StepForwardOutlined, FastForwardOutlined } from '@ant-design/icons'
 import { Scene } from '../components/scene'
 import { loadModules } from 'esri-loader'
 import { Map as EsriMap } from '@esri/react-arcgis'
@@ -269,7 +269,26 @@ export const BrowseRouteView = () => {
   }, [currentLocation])
 
   // wait for routeID and its imageIDs
-  if (!imageIDs.length || !routeID) return <div>...</div>
+  if (!imageIDs.length || !routeID) {
+    if (!routes.length) {
+      return <div>No Routes</div>
+    }
+    return (
+      <List
+        dataSource={ routes.sort() }
+        renderItem={
+          item => (
+            <List.Item style={{ display: 'flex', justifyContent: 'space-between' }}>
+              Route ID: { item }
+              <Tooltip title={ `Brose Route ${ item }` }>
+                <Button type="link" shape="circle" icon={ <ArrowRightOutlined /> } href={ `/routes/${ item }/1` }/>
+              </Tooltip>
+            </List.Item>
+          )
+        }
+      />
+    )
+  }
 
   return (
     <RouteBrowseContext.Provider value={{ routeID, imageIDs, setImageIDs, index, currentLocation, previousLocations }}>
