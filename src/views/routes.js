@@ -70,7 +70,7 @@ const SceneMetaData = () => {
     <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', fontSize: '80%', opacity: 0.75 }}>
       <Paragraph style={{ textAlign: 'left' }}>
         { index } of { imageIDs.length }<br />
-        Image ID: { imageIDs[index] || '...' } <br/>
+        Image ID: { imageIDs[index - 1] || '...' } <br/>
         Route ID: { routeID || '...' } <br/>
       </Paragraph>
       <Paragraph style={{ textAlign: 'right' }}>
@@ -105,7 +105,7 @@ const RouteNavigation = () => {
   const tenPrevIndex = useMemo(() => Math.max(1, index - 10), [index])
   const prevIndex = useMemo(() => Math.max(1, index - 1), [index])
   const nextIndex = useMemo(() => Math.min(imageIDs.length, index + 1), [index])
-  const tenNextIndex = useMemo(() => Math.max(1, index + 10), [index])
+  const tenNextIndex = useMemo(() => Math.min(imageIDs.length, index + 10), [index])
 
   if (!index || !imageIDs.length) return '...'
 
@@ -113,8 +113,8 @@ const RouteNavigation = () => {
     <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem' }}>
       <BrowseButton url={ `/routes/${ routeID }/${ tenPrevIndex }` } disabled={ index - 10 <= 0 } tooltip="Back ten images"><FastBackwardOutlined /> Back 10</BrowseButton>
       <BrowseButton url={ `/routes/${ routeID }/${ prevIndex }` } disabled={ index - 1 <= 0 } tooltip="Step backward"><StepBackwardOutlined /> Previous</BrowseButton>
-      <BrowseButton url={ `/routes/${ routeID }/${ nextIndex }` } disabled={ index + 1 >= imageIDs.length } tooltip="Step forward">Next <StepForwardOutlined /></BrowseButton>
-      <BrowseButton url={ `/routes/${ routeID }/${ tenNextIndex }` } disabled={ index + 10 >= imageIDs.length } tooltip="Forward ten images">Forward 10 <FastForwardOutlined /></BrowseButton>
+      <BrowseButton url={ `/routes/${ routeID }/${ nextIndex }` } disabled={ index + 1 > imageIDs.length } tooltip="Step forward">Next <StepForwardOutlined /></BrowseButton>
+      <BrowseButton url={ `/routes/${ routeID }/${ tenNextIndex }` } disabled={ index + 10 > imageIDs.length } tooltip="Forward ten images">Forward 10 <FastForwardOutlined /></BrowseButton>
     </div>
   )
 }
@@ -161,6 +161,7 @@ export const BrowseRouteView = () => {
   const { routeID, imageIndex } = useParams()
   const [imageIDs, setImageIDs] = useState([])
   const [currentLocation, setCurrentLocation] = useState({})
+  console.log(imageIDs)
 
   // index for current location along route.
   // first picture is index 1, ...
@@ -275,7 +276,7 @@ export const BrowseRouteView = () => {
 
       <br /><br />
 
-      <Scene id={ imageIDs[index] } />
+      <Scene id={ imageIDs[index - 1] } />
       <SceneMetaData />
 
       <ScenePrefetch imageBaseName={ imageIDs[index - 20] } />
