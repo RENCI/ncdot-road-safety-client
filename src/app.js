@@ -35,6 +35,10 @@ export const App = () => {
                     <Switch>
                       <Route exact path="/"><BrowseAnnotationView /></Route>
                       <Route path="/routes/:routeID?/:imageIndex?"><BrowseRouteView /></Route>
+                      {/*
+                        for the above params to work here, the following needs to be in django urls.py: 
+                        "re_path(r'routes(?:.*)/?', TemplateView.as_view(template_name='home.html'), name='home')"
+                      */}
                     </Switch>
                   </div>
                 </Content>
