@@ -119,38 +119,6 @@ const RouteNavigation = () => {
   )
 }
 
-//
-
-// const PreviousLocations = ({ view }) => {
-//   const { currentLocation, previousLocations } = useRouteBrowseContext()
-//   const [pointGraphics, setPointGraphics] = useState(null)
-
-//   const locationPoint = ({ lat, long }) => {
-//     const point = { type: 'point', longitude: long, latitude: lat }
-//     const markerSymbol = { type: 'simple-marker', size: 10, color: [102, 172, 186] }
-//     return ({
-//       geometry: point,
-//       symbol: markerSymbol,
-//     })
-//   }
-
-//   useEffect(() => {
-//     // view.graphics.removeAll()
-//     view.graphics.remove(pointGraphics)
-//     loadModules(['esri/Graphic']).then(([Graphic]) => {
-//       const newGraphics = previousLocations.map(({ lat, long }) => new Graphic(locationPoint({ lat, long })))
-//       setPointGraphics(newGraphics)
-//       view.graphics.addMany(pointGraphics)
-//     }).catch((err) => console.error(err))
-
-//     return function cleanup() {
-//       view.graphics.remove(pointGraphics)
-//     }
-//   }, [currentLocation])
-
-//   return null
-// }
-
 // custom component for map location marker
 const MapMarker = ({ view, lat, long, color = '#1890ff', size = 15 }) => {
   const [graphic, setGraphic] = useState(null)
@@ -193,7 +161,6 @@ export const BrowseRouteView = () => {
   const { routeID, imageIndex } = useParams()
   const [imageIDs, setImageIDs] = useState([])
   const [currentLocation, setCurrentLocation] = useState({})
-  const [previousLocations, setPreviousLocations] = useState([])
 
   // index for current location along route.
   // first picture is index 1, ...
@@ -259,14 +226,6 @@ export const BrowseRouteView = () => {
       fetchSceneMetadata()
     }
   }, [index])
-
-  // when current location changes,
-  // add currently current location to previous locations array
-  // useEffect(() => {
-  //   if (currentLocation.lat && currentLocation.long) {
-  //     setPreviousLocations([...previousLocations, currentLocation])
-  //   }
-  // }, [currentLocation])
 
   // wait for routeID and its imageIDs
   if (!imageIDs.length || !routeID) {
