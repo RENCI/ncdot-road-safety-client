@@ -4,7 +4,7 @@ import { Link, useHistory, useParams } from 'react-router-dom'
 import { api } from '../api'
 import { Button, Card, InputNumber, Select, Slider, Space, Table, Tooltip, Typography } from 'antd'
 import { ArrowRightOutlined, FastBackwardOutlined, StepBackwardOutlined, StepForwardOutlined, FastForwardOutlined } from '@ant-design/icons'
-import { Scene } from '../components/scene'
+import { Scene, ScenePrefetch } from '../components/scene'
 import { loadModules } from 'esri-loader'
 import { Map as EsriMap } from '@esri/react-arcgis'
 import { useRoutes } from '../contexts'
@@ -28,27 +28,6 @@ const ncLatLong = [
 ]
 
 // components
-
-const ImagePrefetch = ({ url }) => <img src={ url } style={{ display: 'none' }} />
-
-ImagePrefetch.propTypes = {
-  url: PropTypes.string.isRequired,
-}
-
-const ScenePrefetch = ({ imageBaseName }) => {
-  if (!imageBaseName) return null
-  return (
-    <Fragment>
-      <ImagePrefetch url={ api.getImage(imageBaseName, 'left') } />
-      <ImagePrefetch url={ api.getImage(imageBaseName, 'front') } />
-      <ImagePrefetch url={ api.getImage(imageBaseName, 'right') } />
-    </Fragment>
-  )
-}
-
-ScenePrefetch.propTypes = {
-  imageBaseName: PropTypes.string,
-}
 
 const RouteSelect = ({ currentRouteID, routeIDs, routeChangeHandler }) => {
   return (
@@ -161,7 +140,6 @@ export const BrowseRouteView = () => {
   const { routeID, imageIndex } = useParams()
   const [imageIDs, setImageIDs] = useState([])
   const [currentLocation, setCurrentLocation] = useState({})
-  console.log(imageIDs)
 
   // index for current location along route.
   // first picture is index 1, ...
