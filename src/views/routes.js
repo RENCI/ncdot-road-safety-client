@@ -262,11 +262,11 @@ export const BrowseRouteView = () => {
 
   // when current location changes,
   // add currently current location to previous locations array
-  useEffect(() => {
-    if (currentLocation.lat && currentLocation.long) {
-      setPreviousLocations([...previousLocations, currentLocation])
-    }
-  }, [currentLocation])
+  // useEffect(() => {
+  //   if (currentLocation.lat && currentLocation.long) {
+  //     setPreviousLocations([...previousLocations, currentLocation])
+  //   }
+  // }, [currentLocation])
 
   // wait for routeID and its imageIDs
   if (!imageIDs.length || !routeID) {
@@ -289,7 +289,7 @@ export const BrowseRouteView = () => {
   }
 
   return (
-    <RouteBrowseContext.Provider value={{ routeID, imageIDs, setImageIDs, index, currentLocation, previousLocations }}>
+    <RouteBrowseContext.Provider value={{ routeID, imageIDs, setImageIDs, index, currentLocation }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
         <Title level={ 1 }>Route Browser</Title>
         <Title level={ 4 }>
