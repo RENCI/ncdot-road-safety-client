@@ -2,7 +2,7 @@ import React, { Fragment, useContext, useEffect, useMemo, useRef, useState } fro
 import PropTypes from 'prop-types'
 import { Link, useHistory, useParams } from 'react-router-dom'
 import { api } from '../api'
-import { Button, InputNumber, List, Select, Slider, Tooltip, Typography } from 'antd'
+import { Button, InputNumber, Select, Slider, Space, Table, Tooltip, Typography } from 'antd'
 import { ArrowRightOutlined, FastBackwardOutlined, StepBackwardOutlined, StepForwardOutlined, FastForwardOutlined } from '@ant-design/icons'
 import { Scene } from '../components/scene'
 import { loadModules } from 'esri-loader'
@@ -271,21 +271,19 @@ export const BrowseRouteView = () => {
   // wait for routeID and its imageIDs
   if (!imageIDs.length || !routeID) {
     if (!routes.length) {
-      return <div>No Routes</div>
+      return <p>Fetching routes...</p>
     }
     return (
-      <List
-        dataSource={ routes.sort() }
-        renderItem={
-          item => (
-            <List.Item style={{ display: 'flex', justifyContent: 'space-between' }}>
-              Route ID: { item }
-              <Tooltip title={ `Brose Route ${ item }` }>
-                <Button type="link" shape="circle" icon={ <ArrowRightOutlined /> } href={ `/routes/${ item }/1` }/>
-              </Tooltip>
-            </List.Item>
-          )
-        }
+      <Table
+        dataSource={ routes.map(id => ({
+          id: id,
+          name: `Route ${ id }`,
+        })) }
+        columns={ [
+          { title: 'ID', dataIndex: 'id', key: 'id' },
+          { title: 'Name', dataIndex: 'name', key: 'name' },
+          { title: 'Actions', key: 'actions', render: (text, record) => <Space size="middle"><Button link href={ `/routes/${ record.id }/1` } >Browse</Button></Space> },
+        ] }
       />
     )
   }
