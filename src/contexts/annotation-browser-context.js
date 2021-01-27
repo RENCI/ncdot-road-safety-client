@@ -17,7 +17,9 @@ const createImage = id => {
       left: false,
       front: false,
       right: false
-    }
+    },
+    flag: false,
+    comment: ''
   }
 }
 
@@ -60,42 +62,52 @@ const reducer = (state, action) => {
         oldImages: []
       }
 
-    case 'addImage':     
+    case 'addImage': {     
+      const image = createImage(action.id)
+
+      image.metadata = action.metadata
+      image.annotations = action.annotations
+
       return {
         ...state,
-        images: [
-          ...state.images, {
-            id: action.id,
-            metadata: action.metadata,
-            annotations: action.annotations,
-            present: {
-              left: false,
-              front: false,
-              right: false
-            }
-          }
-        ]        
-      }       
+        images: [...state.images, image]        
+      }      
+    } 
 
-    case 'toggleAnnotationPresent': {
-      const index = state.images.findIndex(({ id }) => id === action.id)
+    case 'setAnnotationPresent': {
+      const newState = {...state}
 
-      if (index === -1) return {...state}
+      const image = newState.images.find(({ id }) => id === action.id)
 
-      const newImages = [...state.images]
-
-      const present = {...newImages[index].present}
-      present[action.which] = !present[action.which]
-
-      newImages[index] = {
-        ...newImages[index],
-        present: present
+      if (image) {
+        image.present[action.view] = action.present
       }
 
-      return {
-        ...state, 
-        images: newImages
+      return newState
+    }
+
+    case 'setFlag': {
+      const newState = {...state}
+
+      const image = newState.images.find(({ id }) => id === action.id)
+
+      if (image) {
+        image.flag = action.flag
       }
+
+      return newState
+    }
+
+    case 'setComment': {
+      const newState = {...state}
+
+      const image = newState.images.find(({ id }) => id === action.id)
+
+      if (image) {
+        image.comment = action.comment
+      }
+
+      return newState
     }
 
     case 'setNumLoad':

@@ -78,14 +78,6 @@ export const AnnotationBrowser = () => {
     dispatch({ type: 'setNumLoad', numLoad: value })
   }
 
-  const handleImageClick = (id, which) => {
-    dispatch({
-      type: 'toggleAnnotationPresent',
-      id: id,
-      which: which
-    })
-  }
-
   const handleBackClick = async () => {
     dispatch({ type: 'goBack' })
   }
@@ -98,13 +90,14 @@ export const AnnotationBrowser = () => {
 
     try {
       await axios.post(api.saveAnnotations, {
-        annotations: images.map(({ id, present }) => {
+        annotations: images.map(({ id, present, flag, comment }) => {
           return {
             image_base_name: id,
             annotation_name: annotation,
             is_present: present.left || present.front || present.right,
             is_present_views: Object.entries(present).filter(([,value]) => value).map(([key,]) => views[key]),
-            comment: 'test'
+            flag: flag,
+            comment: comment
           }
         })
       })
@@ -198,8 +191,7 @@ export const AnnotationBrowser = () => {
               <AnnotationPanel 
                 key={ i } 
                 image={ image } 
-                annotation={ annotation }
-                handleClick={ handleImageClick } />
+                annotation={ annotation } />
             ))}
           </Space> 
       : null }  

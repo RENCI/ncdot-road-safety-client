@@ -1,57 +1,81 @@
-import React, { useState } from 'react'
-import { Modal, Button, Tooltip, Switch, Input, Form, Typography } from 'antd'
+import React, { useContext, useState } from 'react'
+import { Popover, Button, Switch, Input } from 'antd'
 import { FlagOutlined } from '@ant-design/icons'
+import { AnnotationBrowserContext } from '../../contexts'
 import { Scene } from '../scene'
 import './annotation-panel.css'
 
-const { Text } = Typography;
+export const AnnotationPanel = ({ image }) => {
+  const [, dispatch] = useContext(AnnotationBrowserContext)
 
-export const AnnotationPanel = ({ image, handleClick }) => {
-  const [flagDialogOpen, setFlagDialogOpen] = useState(false)
-  const [flag, setFlag] = useState(false)
+  const { id, present, flag, comment } = image;
 
-  const onFlagClick = () => {
-    setFlagDialogOpen(!flagDialogOpen)
+  const handleImageClick = (id, view) => {
+    const viewPresent = present ? !present[view] : true
+
+    dispatch({
+      type: 'setAnnotationPresent',
+      id: id,
+      view: view,
+      present: viewPresent
+    })
   }
 
-  const onFlagDialogOk = () => {
-    setFlag(true)
-    setFlagDialogOpen(false)
+  const onSwitchClick = () => {
+    dispatch({
+      type: 'setFlag',
+      id: id,
+      flag: !flag
+    })
   }
 
-  const onFlagDialogCancel = () => {
-    setFlagDialogOpen(false)
+  const onKeyPress = evt => {
+    evt.stopPropagation()
+  }
+
+  const onChange = evt => {
+    dispatch({
+      type: 'setComment',
+      id: id,
+      comment: evt.target.value
+    })
+  }
+
+  const popoverContent = () => {
+    return (
+      <div className='popoverContent'>
+        <Input 
+          placeholder='Describe issue'
+          disabled={ !flag }
+          value={ flag ? comment : '' }
+          onKeyPress={ onKeyPress }
+          onChange={ onChange } 
+        />
+        <Switch 
+          className='popoverSwitch'
+          checked={ flag }
+          onClick={ onSwitchClick } />      
+      </div>
+    )
   }
 
   return (    
     <div className='annotationPanel'>
       <Scene 
-        id={ image.id } 
-        present={ image.present } 
-        handleClick={ handleClick } />
-      <div className='flagButton'>
-        <Tooltip title='Flag image'>
-          <Button
+        id={ id } 
+        present={ present } 
+        handleClick={ handleImageClick } />
+      <div className='flagButton' >
+        <Popover
+          content={ popoverContent } 
+          placement='topRight'
+          trigger='hover'                    
+        >
+          <Button            
             type={ flag ? 'primary' : 'default' }
             shape='circle'
-            icon={ <FlagOutlined /> }
-            disabled={ flagDialogOpen }
-            onClick={ onFlagClick } />
-          <Modal title='Flag image'
-            visible={ flagDialogOpen }
-            onOk={ onFlagDialogOk }
-            onCancel={ onFlagDialogCancel }
-          >
-            <Form>        
-              <Form.Item label="Flag image">
-                <Switch />
-              </Form.Item>
-              <Form.Item>
-                <Input placeholder="Description, e.g. Left view guardrail barely visible" />
-              </Form.Item>
-            </Form>  
-          </Modal>
-        </Tooltip>
+            icon={ <FlagOutlined /> } />
+        </Popover>
       </div>
     </div>
   )
