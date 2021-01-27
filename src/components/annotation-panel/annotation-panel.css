@@ -5,6 +5,21 @@
     align-items: center;
 }
 
-.routeButton {
+.flagButton {
     margin-left: 10px;
+}
+
+.flagButton button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popoverContent {
+    display: flex;
+    align-items: center;
+}
+
+.popoverSwitch {
+    margin-left: 5px;
 }

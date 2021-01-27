@@ -30,19 +30,19 @@ export const Scene = ({ id, present, handleClick }) => {
       <Image 
         url={ api.getImage(id, 'left') } 
         loading={ loading }
-        present={ present ? present['left'] : null }
+        present={ present ? present.left : null }
         handleLoad={ handleLoad }
         handleClick={ handleClick ? () => handleClick(id, 'left') : null } />
       <Image 
         url={ api.getImage(id, 'front') } 
         loading={ loading }
-        present={ present ? present['front'] : null }
+        present={ present ? present.front : null }
         handleLoad={ handleLoad } 
         handleClick={ handleClick ? () => handleClick(id, 'front') : null } />
       <Image 
         url={ api.getImage(id, 'right') } 
         loading={ loading }
-        present={ present ? present['right'] : null }
+        present={ present ? present.right : null }
         handleLoad={ handleLoad }
         handleClick={ handleClick ? () => handleClick(id, 'right') : null } />        
     </div>
