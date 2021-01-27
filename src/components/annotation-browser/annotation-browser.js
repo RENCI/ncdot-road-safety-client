@@ -1,6 +1,6 @@
 import React, { useState, useContext, useRef, useEffect, Fragment } from 'react'
 import { Form, Space, Select, InputNumber, Button, Spin, Alert, notification } from 'antd'
-import { CloudUploadOutlined, ArrowLeftOutlined } from '@ant-design/icons'
+import { CloudUploadOutlined, ArrowLeftOutlined, QuestionCircleOutlined } from '@ant-design/icons'
 import axios from 'axios'
 import { AnnotationsContext, AnnotationBrowserContext } from '../../contexts'
 import { AnnotationPanel } from '../annotation-panel'
@@ -154,7 +154,17 @@ export const AnnotationBrowser = () => {
           <>
             <Form.Item>
               <Alert message={ 
-                <>Select <strong>left</strong> and <strong>right</strong> images containing: <strong>{ annotation }</strong></> 
+                <div className='helpMessageDiv'>
+                  <div className='helpMessage'>
+                    Select <strong>left</strong> and <strong>right</strong> images containing: <strong>{ annotation }</strong>
+                  </div> 
+                  <Button
+                    className='iconButton'
+                    type='link'
+                    href='https://docs.google.com/document/d/1-CeqPD1b1cFyMjwYivoBlRXfQp-IuHPBP_sWTLoHHXg/edit?usp=sharing'
+                    icon={ <QuestionCircleOutlined style={{ fontSize: 'large' }} /> }
+                  />
+                </div>
               } /> 
             </Form.Item>
             <Form.Item>

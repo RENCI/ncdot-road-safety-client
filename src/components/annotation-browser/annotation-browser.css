@@ -20,3 +20,12 @@
 .saveButton {
   flex: 1
 }
+
+.helpMessageDiv {
+  display: flex;
+  align-items: center;
+}
+
+.helpMessage {
+  flex: 1
+}
