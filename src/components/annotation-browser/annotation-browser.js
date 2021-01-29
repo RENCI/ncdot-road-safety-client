@@ -97,7 +97,7 @@ export const AnnotationBrowser = () => {
             is_present: present.left || present.front || present.right,
             is_present_views: Object.entries(present).filter(([,value]) => value).map(([key,]) => views[key]),
             flag: flag,
-            comment: comment
+            comment: flag ? comment : ""
           }
         })
       })
