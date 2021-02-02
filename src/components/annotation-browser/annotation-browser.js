@@ -156,7 +156,7 @@ export const AnnotationBrowser = () => {
               <Alert message={ 
                 <div className='helpMessageDiv'>
                   <div className='helpMessage'>
-                    Select <strong>left</strong> and <strong>right</strong> images containing: <strong>{ annotation }</strong>
+                    Select <strong>left</strong>, <strong>front</strong>, and <strong>right</strong> images containing: <strong>{ annotation }</strong>
                   </div> 
                   <Button
                     className='iconButton'
