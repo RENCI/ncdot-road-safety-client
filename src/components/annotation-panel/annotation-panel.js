@@ -1,6 +1,6 @@
-import React, { useContext, useState, useRef } from 'react'
-import { Popover, Button, Switch, Input, AutoComplete } from 'antd'
-import { FlagOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons'
+import React, { useContext, useState } from 'react'
+import { Popover, Button, Input, AutoComplete } from 'antd'
+import { FlagOutlined, CheckOutlined } from '@ant-design/icons'
 import { AnnotationBrowserContext } from '../../contexts'
 import { Scene } from '../scene'
 import './annotation-panel.css'
@@ -8,8 +8,6 @@ import './annotation-panel.css'
 export const AnnotationPanel = ({ image }) => {
   const [, dispatch] = useContext(AnnotationBrowserContext)
   const [showPopover, setShowPopover] = useState(false);
-  const [inPopover, setInPopover] = useState(false);
-  const buttonRef = useRef();
 
   const { id, present, flag, comment } = image;
 
@@ -24,8 +22,22 @@ export const AnnotationPanel = ({ image }) => {
     })
   }
 
+  const onFlagClick = () => {      
+    setShowPopover(!flag);
+
+    dispatch({
+      type: 'setFlag',
+      id: id,
+      flag: !flag
+    })
+  }
+
   const onKeyPress = evt => {
     evt.stopPropagation()
+
+    if (evt.key === 'Enter') {
+      setShowPopover(false)
+    }
   }
 
   const onSelect = value => {
@@ -46,73 +58,34 @@ export const AnnotationPanel = ({ image }) => {
     })
   }
 
-  const onFlagClick = () => {      
-    setShowPopover(!showPopover);
-
-    if (!flag) {
-      dispatch({
-        type: 'setFlag',
-        id: id,
-        flag: true
-      })
-    }
-  }
-
   const onCheckClick = () => {
-    setShowPopover(false)
-  }
-
-  const onCancelClick = () => {
-    dispatch({
-      type: 'setFlag',
-      id: id,
-      flag: false
-    })
-
     setShowPopover(false)
   }
 
   const popoverContent = () => {
     return (
-      <Input.Group compact >
-        <AutoComplete 
-          placeholder='Describe issue'
-          value={ comment }
-          style={{ width: 200 }}
-          onKeyPress={ onKeyPress }
-          onSelect={ onSelect }
-          onChange={ onChange }
-          options={[
-            { value: 'Option 1'},
-            { value: 'Option 2'},
-            { value: 'Option 3'}
-          ]}
-        />         
-        <Button      
-          disabled= { comment === "" }
-          icon={ <CheckOutlined /> } 
-          onClick={ onCheckClick } 
-        />    
-        <Button      
-          icon={ <CloseOutlined /> } 
-          onClick={ onCancelClick } 
-        />  
-      </Input.Group>
-/*      
-      <div className='popoverContent'>
-        <Input 
-          placeholder='Describe issue'
-          disabled={ !flag }
-          value={ flag ? comment : '' }
-          onKeyPress={ onKeyPress }
-          onChange={ onChange } 
-        />
-        <Switch 
-          className='popoverSwitch'
-          checked={ flag }
-          onClick={ onSwitchClick } />                
-      </div>
-*/      
+      <div onKeyPress={ onKeyPress }>
+        <Input.Group 
+          compact 
+        >
+          <AutoComplete 
+            placeholder='Describe issue'
+            value={ comment }
+            style={{ width: 200 }}
+            onSelect={ onSelect }
+            onChange={ onChange }
+            options={[
+              { value: 'Option 1'},
+              { value: 'Option 2'},
+              { value: 'Option 3'}
+            ]}
+          />         
+          <Button      
+            icon={ <CheckOutlined /> } 
+            onClick={ onCheckClick } 
+          />  
+        </Input.Group>
+      </div>      
     )
   }
 
