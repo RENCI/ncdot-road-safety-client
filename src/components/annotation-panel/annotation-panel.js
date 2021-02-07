@@ -1,13 +1,12 @@
-import React, { useContext, useState } from 'react'
-import { Popover, Button, Input, AutoComplete } from 'antd'
-import { FlagOutlined, CheckOutlined } from '@ant-design/icons'
+import React, { useContext } from 'react'
+import { Popover, Button, AutoComplete } from 'antd'
+import { FlagOutlined } from '@ant-design/icons'
 import { AnnotationBrowserContext } from '../../contexts'
 import { Scene } from '../scene'
 import './annotation-panel.css'
 
 export const AnnotationPanel = ({ image }) => {
   const [, dispatch] = useContext(AnnotationBrowserContext)
-  const [showPopover, setShowPopover] = useState(false);
 
   const { id, present, flag, comment } = image;
 
@@ -22,9 +21,7 @@ export const AnnotationPanel = ({ image }) => {
     })
   }
 
-  const onFlagClick = () => {      
-    setShowPopover(!flag);
-
+  const onFlagClick = () => {     
     dispatch({
       type: 'setFlag',
       id: id,
@@ -34,10 +31,6 @@ export const AnnotationPanel = ({ image }) => {
 
   const onKeyPress = evt => {
     evt.stopPropagation()
-
-    if (evt.key === 'Enter') {
-      setShowPopover(false)
-    }
   }
 
   const onSelect = value => {
@@ -46,8 +39,6 @@ export const AnnotationPanel = ({ image }) => {
       id: id,
       comment: value
     })
-
-    setShowPopover(false)
   }
 
   const onChange = value => {
@@ -58,33 +49,21 @@ export const AnnotationPanel = ({ image }) => {
     })
   }
 
-  const onCheckClick = () => {
-    setShowPopover(false)
-  }
-
   const popoverContent = () => {
     return (
       <div onKeyPress={ onKeyPress }>
-        <Input.Group 
-          compact 
-        >
-          <AutoComplete 
-            placeholder='Describe issue'
-            value={ comment }
-            style={{ width: 200 }}
-            onSelect={ onSelect }
-            onChange={ onChange }
-            options={[
-              { value: 'Option 1'},
-              { value: 'Option 2'},
-              { value: 'Option 3'}
-            ]}
-          />         
-          <Button      
-            icon={ <CheckOutlined /> } 
-            onClick={ onCheckClick } 
-          />  
-        </Input.Group>
+        <AutoComplete 
+          placeholder='Describe issue'
+          value={ comment }
+          style={{ width: 200 }}
+          onSelect={ onSelect }
+          onChange={ onChange }
+          options={[
+            { value: 'Option 1'},
+            { value: 'Option 2'},
+            { value: 'Option 3'}
+          ]}
+        />
       </div>      
     )
   }
@@ -96,19 +75,28 @@ export const AnnotationPanel = ({ image }) => {
         present={ present } 
         handleClick={ handleImageClick } />
       <div className='flagButton' >
-        <Popover
-          content={ popoverContent } 
-          placement='topRight'
-          trigger='click' 
-          visible={ showPopover }
-        >
+        { flag ?
+          <Popover
+            content={ popoverContent } 
+            placement='topRight'
+            trigger='hover' 
+            defaultVisible={ true }
+          >
+            <Button            
+              type={ 'primary' }
+              shape='circle'
+              icon={ <FlagOutlined /> } 
+              onClick={ onFlagClick } 
+            />
+          </Popover>
+          :
           <Button            
-            type={ flag ? 'primary' : 'default' }
+            type={ 'default' }
             shape='circle'
             icon={ <FlagOutlined /> } 
             onClick={ onFlagClick } 
           />
-        </Popover>
+        }
       </div>
     </div>
   )
