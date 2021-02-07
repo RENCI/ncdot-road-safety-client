@@ -1,6 +1,6 @@
 import React, { useContext, useState, useRef } from 'react'
 import { Popover, Button, Switch, Input, AutoComplete } from 'antd'
-import { FlagOutlined, CheckOutlined } from '@ant-design/icons'
+import { FlagOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import { AnnotationBrowserContext } from '../../contexts'
 import { Scene } from '../scene'
 import './annotation-panel.css'
@@ -28,6 +28,16 @@ export const AnnotationPanel = ({ image }) => {
     evt.stopPropagation()
   }
 
+  const onSelect = value => {
+    dispatch({
+      type: 'setComment',
+      id: id,
+      comment: value
+    })
+
+    setShowPopover(false)
+  }
+
   const onChange = value => {
     dispatch({
       type: 'setComment',
@@ -36,25 +46,41 @@ export const AnnotationPanel = ({ image }) => {
     })
   }
 
-  const onFlagClick = () => {
-    if (!flag) {
-      setShowPopover(true);
-    }
+  const onFlagClick = () => {      
+    setShowPopover(!showPopover);
 
+    if (!flag) {
+      dispatch({
+        type: 'setFlag',
+        id: id,
+        flag: true
+      })
+    }
+  }
+
+  const onCheckClick = () => {
+    setShowPopover(false)
+  }
+
+  const onCancelClick = () => {
     dispatch({
       type: 'setFlag',
       id: id,
-      flag: !flag
+      flag: false
     })
+
+    setShowPopover(false)
   }
 
   const popoverContent = () => {
     return (
-      <div className='popoverContent'>
+      <Input.Group compact >
         <AutoComplete 
           placeholder='Describe issue'
           value={ comment }
-          onKeyPress={ onKeyPress } 
+          style={{ width: 200 }}
+          onKeyPress={ onKeyPress }
+          onSelect={ onSelect }
           onChange={ onChange }
           options={[
             { value: 'Option 1'},
@@ -62,13 +88,16 @@ export const AnnotationPanel = ({ image }) => {
             { value: 'Option 3'}
           ]}
         />         
-        <Button            
-          type='text'
-          shape='circle'
+        <Button      
+          disabled= { comment === "" }
           icon={ <CheckOutlined /> } 
-          onClick={ () => setShowPopover(false) } 
-        />     
-      </div>
+          onClick={ onCheckClick } 
+        />    
+        <Button      
+          icon={ <CloseOutlined /> } 
+          onClick={ onCancelClick } 
+        />  
+      </Input.Group>
 /*      
       <div className='popoverContent'>
         <Input 
