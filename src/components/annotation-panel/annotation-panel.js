@@ -1,6 +1,4 @@
 import React, { useContext } from 'react'
-import { Popover, Button, AutoComplete } from 'antd'
-import { FlagOutlined } from '@ant-design/icons'
 import { AnnotationBrowserContext } from '../../contexts'
 import { Scene } from '../scene'
 import { FlagControl } from '../flag-control'
