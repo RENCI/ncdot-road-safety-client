@@ -14,9 +14,9 @@ const createImage = id => {
     metadata: {},
     annotations: [],
     present: {
-      left: false,
-      front: false,
-      right: false
+      left: "absent",
+      front: "absent",
+      right: "absent"
     },
     flag: false,
     comment: ''
@@ -81,6 +81,18 @@ const reducer = (state, action) => {
 
       if (image) {
         image.present[action.view] = action.present
+      }
+
+      return newState
+    }
+
+    case 'setAnnotationRelevant': {
+      const newState = {...state}
+
+      const image = newState.images.find(({ id }) => id === action.id)
+
+      if (image) {
+        image.relevant[action.view] = action.relevant
       }
 
       return newState

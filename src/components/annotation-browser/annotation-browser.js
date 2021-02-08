@@ -125,6 +125,32 @@ export const AnnotationBrowser = () => {
     }
   }
 
+  const saveButtonGroup = (
+    <div className='buttonBox'>
+      <Button
+        className='iconButton'
+        type='primary'
+        ghost
+        htmlType='button'
+        disabled={ oldImages.length === 0 }
+        size='large'
+        icon={ <ArrowLeftOutlined /> }
+        onClick={ handleBackClick } />
+      <Button               
+        className='iconButton saveButton' 
+        ref={ saveButton }
+        type='primary' 
+        htmlType='submit'
+        loading={ saving }
+        disabled={ !annotation }
+        size='large'                
+        icon={ <CloudUploadOutlined /> }
+        onClick={ handleSaveClick }>
+          Save and advance
+      </Button>
+    </div>
+  )
+
   return (
     <>
       <Form 
@@ -168,29 +194,7 @@ export const AnnotationBrowser = () => {
               } /> 
             </Form.Item>
             <Form.Item>
-              <div className='buttonBox'>
-                <Button
-                  className='iconButton'
-                  type='primary'
-                  ghost
-                  htmlType='button'
-                  disabled={ oldImages.length === 0 }
-                  size='large'
-                  icon={ <ArrowLeftOutlined /> }
-                  onClick={ handleBackClick } />
-                <Button               
-                  className='iconButton saveButton' 
-                  ref={ saveButton }
-                  type='primary' 
-                  htmlType='submit'
-                  loading={ saving }
-                  disabled={ !annotation }
-                  size='large'                
-                  icon={ <CloudUploadOutlined /> }
-                  onClick={ handleSaveClick }>
-                    Save and advance
-                </Button>
-              </div>
+              { saveButtonGroup }
             </Form.Item>
           </> }
       { loading ?  

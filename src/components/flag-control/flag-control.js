@@ -1,9 +1,14 @@
-import React from 'react'
-import { Popover, Button, AutoComplete } from 'antd'
+import React, { useState } from 'react'
+import { Popover, Button, Select, AutoComplete } from 'antd'
 import { FlagOutlined } from '@ant-design/icons'
 import './flag-control.css'
 
+const { Option } = Select;
+
 export const FlagControl = ({ flag, comment, options, onFlagChange, onCommentChange }) => {
+
+  const [flags, setFlags] = useState([])
+
   const onFlagClick = () => {     
     onFlagChange(!flag)
   }
@@ -12,21 +17,26 @@ export const FlagControl = ({ flag, comment, options, onFlagChange, onCommentCha
     evt.stopPropagation()
   }
 
+  const onChange = value => {
+    console.log(value)
+
+    setFlags(value)
+  }
+
   const popoverContent = () => {
     return (
       <div onKeyPress={ onKeyPress }>
-        <AutoComplete 
-          placeholder='Describe issue'
-          value={ comment }
+        <Select 
+          mode='tags'
+          placeholder='Add comments'
+          value={ flags }
           style={{ width: 200 }}
-          onSelect={ onCommentChange }
-          onChange={ onCommentChange }
-          options={[
-            { value: 'Option 1'},
-            { value: 'Option 2'},
-            { value: 'Option 3'}
-          ]}
-        />
+          onChange={ onChange }
+        >
+          { options.map((option, i) => (
+            <Option key={ i } value={ option }>{ option }</Option>
+          ))}
+        </Select>
       </div>      
     )
   }
