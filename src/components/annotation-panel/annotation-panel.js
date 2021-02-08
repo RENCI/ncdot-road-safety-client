@@ -3,6 +3,7 @@ import { Popover, Button, AutoComplete } from 'antd'
 import { FlagOutlined } from '@ant-design/icons'
 import { AnnotationBrowserContext } from '../../contexts'
 import { Scene } from '../scene'
+import { FlagControl } from '../flag-control'
 import './annotation-panel.css'
 
 export const AnnotationPanel = ({ image }) => {
@@ -21,51 +22,20 @@ export const AnnotationPanel = ({ image }) => {
     })
   }
 
-  const onFlagClick = () => {     
+  const onFlagChange = value => {     
     dispatch({
       type: 'setFlag',
       id: id,
-      flag: !flag
+      flag: value
     })
   }
 
-  const onKeyPress = evt => {
-    evt.stopPropagation()
-  }
-
-  const onSelect = value => {
+  const onCommentChange = value => {
     dispatch({
       type: 'setComment',
       id: id,
       comment: value
     })
-  }
-
-  const onChange = value => {
-    dispatch({
-      type: 'setComment',
-      id: id,
-      comment: value
-    })
-  }
-
-  const popoverContent = () => {
-    return (
-      <div onKeyPress={ onKeyPress }>
-        <AutoComplete 
-          placeholder='Describe issue'
-          value={ comment }
-          style={{ width: 200 }}
-          onSelect={ onSelect }
-          onChange={ onChange }
-          options={[
-            { value: 'Option 1'},
-            { value: 'Option 2'},
-            { value: 'Option 3'}
-          ]}
-        />
-      </div>      
-    )
   }
 
   return (    
@@ -74,29 +44,14 @@ export const AnnotationPanel = ({ image }) => {
         id={ id } 
         present={ present } 
         handleClick={ handleImageClick } />
-      <div className='flagButton' >
-        { flag ?
-          <Popover
-            content={ popoverContent } 
-            placement='topRight'
-            trigger='hover' 
-            defaultVisible={ true }
-          >
-            <Button            
-              type={ 'primary' }
-              shape='circle'
-              icon={ <FlagOutlined /> } 
-              onClick={ onFlagClick } 
-            />
-          </Popover>
-          :
-          <Button            
-            type={ 'default' }
-            shape='circle'
-            icon={ <FlagOutlined /> } 
-            onClick={ onFlagClick } 
-          />
-        }
+      <div className='flagControl' >
+        <FlagControl        
+          flag={ flag }
+          comment={ comment }
+          options={ ['Option 1', 'Option 2', 'Option 3'] }
+          onFlagChange={ onFlagChange }
+          onCommentChange={ onCommentChange }
+        />
       </div>
     </div>
   )
