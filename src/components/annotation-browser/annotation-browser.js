@@ -200,6 +200,7 @@ export const AnnotationBrowser = () => {
       { loading ?  
           <Spin className='spin' tip='Loading...' /> : 
         annotation ?
+        <Form.Item>
           <Space direction='vertical' size='middle' className='panels'>            
             { images.map((image, i) => (
               <AnnotationPanel 
@@ -208,7 +209,14 @@ export const AnnotationBrowser = () => {
                 annotation={ annotation } />
             ))}
           </Space> 
-      : null }  
+          </Form.Item>
+      : null } 
+      { annotation && 
+        <Form.Item>
+          { saveButtonGroup }
+        </Form.Item>
+       }
+      </Form> 
       { nextImages.map(({ id }, i) => (
         <Fragment key={ i }>
           <link rel='prefetch' href={ api.getImage(id, 'left') } />
@@ -216,7 +224,6 @@ export const AnnotationBrowser = () => {
           <link rel='prefetch' href={ api.getImage(id, 'right') } />
         </Fragment>
       ))}
-      </Form>
     </>
   )
 }
