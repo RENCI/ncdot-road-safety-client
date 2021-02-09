@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { CheckCircleOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
+import { CheckCircleOutlined, StopOutlined } from '@ant-design/icons'
 import './image.css'
 
 export const Image = ({ url, loading, present, handleLoad, handleClick }) => { 
@@ -74,7 +74,7 @@ export const Image = ({ url, loading, present, handleLoad, handleClick }) => {
         onDoubleClick={ handleDoubleClick }/>     
       { loading ? null
         : present === "present" ? <CheckCircleOutlined className='imageIcon checkIcon' /> 
-        : present === "irrelevant" ? <ExclamationCircleOutlined className='imageIcon exclamationIcon' /> 
+        : present === "irrelevant" ? <StopOutlined className='imageIcon exclamationIcon' /> 
         : null
       }
     </div>

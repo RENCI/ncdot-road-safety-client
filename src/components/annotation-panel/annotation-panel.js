@@ -44,15 +44,13 @@ export const AnnotationPanel = ({ image }) => {
         id={ id } 
         present={ present } 
         handleClick={ handleImageClick } />
-      <div className='flagControl' >
-        <FlagControl        
-          flag={ flag }
-          comment={ comment }
-          options={ ['Option 1', 'Option 2', 'Option 3'] }
-          onFlagChange={ onFlagChange }
-          onCommentChange={ onCommentChange }
-        />
-      </div>
+      <FlagControl        
+        flag={ flag }
+        comment={ comment }
+        options={ ['Fence', 'Obstructed', 'Edge of image'] }
+        onFlagChange={ onFlagChange }
+        onCommentChange={ onCommentChange }
+      />
     </div>
   )
 }

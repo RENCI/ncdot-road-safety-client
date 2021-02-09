@@ -1,70 +1,40 @@
 import React, { useState } from 'react'
-import { Popover, Button, Select, AutoComplete } from 'antd'
-import { FlagOutlined } from '@ant-design/icons'
+import { Tooltip, Tag } from 'antd'
 import './flag-control.css'
 
-const { Option } = Select;
-
 export const FlagControl = ({ flag, comment, options, onFlagChange, onCommentChange }) => {
-
-  const [flags, setFlags] = useState([])
-
-  const onFlagClick = () => {     
-    onFlagChange(!flag)
-  }
+  const [flags, setFlags] = useState({})
 
   const onKeyPress = evt => {
     evt.stopPropagation()
   }
+  const onTagClick = tag => {
+    const newFlags = {...flags}
+    newFlags[tag] = !newFlags[tag]
 
-  const onChange = value => {
-    console.log(value)
-
-    setFlags(value)
-  }
-
-  const popoverContent = () => {
-    return (
-      <div onKeyPress={ onKeyPress }>
-        <Select 
-          mode='tags'
-          placeholder='Add comments'
-          value={ flags }
-          style={{ width: 200 }}
-          onChange={ onChange }
-        >
-          { options.map((option, i) => (
-            <Option key={ i } value={ option }>{ option }</Option>
-          ))}
-        </Select>
-      </div>      
-    )
+    setFlags(newFlags)
   }
 
   return (    
-    <div className='flagButton' >
-      { flag ?
-        <Popover
-          content={ popoverContent } 
-          placement='topRight'
-          trigger='hover' 
-          defaultVisible={ true }
+    <div className="flagDiv">
+      { options.map((option, i) => (
+        <Tooltip 
+          key={ i }
+          title={ option }
+          placement="left"
+          mouseEnterDelay={ 0 }
+          mouseLeaveDelay= { 0 }
         >
-          <Button            
-            type={ 'primary' }
-            shape='circle'
-            icon={ <FlagOutlined /> } 
-            onClick={ onFlagClick } 
-          />
-        </Popover>
-        :
-        <Button            
-          type={ 'default' }
-          shape='circle'
-          icon={ <FlagOutlined /> } 
-          onClick={ onFlagClick } 
-        />
-      }
+          <Tag 
+            key={ i }
+            className='flag'
+            color={ flags[option] ? '#108ee9' : 'blue' } 
+            onClick={ () => onTagClick(option) }
+          >
+            { option }
+          </Tag>
+        </Tooltip>
+      ))}
     </div>
   )
 }

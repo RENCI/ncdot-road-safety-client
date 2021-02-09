@@ -1,5 +1,14 @@
-.flagButton button {
+.flagDiv {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+    margin-left: 12px;
+}
+
+.flag {
+    width: 50px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 5px;
+    cursor: pointer;
 }
