@@ -11,6 +11,8 @@ export const AnnotationPanel = ({ image }) => {
   const { id, present, flag, comment } = image;
 
   const handleImageClick = (id, view) => {
+    console.log(id, view)
+
     const viewPresent = present ? !present[view] : true
 
     dispatch({

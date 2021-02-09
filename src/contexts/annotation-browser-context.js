@@ -75,9 +75,15 @@ const reducer = (state, action) => {
     } 
 
     case 'setAnnotationPresent': {
+
+      console.log(state)
+      console.log(action)
+
       const newState = {...state}
 
       const image = newState.images.find(({ id }) => id === action.id)
+
+      console.log(image)
 
       if (image) {
         image.present[action.view] = action.present

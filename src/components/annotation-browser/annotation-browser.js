@@ -21,10 +21,25 @@ export const AnnotationBrowser = () => {
   const cacheSize = numLoad * 4;
 
   const getNextImages = (annotation, offset, numImages) => {
+    console.log("NEXT")
+    console.log(offset, numImages)
+
     // Get next images, but don't wait for them
     axios.get(api.getNextImageNamesForAnnotation(annotation, numImages), {
       params: { offset: offset }
     }).then(response => {     
+        console.log(response.data.image_base_names)
+
+        // XXX: Check for empty return
+
+        const counts = response.data.image_base_names.reduce((p, c) => {
+          if (!p[c]) p[c] = 0
+          p[c]++
+          return p
+        }, {})
+
+        console.log(counts)
+
         dispatch({ 
           type: 'addNextImages', 
           ids: response.data.image_base_names
@@ -36,6 +51,8 @@ export const AnnotationBrowser = () => {
   }
 
   const getNewImages = async annotation => {
+    console.log("NEW")
+
     setLoading(true)
 
     // Start loading cache
@@ -57,9 +74,11 @@ export const AnnotationBrowser = () => {
   }  
 
   const updateImages = async () => {
-    dispatch({ type: 'updateImages' })
+    console.log("UPDATE")
 
-    getNextImages(annotation, cacheSize, numLoad)
+    getNextImages(annotation, images.length + nextImages.length, n)
+
+    dispatch({ type: 'updateImages' })
   }
 
   const handleAnnotationChange = value => {
@@ -75,6 +94,8 @@ export const AnnotationBrowser = () => {
   }, [allAnnotations])
 
   const handleNumLoadChange = value => {
+    // XXX: Do some work to load cache correctly here
+
     dispatch({ type: 'setNumLoad', numLoad: value })
   }
 
@@ -109,6 +130,9 @@ export const AnnotationBrowser = () => {
         placement: 'bottomLeft',
         duration: 2
       })
+
+      console.log(state)
+      console.log(images.length, nextImages.length)
 
       images.length <= nextImages.length ? updateImages() : getNewImages(annotation)
 
