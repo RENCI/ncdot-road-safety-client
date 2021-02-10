@@ -1,15 +1,29 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { AnnotationBrowserContext } from '../../contexts'
 import { Scene } from '../scene'
 import { FlagControl } from '../flag-control'
 import './annotation-panel.css'
 
+const flagOptions = [
+  'Fence', 
+  'Obsructed', 
+  'Edge of image '
+]
+
 export const AnnotationPanel = ({ image }) => {
+  const [popoverVisible, setPopoverVisible] = useState(false)
+  const [clickEnabled, setClickEnabled] = useState(true)
   const [, dispatch] = useContext(AnnotationBrowserContext)
 
-  const { id, present, flag, comment } = image;
+  const { id, present, flags } = image;
 
   const handleImageClick = (id, view) => {
+    if (!clickEnabled) {
+      if (!popoverVisible) setClickEnabled(true)
+
+      return
+    }
+
     const viewPresent = 
       present ? present[view] === "absent" ? "present" : present[view] === "present" ? "irrelevant" : "absent"
       : "absent"
@@ -22,35 +36,35 @@ export const AnnotationPanel = ({ image }) => {
     })
   }
 
-  const onFlagChange = value => {     
+  const onFlagChange = flags => {     
     dispatch({
-      type: 'setFlag',
+      type: 'setFlags',
       id: id,
-      flag: value
+      flags: flags
     })
   }
 
-  const onCommentChange = value => {
-    dispatch({
-      type: 'setComment',
-      id: id,
-      comment: value
-    })
+  // XXX: This work for this panel, but need to push up to handle all panels
+  const onPopoverVisibleChange = visible => {
+    setPopoverVisible(visible)
+  }
+
+  const onMouseDown = evt => {    
+    if (popoverVisible) setClickEnabled(false)
   }
 
   return (    
-    <div className='annotationPanel'>
+    <div className='annotationPanel' onMouseDown={ onMouseDown }>
       <FlagControl        
-        flag={ flag }
-        comment={ comment }
-        options={ ['Fence', 'Obstructed', 'Edge of image'] }
+        flags={ flags }
+        options={ flagOptions }
         onFlagChange={ onFlagChange }
-        onCommentChange={ onCommentChange }
+        onPopoverVisibleChange={ onPopoverVisibleChange }
       />
       <Scene 
         id={ id } 
-        present={ present } 
-        handleClick={ handleImageClick } 
+        present={ present }                 
+        handleClick={ handleImageClick }         
       />
     </div>
   )

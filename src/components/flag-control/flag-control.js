@@ -5,17 +5,13 @@ import './flag-control.css'
 
 const { Option } = Select;
 
-export const FlagControl = ({ flag, comment, options, onFlagChange, onCommentChange }) => {
-  const [flags, setFlags] = useState([])
-
+export const FlagControl = ({ flags, options, onFlagChange, onPopoverVisibleChange }) => {
   const onKeyPress = evt => {
     evt.stopPropagation()
   }
 
-  const onChange = value => {
-    console.log(value)
-
-    setFlags(value)
+  const onChange = flags => {
+    onFlagChange(flags)
   }
 
   const popoverContent = () => {
@@ -45,11 +41,11 @@ export const FlagControl = ({ flag, comment, options, onFlagChange, onCommentCha
         content={ popoverContent } 
         placement='right'
         trigger='click'
+        onVisibleChange={ onPopoverVisibleChange }
       >
         <Button 
           type={ hasFlags ? 'primary' : 'default' } 
           ghost={ hasFlags }
-          size='large'
         >
           <div style={{ display: "flex", flexDirection: "column"}}>
             <FlagOutlined />

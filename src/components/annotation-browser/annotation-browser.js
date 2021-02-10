@@ -90,14 +90,13 @@ export const AnnotationBrowser = () => {
 
     try {
       await axios.post(api.saveAnnotations, {
-        annotations: images.map(({ id, present, flag, comment }) => {
+        annotations: images.map(({ id, present, flags }) => {
           return {
             image_base_name: id,
             annotation_name: annotation,
-            is_present: present.left || present.front || present.right,
-            is_present_views: Object.entries(present).filter(([,value]) => value).map(([key,]) => views[key]),
-            flag: flag,
-            comment: flag ? comment : ""
+            is_present_views: {...present},
+            flags: [...flags],
+            comment: ''
           }
         })
       })
@@ -133,7 +132,7 @@ export const AnnotationBrowser = () => {
         ghost
         htmlType='button'
         disabled={ oldImages.length === 0 }
-        size='large'
+        size='large'      
         icon={ <ArrowLeftOutlined /> }
         onClick={ handleBackClick } />
       <Button               

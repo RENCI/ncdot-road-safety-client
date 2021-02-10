@@ -18,8 +18,7 @@ const createImage = id => {
       front: "absent",
       right: "absent"
     },
-    flag: false,
-    comment: ''
+    flags: []
   }
 }
 
@@ -98,25 +97,13 @@ const reducer = (state, action) => {
       return newState
     }
 
-    case 'setFlag': {
+    case 'setFlags': {
       const newState = {...state}
 
       const image = newState.images.find(({ id }) => id === action.id)
 
       if (image) {
-        image.flag = action.flag
-      }
-
-      return newState
-    }
-
-    case 'setComment': {
-      const newState = {...state}
-
-      const image = newState.images.find(({ id }) => id === action.id)
-
-      if (image) {
-        image.comment = action.comment
+        image.flags = action.flags
       }
 
       return newState
