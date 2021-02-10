@@ -1,25 +1,11 @@
-.flagDiv {
+.flagButton {
+    margin-right: 12px;
+}
+
+.flagButton button {
     display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    margin-left: 12px;
-    align-items: stretch;
-}
-
-.flag {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-bottom: 5px;
-    cursor: pointer;
-    max-width: 90px;
-}
-
-.addFlagInput {
-    width: 90px;
-}
-
-.addFlagTag {
-    width: 90px;
-    border-style: dashed;
-    cursor: text;    
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 40px;
 }

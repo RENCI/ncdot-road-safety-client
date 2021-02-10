@@ -1,85 +1,64 @@
 import React, { useState } from 'react'
-import { Tooltip, Tag, Input } from 'antd'
-import { PlusOutlined } from '@ant-design/icons'
+import { Popover, Button, Select } from 'antd'
+import { FlagOutlined } from '@ant-design/icons'
 import './flag-control.css'
 
+const { Option } = Select;
+
 export const FlagControl = ({ flag, comment, options, onFlagChange, onCommentChange }) => {
-  const [showInput, setShowInput] = useState(false)
-  const [inputValue, setInputValue] = useState('')
-  const [flags, setFlags] = useState({})
+  const [flags, setFlags] = useState([])
 
   const onKeyPress = evt => {
     evt.stopPropagation()
   }
-  const onTagClick = tag => {
-    const newFlags = {...flags}
-    newFlags[tag] = !newFlags[tag]
 
-    setFlags(newFlags)
+  const onChange = value => {
+    console.log(value)
+
+    setFlags(value)
   }
 
-  const showInputClick = () => {
-    //saveInputRef.current.focus()
-    setShowInput(true);
-  };
-
-  const handleInputChange = evt => {
-    setInputValue(evt.target.value);
-  };
-
-  const handleInputConfirm = () => {
-    if (inputValue && options.indexOf(inputValue) === -1) {
-      // XXX: Dispatch this
-      //options = [...tags, inputValue];
-    }
-
-    setShowInput(false)
-    setInputValue('')
+  const popoverContent = () => {
+    return (
+      <div onKeyPress={ onKeyPress }>
+        <Select 
+          mode='tags'
+          placeholder='Add comments'
+          value={ flags }
+          style={{ width: 300 }}
+          onChange={ onChange }
+        >
+          { options.map((option, i) => (
+            <Option key={ i } value={ option }>{ option }</Option>
+          ))}
+        </Select>
+      </div>      
+    )
   }
+
+  const hasFlags = flags.length > 0;
 
   return (    
-    <div className="flagDiv">
-      { options.map((option, i) => (
-        <Tooltip 
-          key={ i }
-          title={ option }
-          placement="left"
-          mouseEnterDelay={ 0 }
-          mouseLeaveDelay= { 0 }
+    <div className='flagButton' >
+      <Popover
+        title='Add / remove flags'
+        content={ popoverContent } 
+        placement='right'
+        trigger='click'
+      >
+        <Button 
+          type={ hasFlags ? 'primary' : 'default' } 
+          ghost={ hasFlags }
+          size='large'
         >
-          <Tag 
-            key={ i }
-            className='flag'
-            color={ flags[option] ? '#108ee9' : 'blue' } 
-            onClick={ () => onTagClick(option) }
-          >
-            { option }
-          </Tag>
-        </Tooltip>
-      ))}
-      {showInput ?
-      <div
-      className='addFlagInput'>
-        <Input
-          autoFocus
-          type="text"
-          size="small"
-          className="tag-input"
-          value={inputValue}
-          onChange={handleInputChange}
-          onBlur={handleInputConfirm}
-          onPressEnter={handleInputConfirm}
-        />
-        </div>
-      :
-        <Tag 
-          className='addFlagTag' 
-          color='blue'
-          onClick={showInputClick}
-        >
-          <PlusOutlined /> New flag
-        </Tag>
-      }
+          <div style={{ display: "flex", flexDirection: "column"}}>
+            <FlagOutlined />
+            <div style={{ visibility: !hasFlags ? 'hidden' : null }}>
+              { flags.length }
+            </div>
+          </div>
+        </Button>
+      </Popover>
     </div>
   )
 }

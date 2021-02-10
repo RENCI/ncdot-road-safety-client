@@ -40,16 +40,17 @@ export const AnnotationPanel = ({ image }) => {
 
   return (    
     <div className='annotationPanel'>
-      <Scene 
-        id={ id } 
-        present={ present } 
-        handleClick={ handleImageClick } />
       <FlagControl        
         flag={ flag }
         comment={ comment }
         options={ ['Fence', 'Obstructed', 'Edge of image'] }
         onFlagChange={ onFlagChange }
         onCommentChange={ onCommentChange }
+      />
+      <Scene 
+        id={ id } 
+        present={ present } 
+        handleClick={ handleImageClick } 
       />
     </div>
   )
