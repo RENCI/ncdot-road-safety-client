@@ -1,8 +1,11 @@
 import React, { useState } from 'react'
-import { Tooltip, Tag } from 'antd'
+import { Tooltip, Tag, Input } from 'antd'
+import { PlusOutlined } from '@ant-design/icons'
 import './flag-control.css'
 
 export const FlagControl = ({ flag, comment, options, onFlagChange, onCommentChange }) => {
+  const [showInput, setShowInput] = useState(false)
+  const [inputValue, setInputValue] = useState('')
   const [flags, setFlags] = useState({})
 
   const onKeyPress = evt => {
@@ -13,6 +16,25 @@ export const FlagControl = ({ flag, comment, options, onFlagChange, onCommentCha
     newFlags[tag] = !newFlags[tag]
 
     setFlags(newFlags)
+  }
+
+  const showInputClick = () => {
+    //saveInputRef.current.focus()
+    setShowInput(true);
+  };
+
+  const handleInputChange = evt => {
+    setInputValue(evt.target.value);
+  };
+
+  const handleInputConfirm = () => {
+    if (inputValue && options.indexOf(inputValue) === -1) {
+      // XXX: Dispatch this
+      //options = [...tags, inputValue];
+    }
+
+    setShowInput(false)
+    setInputValue('')
   }
 
   return (    
@@ -35,6 +57,29 @@ export const FlagControl = ({ flag, comment, options, onFlagChange, onCommentCha
           </Tag>
         </Tooltip>
       ))}
+      {showInput ?
+      <div
+      className='addFlagInput'>
+        <Input
+          autoFocus
+          type="text"
+          size="small"
+          className="tag-input"
+          value={inputValue}
+          onChange={handleInputChange}
+          onBlur={handleInputConfirm}
+          onPressEnter={handleInputConfirm}
+        />
+        </div>
+      :
+        <Tag 
+          className='addFlagTag' 
+          color='blue'
+          onClick={showInputClick}
+        >
+          <PlusOutlined /> New flag
+        </Tag>
+      }
     </div>
   )
 }
