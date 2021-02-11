@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
+import { Alert } from 'antd'
 import PropTypes from 'prop-types'
 import { CheckCircleOutlined, StopOutlined } from '@ant-design/icons'
 import './image.css'
 
 export const Image = ({ url, loading, present, handleLoad, handleClick }) => { 
+  const [error, setError] = useState(false)
   const [pointerDown, setPointerDown] = useState(false)
   const [drag, setDrag] = useState(false)
   const [brightness, setBrightness] = useState(1)
@@ -52,34 +54,46 @@ export const Image = ({ url, loading, present, handleLoad, handleClick }) => {
     }
   }
 
-  const onError = evt => {
-    message.error('Error loading ' + url, 0)
+  const onError = () => {
+    setError(true)
   }
 
   const filterString = `brightness(${ brightness * 100 }%) contrast(${ contrast * 100}%)`
 
   return (
     <div className='imageDiv'>
-      <img 
-        src={ url } 
-        tabIndex='-1'
-        width='100%' 
-        style={{ 
-          visibility: loading ? "hidden" : "visible",
-          filter: filterString,  
-          cursor: drag ? 'move' : handleClick ? 'pointer' : 'default' 
-        }}
-        draggable='false'
-        onLoad={ handleLoad } 
-        onPointerDown={ onPointerDown }
-        onPointerMove={ onPointerMove }
-        onPointerUp={ onPointerUp }
-        onClick={ handleClick ? onClick : null }
-        onDoubleClick={ onDoubleClick }/>     
-      { loading ? null
-        : present === "present" ? <CheckCircleOutlined className='imageIcon checkIcon' /> 
-        : present === "irrelevant" ? <StopOutlined className='imageIcon exclamationIcon' /> 
-        : null
+      { error ? 
+        <Alert 
+          type='error' 
+          message={ 'Error loading ' + url } 
+          showIcon
+        />
+      :
+        <>
+          <img 
+            src={ url } 
+            tabIndex='-1'
+            width='100%' 
+            style={{ 
+              visibility: loading ? "hidden" : "visible",
+              filter: filterString,  
+              cursor: drag ? 'move' : handleClick ? 'pointer' : 'default' 
+            }}
+            draggable='false'
+            onLoad={ handleLoad } 
+            onPointerDown={ onPointerDown }
+            onPointerMove={ onPointerMove }
+            onPointerUp={ onPointerUp }
+            onClick={ handleClick ? onClick : null }
+            onDoubleClick={ onDoubleClick }
+            onError={ onError }
+          />     
+          { loading ? null
+            : present === "present" ? <CheckCircleOutlined className='imageIcon checkIcon' /> 
+            : present === "irrelevant" ? <StopOutlined className='imageIcon exclamationIcon' /> 
+            : null
+          }
+        </>
       }
     </div>
   )
