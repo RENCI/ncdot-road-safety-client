@@ -10,7 +10,7 @@ import './annotation-browser.css'
 const { Option } = Select
 
 export const AnnotationBrowser = () => {
-  const [allAnnotations] = useContext(AnnotationsContext)
+  const [annotationTypes] = useContext(AnnotationsContext)
   const [state, dispatch] = useContext(AnnotationBrowserContext)
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -63,16 +63,18 @@ export const AnnotationBrowser = () => {
   }
 
   const handleAnnotationChange = value => {
-    dispatch({ type: 'setAnnotation', annotation: value })
+    const annotation = annotationTypes.find(({ name }) => name === value)
+
+    dispatch({ type: 'setAnnotation', annotation: annotation })
 
     getNewImages(value)
   }
 
   useEffect(() => {
-    if (allAnnotations.length > 0) {
-      handleAnnotationChange(allAnnotations[0])
+    if (annotationTypes.length > 0) {
+      handleAnnotationChange(annotationTypes[0].name)
     } 
-  }, [allAnnotations])
+  }, [annotationTypes])
 
   const handleNumLoadChange = value => {
     dispatch({ type: 'setNumLoad', numLoad: value })
@@ -160,12 +162,12 @@ export const AnnotationBrowser = () => {
         <Form.Item label='Select annotation'>
           <Select
             placeholder='Select annotation'
-            value={ annotation } 
+            value={ annotation ? annotation.name : ''} 
             onChange={ handleAnnotationChange }
           >
-            { allAnnotations.map((annotation, i) => (
-              <Option key={ i } value={ annotation }>
-                { annotation }
+            { annotationTypes.map(({ name }, i) => (
+              <Option key={ i } value={ name }>
+                { name }
               </Option>
             ))}
           </Select>
@@ -183,7 +185,7 @@ export const AnnotationBrowser = () => {
               <Alert message={ 
                 <div className='helpMessageDiv'>
                   <div className='helpMessage'>
-                    Select <strong>left</strong>, <strong>front</strong>, and <strong>right</strong> images containing: <strong>{ annotation }</strong>
+                    Select <strong>left</strong>, <strong>front</strong>, and <strong>right</strong> images containing: <strong>{ annotation.name }</strong>
                   </div> 
                   <Button
                     className='iconButton'
@@ -201,15 +203,15 @@ export const AnnotationBrowser = () => {
       { loading ?  
           <Spin className='spin' tip='Loading...' /> : 
         annotation ?
-        <Form.Item>
-          <Space direction='vertical' size='middle' className='panels'>            
-            { images.map((image, i) => (
-              <AnnotationPanel 
-                key={ i } 
-                image={ image } 
-                annotation={ annotation } />
-            ))}
-          </Space> 
+          <Form.Item>
+            <Space direction='vertical' size='middle' className='panels'>            
+              { images.map((image, i) => (
+                <AnnotationPanel 
+                  key={ i } 
+                  image={ image } 
+                  flagOptions={ annotation.flags } />
+              ))}
+            </Space> 
           </Form.Item>
       : null } 
       { annotation && 

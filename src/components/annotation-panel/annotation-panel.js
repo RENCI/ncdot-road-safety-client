@@ -4,13 +4,7 @@ import { Scene } from '../scene'
 import { FlagControl } from '../flag-control'
 import './annotation-panel.css'
 
-const flagOptions = [
-  'Fence', 
-  'Obsructed', 
-  'Edge of image '
-]
-
-export const AnnotationPanel = ({ image }) => {
+export const AnnotationPanel = ({ image, flagOptions }) => {
   const [popoverVisible, setPopoverVisible] = useState(false)
   const [, dispatch] = useContext(AnnotationBrowserContext)
 

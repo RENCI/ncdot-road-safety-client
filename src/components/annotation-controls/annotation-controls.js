@@ -11,7 +11,7 @@ export const AnnotationControls = () => {
   const [saving, setSaving] = useState(false)
   const [saveEnabled, setSaveEnabled] = useState(true)
   const [annotations, setAnnotations] = useState([])
-  const [allAnnotations] = useContext(AnnotationsContext)
+  const [annotationTypes] = useContext(AnnotationsContext)
   const [image] = useContext(RouteBrowserContext)
 
   useEffect(() => {
@@ -72,9 +72,9 @@ export const AnnotationControls = () => {
             value={ annotations }
             onChange={ handleSelectChange }
           >
-            { allAnnotations.map((annotation, i) => (
-              <Option key={ i } value={ annotation }>
-                { annotation }
+            { annotationTypes.map(({ name }, i) => (
+              <Option key={ i } value={ name }>
+                { name }
               </Option>
             ))}
           </Select>
