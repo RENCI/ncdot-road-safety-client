@@ -11,7 +11,7 @@ export const Image = ({ url, loading, present, handleLoad, handleClick }) => {
 
   const movementScale = 0.01;
 
-  const handlePointerDown = evt => {
+  const onPointerDown = evt => {
     if (evt.button === 0) {
       evt.target.setPointerCapture(evt.pointerId)
 
@@ -23,7 +23,7 @@ export const Image = ({ url, loading, present, handleLoad, handleClick }) => {
     }
   }
 
-  const handlePointerMove = evt => {    
+  const onPointerMove = evt => {    
     if (pointerDown && evt.shiftKey) {
       setBrightness(brightness - evt.movementY * movementScale)
       setContrast(contrast + evt.movementX * movementScale)
@@ -34,7 +34,7 @@ export const Image = ({ url, loading, present, handleLoad, handleClick }) => {
     }
   }
   
-  const handlePointerUp = () => {
+  const onPointerUp = () => {
     setPointerDown(false)
     setDrag(false)
   }
@@ -45,11 +45,15 @@ export const Image = ({ url, loading, present, handleLoad, handleClick }) => {
     }
   }
 
-  const handleDoubleClick = evt => {
+  const onDoubleClick = evt => {
     if (evt.shiftKey && evt.button === 0) {
       setBrightness(1)
       setContrast(1)
     }
+  }
+
+  const onError = evt => {
+    message.error('Error loading ' + url, 0)
   }
 
   const filterString = `brightness(${ brightness * 100 }%) contrast(${ contrast * 100}%)`
@@ -67,11 +71,11 @@ export const Image = ({ url, loading, present, handleLoad, handleClick }) => {
         }}
         draggable='false'
         onLoad={ handleLoad } 
-        onPointerDown={ handlePointerDown }
-        onPointerMove={ handlePointerMove }
-        onPointerUp={ handlePointerUp }
+        onPointerDown={ onPointerDown }
+        onPointerMove={ onPointerMove }
+        onPointerUp={ onPointerUp }
         onClick={ handleClick ? onClick : null }
-        onDoubleClick={ handleDoubleClick }/>     
+        onDoubleClick={ onDoubleClick }/>     
       { loading ? null
         : present === "present" ? <CheckCircleOutlined className='imageIcon checkIcon' /> 
         : present === "irrelevant" ? <StopOutlined className='imageIcon exclamationIcon' /> 
