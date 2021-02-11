@@ -91,12 +91,14 @@ export const AnnotationBrowser = () => {
     try {
       await axios.post(api.saveAnnotations, {
         annotations: images.map(({ id, present, flags }) => {
+          // XXX: Split flags and comments here
+
+
           return {
             image_base_name: id,
             annotation_name: annotation,
-            is_present_views: {...present},
-            flags: [...flags],
-            comment: ''
+            views: {...present},
+            flags: [...flags]
           }
         })
       })

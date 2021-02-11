@@ -12,18 +12,11 @@ const flagOptions = [
 
 export const AnnotationPanel = ({ image }) => {
   const [popoverVisible, setPopoverVisible] = useState(false)
-  const [clickEnabled, setClickEnabled] = useState(true)
   const [, dispatch] = useContext(AnnotationBrowserContext)
 
   const { id, present, flags } = image;
 
   const handleImageClick = (id, view) => {
-    if (!clickEnabled) {
-      if (!popoverVisible) setClickEnabled(true)
-
-      return
-    }
-
     const viewPresent = 
       present ? present[view] === "absent" ? "present" : present[view] === "present" ? "irrelevant" : "absent"
       : "absent"
@@ -49,12 +42,8 @@ export const AnnotationPanel = ({ image }) => {
     setPopoverVisible(visible)
   }
 
-  const onMouseDown = evt => {    
-    if (popoverVisible) setClickEnabled(false)
-  }
-
   return (    
-    <div className='annotationPanel' onMouseDown={ onMouseDown }>
+    <div className='annotationPanel'>
       <FlagControl        
         flags={ flags }
         options={ flagOptions }
@@ -65,7 +54,8 @@ export const AnnotationPanel = ({ image }) => {
         id={ id } 
         present={ present }                 
         handleClick={ handleImageClick }         
-      />
+      />      
+      { popoverVisible && <div className='overlay' /> }
     </div>
   )
 }
