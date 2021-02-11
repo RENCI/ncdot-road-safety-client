@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Popover, Button, Select } from 'antd'
-import { FlagOutlined } from '@ant-design/icons'
+import { FlagOutlined, UserOutlined } from '@ant-design/icons'
 import './flag-control.css'
 
 const { Option } = Select;
@@ -25,7 +25,17 @@ export const FlagControl = ({ flags, options, onFlagChange, onPopoverVisibleChan
           onChange={ onChange }
         >
           { options.map((option, i) => (
-            <Option key={ i } value={ option }>{ option }</Option>
+            <Option key={ i } value={ option }>
+              { option }
+            </Option>
+          ))}
+          { flags.filter(flag => !options.includes(flag)).map((option, i) => (
+            <Option key={ i } value={ option }>
+              <div className='userOption'>
+                <UserOutlined />
+                { option }
+              </div>
+            </Option>
           ))}
         </Select>
       </div>      

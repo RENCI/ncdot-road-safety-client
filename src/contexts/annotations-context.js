@@ -30,7 +30,7 @@ export const AnnotationsProvider = ({ children }) => {
             name: 'guardrail',
             flags: [
               'Fence', 
-              'Obsructed', 
+              'Obstructed', 
               'Edge of image'
             ]
           }]
