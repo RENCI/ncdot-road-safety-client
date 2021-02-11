@@ -6,7 +6,12 @@ import { api } from '../../api'
 import './scene.css'
 
 export const Scene = ({ id, present, handleClick }) => {
-  const hasAnnotation = present ? Object.values(present).reduce((p, c) => p || c, false) : false
+  const hasAnnotation = present ? Object.values(present).reduce((p, c) => {
+    return p === 'irrelevant' || c === 'irrelevant' ? 'irrelevant'
+      : p === 'present' || c === 'present' ? 'present'
+      : 'absent'
+   }, 'absent') : 'absent' 
+
   const [loadedCount, setLoadedCount] = useState(0)
   
   useEffect(() => {
@@ -23,10 +28,13 @@ export const Scene = ({ id, present, handleClick }) => {
     <div 
       className='scene' 
       style={{ 
-        outline: hasAnnotation && !loading ? "6px solid #52c41a" : null
+        outline: loading ? null :
+          hasAnnotation === 'present' ? '6px solid #52c41a' : // XXX: Magic number matching value in image.css
+          hasAnnotation === 'irrelevant' ? '6px solid #ebc815' : // XXX: Magic number matching value in image.css
+          null
       }}
     >
-      { loading && <Spin className="spinner"/> }
+      { loading && <Spin className='spinner'/> }
       <Image 
         url={ api.getImage(id, 'left') } 
         loading={ loading }

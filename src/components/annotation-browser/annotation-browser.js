@@ -10,13 +10,13 @@ import './annotation-browser.css'
 const { Option } = Select
 
 export const AnnotationBrowser = () => {
-  const [allAnnotations] = useContext(AnnotationsContext)
+  const [annotationTypes] = useContext(AnnotationsContext)
   const [state, dispatch] = useContext(AnnotationBrowserContext)
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(false)
   const saveButton = useRef(null)
 
-  const { images, nextImages, oldImages, numLoad, annotation } = {...state}
+  const { images, nextImages, oldImages, numLoad, annotation, userFlags } = {...state}
 
   const cacheSize = numLoad * 4;
 
@@ -63,16 +63,18 @@ export const AnnotationBrowser = () => {
   }
 
   const handleAnnotationChange = value => {
-    dispatch({ type: 'setAnnotation', annotation: value })
+    const annotation = annotationTypes.find(({ name }) => name === value)
+
+    dispatch({ type: 'setAnnotation', annotation: annotation })
 
     getNewImages(value)
   }
 
   useEffect(() => {
-    if (allAnnotations.length > 0) {
-      handleAnnotationChange(allAnnotations[0])
+    if (annotationTypes.length > 0) {
+      handleAnnotationChange(annotationTypes[0].name)
     } 
-  }, [allAnnotations])
+  }, [annotationTypes])
 
   const handleNumLoadChange = value => {
     dispatch({ type: 'setNumLoad', numLoad: value })
@@ -90,14 +92,16 @@ export const AnnotationBrowser = () => {
 
     try {
       await axios.post(api.saveAnnotations, {
-        annotations: images.map(({ id, present, flag, comment }) => {
+        annotations: images.map(({ id, present, flags }) => {
+          const systemFlags = flags.filter(flag => annotation.flags.includes(flag))
+          const userFlags = flags.filter(flag => !annotation.flags.includes(flag))
+
           return {
             image_base_name: id,
-            annotation_name: annotation,
-            is_present: present.left || present.front || present.right,
-            is_present_views: Object.entries(present).filter(([,value]) => value).map(([key,]) => views[key]),
-            flag: flag,
-            comment: flag ? comment : ""
+            annotation_name: annotation.name,
+            views: {...present},
+            flags: systemFlags,
+            comments: userFlags
           }
         })
       })
@@ -125,6 +129,32 @@ export const AnnotationBrowser = () => {
     }
   }
 
+  const saveButtonGroup = (
+    <div className='buttonBox'>
+      <Button
+        className='iconButton'
+        type='primary'
+        ghost
+        htmlType='button'
+        disabled={ oldImages.length === 0 }
+        size='large'      
+        icon={ <ArrowLeftOutlined /> }
+        onClick={ handleBackClick } />
+      <Button               
+        className='iconButton saveButton' 
+        ref={ saveButton }
+        type='primary' 
+        htmlType='submit'
+        loading={ saving }
+        disabled={ !annotation }
+        size='large'                
+        icon={ <CloudUploadOutlined /> }
+        onClick={ handleSaveClick }>
+          Save and advance
+      </Button>
+    </div>
+  )
+
   return (
     <>
       <Form 
@@ -133,12 +163,12 @@ export const AnnotationBrowser = () => {
         <Form.Item label='Select annotation'>
           <Select
             placeholder='Select annotation'
-            value={ annotation } 
+            value={ annotation ? annotation.name : ''} 
             onChange={ handleAnnotationChange }
           >
-            { allAnnotations.map((annotation, i) => (
-              <Option key={ i } value={ annotation }>
-                { annotation }
+            { annotationTypes.map(({ name }, i) => (
+              <Option key={ i } value={ name }>
+                { name }
               </Option>
             ))}
           </Select>
@@ -156,7 +186,7 @@ export const AnnotationBrowser = () => {
               <Alert message={ 
                 <div className='helpMessageDiv'>
                   <div className='helpMessage'>
-                    Select <strong>left</strong>, <strong>front</strong>, and <strong>right</strong> images containing: <strong>{ annotation }</strong>
+                    Select <strong>left</strong>, <strong>front</strong>, and <strong>right</strong> images containing: <strong>{ annotation.name }</strong>
                   </div> 
                   <Button
                     className='iconButton'
@@ -168,43 +198,30 @@ export const AnnotationBrowser = () => {
               } /> 
             </Form.Item>
             <Form.Item>
-              <div className='buttonBox'>
-                <Button
-                  className='iconButton'
-                  type='primary'
-                  ghost
-                  htmlType='button'
-                  disabled={ oldImages.length === 0 }
-                  size='large'
-                  icon={ <ArrowLeftOutlined /> }
-                  onClick={ handleBackClick } />
-                <Button               
-                  className='iconButton saveButton' 
-                  ref={ saveButton }
-                  type='primary' 
-                  htmlType='submit'
-                  loading={ saving }
-                  disabled={ !annotation }
-                  size='large'                
-                  icon={ <CloudUploadOutlined /> }
-                  onClick={ handleSaveClick }>
-                    Save and advance
-                </Button>
-              </div>
+              { saveButtonGroup }
             </Form.Item>
           </> }
       { loading ?  
           <Spin className='spin' tip='Loading...' /> : 
         annotation ?
-          <Space direction='vertical' size='middle' className='panels'>            
-            { images.map((image, i) => (
-              <AnnotationPanel 
-                key={ i } 
-                image={ image } 
-                annotation={ annotation } />
-            ))}
-          </Space> 
-      : null }  
+          <Form.Item>
+            <Space direction='vertical' size='middle' className='panels'>            
+              { images.map((image, i) => (
+                <AnnotationPanel 
+                  key={ i } 
+                  image={ image } 
+                  flagOptions={ annotation.flags }
+                  userFlagOptions={ userFlags } />
+              ))}
+            </Space> 
+          </Form.Item>
+      : null } 
+      { annotation && 
+        <Form.Item>
+          { saveButtonGroup }
+        </Form.Item>
+       }
+      </Form> 
       { nextImages.map(({ id }, i) => (
         <Fragment key={ i }>
           <link rel='prefetch' href={ api.getImage(id, 'left') } />
@@ -212,7 +229,6 @@ export const AnnotationBrowser = () => {
           <link rel='prefetch' href={ api.getImage(id, 'right') } />
         </Fragment>
       ))}
-      </Form>
     </>
   )
 }

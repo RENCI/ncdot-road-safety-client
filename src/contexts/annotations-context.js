@@ -24,10 +24,23 @@ export const AnnotationsProvider = ({ children }) => {
       try {
         const response = await axios.get(api.getAnnotationSet);
         
+        dispatch({
+          type: 'setAnnotations',
+          annotations: [{
+            name: 'guardrail',
+            flags: [
+              'Fence', 
+              'Obstructed', 
+              'Edge of image'
+            ]
+          }]
+        })
+/*        
         dispatch({ 
           type: 'setAnnotations',
-          annotations: response.data.annotation_names.map(annotation => annotation)
+          annotations: [...response.data.annotation_names]
         })
+*/        
       }
       catch (error) {
         console.log(error)

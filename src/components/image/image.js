@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { message } from 'antd'
-import { CheckCircleOutlined } from '@ant-design/icons'
+import { CheckCircleOutlined, StopOutlined } from '@ant-design/icons'
 import './image.css'
 
 export const Image = ({ url, loading, present, handleLoad, handleClick }) => { 
@@ -76,10 +75,12 @@ export const Image = ({ url, loading, present, handleLoad, handleClick }) => {
         onPointerMove={ onPointerMove }
         onPointerUp={ onPointerUp }
         onClick={ handleClick ? onClick : null }
-        onDoubleClick={ onDoubleClick }
-        onError={ onError }
-      />     
-      { present && !loading ? <CheckCircleOutlined className='checkIcon' /> : null }
+        onDoubleClick={ onDoubleClick }/>     
+      { loading ? null
+        : present === "present" ? <CheckCircleOutlined className='imageIcon checkIcon' /> 
+        : present === "irrelevant" ? <StopOutlined className='imageIcon exclamationIcon' /> 
+        : null
+      }
     </div>
   )
 }
@@ -87,7 +88,7 @@ export const Image = ({ url, loading, present, handleLoad, handleClick }) => {
 Image.propTypes = {
   url: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
-  present: PropTypes.bool,
+  present: PropTypes.string,
   handleLoad: PropTypes.func.isRequired,
   handleClick: PropTypes.func
 }

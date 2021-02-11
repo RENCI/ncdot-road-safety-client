@@ -5,7 +5,9 @@ const initialState = {
   nextImages: [],
   oldImages: [],
   numLoad: 5,
-  annotation: null
+  annotation: null,
+  userFlagCounts: {},
+  userFlags: []
 };
 
 const createImage = id => {
@@ -14,12 +16,11 @@ const createImage = id => {
     metadata: {},
     annotations: [],
     present: {
-      left: false,
-      front: false,
-      right: false
+      left: "absent",
+      front: "absent",
+      right: "absent"
     },
-    flag: false,
-    comment: ''
+    flags: []
   }
 }
 
@@ -86,26 +87,51 @@ const reducer = (state, action) => {
       return newState
     }
 
-    case 'setFlag': {
+    case 'setAnnotationRelevant': {
       const newState = {...state}
 
       const image = newState.images.find(({ id }) => id === action.id)
 
       if (image) {
-        image.flag = action.flag
+        image.relevant[action.view] = action.relevant
       }
 
       return newState
     }
 
-    case 'setComment': {
+    case 'setFlags': {
       const newState = {...state}
 
       const image = newState.images.find(({ id }) => id === action.id)
 
       if (image) {
-        image.comment = action.comment
+        image.flags = action.flags
       }
+
+      return newState
+    }
+
+    case 'updateUserFlags': {
+      const newState = {...state}
+
+      action.addFlags.forEach(flag => {
+        if (!newState.userFlagCounts[flag]) newState.userFlagCounts[flag] = 0
+
+        newState.userFlagCounts[flag]++
+      })
+
+      action.removeFlags.forEach(flag => {
+        if (!newState.userFlagCounts[flag]) {
+          console.log('Warning: user flag not present')   
+          return       
+        }
+        
+        newState.userFlagCounts[flag]--
+
+        if (newState.userFlagCounts[flag] === 0) delete newState.userFlagCounts[flag]
+      })
+
+      newState.userFlags = Object.keys(newState.userFlagCounts)
 
       return newState
     }

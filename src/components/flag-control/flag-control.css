@@ -1,0 +1,17 @@
+.flagButton {
+    margin-right: 12px;
+}
+
+.flagButton button {
+    height: 100%;
+    width: 40px;
+}
+
+.userOption {
+    display: flex;
+    align-items: center;
+}
+
+.userOption span {
+    margin-right: .2em;
+}
