@@ -16,7 +16,7 @@ export const AnnotationBrowser = () => {
   const [loading, setLoading] = useState(false)
   const saveButton = useRef(null)
 
-  const { images, nextImages, oldImages, numLoad, annotation } = {...state}
+  const { images, nextImages, oldImages, numLoad, annotation, userFlags } = {...state}
 
   const cacheSize = numLoad * 4;
 
@@ -209,7 +209,8 @@ export const AnnotationBrowser = () => {
                 <AnnotationPanel 
                   key={ i } 
                   image={ image } 
-                  flagOptions={ annotation.flags } />
+                  flagOptions={ annotation.flags }
+                  userFlagOptions={ userFlags } />
               ))}
             </Space> 
           </Form.Item>

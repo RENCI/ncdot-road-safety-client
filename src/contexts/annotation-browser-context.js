@@ -5,7 +5,9 @@ const initialState = {
   nextImages: [],
   oldImages: [],
   numLoad: 5,
-  annotation: null
+  annotation: null,
+  userFlagCounts: {},
+  userFlags: []
 };
 
 const createImage = id => {
@@ -105,6 +107,31 @@ const reducer = (state, action) => {
       if (image) {
         image.flags = action.flags
       }
+
+      return newState
+    }
+
+    case 'updateUserFlags': {
+      const newState = {...state}
+
+      action.addFlags.forEach(flag => {
+        if (!newState.userFlagCounts[flag]) newState.userFlagCounts[flag] = 0
+
+        newState.userFlagCounts[flag]++
+      })
+
+      action.removeFlags.forEach(flag => {
+        if (!newState.userFlagCounts[flag]) {
+          console.log('Warning: user flag not present')   
+          return       
+        }
+        
+        newState.userFlagCounts[flag]--
+
+        if (newState.userFlagCounts[flag] === 0) delete newState.userFlagCounts[flag]
+      })
+
+      newState.userFlags = Object.keys(newState.userFlagCounts)
 
       return newState
     }

@@ -5,7 +5,7 @@ import './flag-control.css'
 
 const { Option } = Select;
 
-export const FlagControl = ({ flags, options, onFlagChange, onPopoverVisibleChange }) => {
+export const FlagControl = ({ flags, options, userOptions, onFlagChange, onPopoverVisibleChange }) => {
   const onKeyPress = evt => {
     evt.stopPropagation()
   }
@@ -29,8 +29,8 @@ export const FlagControl = ({ flags, options, onFlagChange, onPopoverVisibleChan
               { option }
             </Option>
           ))}
-          { flags.filter(flag => !options.includes(flag)).map((option, i) => (
-            <Option key={ i } value={ option }>
+          { userOptions.map((option, i) => (
+            <Option key={ "user_" + i } value={ option }>
               <div className='userOption'>
                 <UserOutlined />
                 { option }
