@@ -119,6 +119,14 @@ export const AnnotationBrowser = () => {
       saveButton.current.focus()
     }
     catch (error) {
+      setSaving(false)
+
+      notification.error({
+        message: 'Saving annotations failed',
+        placement: 'bottomLeft',
+        duration: 2
+      })
+
       console.log(error)
     }
   }
