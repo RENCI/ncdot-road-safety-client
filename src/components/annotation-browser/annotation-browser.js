@@ -59,7 +59,7 @@ export const AnnotationBrowser = () => {
   const updateImages = async () => {
     dispatch({ type: 'updateImages' })
 
-    getNextImages(annotation, cacheSize, numLoad)
+    getNextImages(annotation.name, cacheSize, numLoad)
   }
 
   const handleAnnotationChange = value => {
@@ -67,7 +67,7 @@ export const AnnotationBrowser = () => {
 
     dispatch({ type: 'setAnnotation', annotation: annotation })
 
-    getNewImages(value)
+    getNewImages(annotation.name)
   }
 
   useEffect(() => {
@@ -114,7 +114,7 @@ export const AnnotationBrowser = () => {
         duration: 2
       })
 
-      images.length <= nextImages.length ? updateImages() : getNewImages(annotation)
+      images.length <= nextImages.length ? updateImages() : getNewImages(annotation.name)
 
       saveButton.current.focus()
     }
