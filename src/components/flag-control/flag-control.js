@@ -19,7 +19,7 @@ export const FlagControl = ({ flags, options, userOptions, onFlagChange, onPopov
       <div onKeyPress={ onKeyPress }>
         <Select 
           mode='tags'
-          placeholder='Add comments'
+          placeholder='Add flags'
           value={ flags }
           style={{ width: 300 }}
           onChange={ onChange }
@@ -47,7 +47,7 @@ export const FlagControl = ({ flags, options, userOptions, onFlagChange, onPopov
   return (    
     <div className='flagButton' >
       <Popover
-        title='Add / remove flags'
+        title='Flag image'
         content={ popoverContent } 
         placement='right'
         trigger='click'

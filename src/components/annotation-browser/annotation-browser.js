@@ -4,10 +4,14 @@ import { CloudUploadOutlined, ArrowLeftOutlined, QuestionCircleOutlined } from '
 import axios from 'axios'
 import { AnnotationsContext, AnnotationBrowserContext } from '../../contexts'
 import { AnnotationPanel } from '../annotation-panel'
-import { api, views } from '../../api'
+import { api } from '../../api'
 import './annotation-browser.css'
 
 const { Option } = Select
+
+let imageNames1 = []
+let imageNames2 = []
+
 
 export const AnnotationBrowser = () => {
   const [annotationTypes] = useContext(AnnotationsContext)
@@ -18,7 +22,11 @@ export const AnnotationBrowser = () => {
 
   const { images, nextImages, oldImages, numLoad, annotation, userFlags } = {...state}
 
-  const cacheSize = numLoad * 4;
+  const cacheSize = numLoad * 2;
+
+  console.log(imageNames1)
+  console.log(images.map(d => d.id))
+  console.log(nextImages.map(d => d.id))
 
   const getNextImages = (annotation, offset, numImages) => {
     // Get next images, but don't wait for them
@@ -38,9 +46,6 @@ export const AnnotationBrowser = () => {
   const getNewImages = async annotation => {
     setLoading(true)
 
-    // Start loading cache
-    getNextImages(annotation, numLoad, cacheSize);
-
     try {
       const response = await axios.get(api.getNextImageNamesForAnnotation(annotation, numLoad))
       
@@ -50,6 +55,9 @@ export const AnnotationBrowser = () => {
       })
 
       setLoading(false)  
+
+      // Load cache
+      getNextImages(annotation, numLoad, cacheSize);
     }
     catch (error) {
       console.log(error)
@@ -57,9 +65,40 @@ export const AnnotationBrowser = () => {
   }  
 
   const updateImages = async () => {
-    dispatch({ type: 'updateImages' })
+    console.log(numLoad, images.length, nextImages.length)
 
-    getNextImages(annotation.name, cacheSize, numLoad)
+    if (numLoad < nextImages.length) {  
+      setLoading(true)
+
+      try {
+        // Get just what we need
+        const response = await axios.get(api.getNextImageNamesForAnnotation(annotation, nextImages.length - numLoad), {
+          params: { offset: nextImages.length }
+        })
+        
+        dispatch({ 
+          type: 'updateImages', 
+          // XXX: Need to add this as optional parameter to updateImages
+          ids: response.data.image_base_names
+        })
+  
+        setLoading(false)  
+  
+        // Load cache
+        getNextImages(annotation, numLoad, cacheSize);
+      }
+      catch (error) {
+        console.log(error)
+      }  
+    }
+    else {
+      dispatch({ type: 'updateImages' })
+
+      const offset = nextImages.length
+      const n = cacheSize - (nextImages.length - numLoad)
+
+      if (n > 0) getNextImages(annotation.name, offset, n)
+    }
   }
 
   const handleAnnotationChange = value => {
@@ -68,6 +107,19 @@ export const AnnotationBrowser = () => {
     dispatch({ type: 'setAnnotation', annotation: annotation })
 
     getNewImages(annotation.name)
+
+
+
+
+    axios.get(api.getNextImageNamesForAnnotation(annotation.name, 200))
+      .then(response => {    
+        imageNames1 = response.data.image_base_names
+
+        console.log(imageNames1)
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 
   useEffect(() => {
@@ -114,7 +166,7 @@ export const AnnotationBrowser = () => {
         duration: 2
       })
 
-      images.length <= nextImages.length ? updateImages() : getNewImages(annotation.name)
+      updateImages()
 
       saveButton.current.focus()
     }
