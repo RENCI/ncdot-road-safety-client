@@ -24,10 +24,6 @@ export const AnnotationBrowser = () => {
 
   const cacheSize = numLoad * 2;
 
-  console.log(imageNames1)
-  console.log(images.map(d => d.id))
-  console.log(nextImages.map(d => d.id))
-
   const getNextImages = (annotation, offset, numImages) => {
     // Get next images, but don't wait for them
     axios.get(api.getNextImageNamesForAnnotation(annotation, numImages), {
@@ -65,27 +61,29 @@ export const AnnotationBrowser = () => {
   }  
 
   const updateImages = async () => {
-    console.log(numLoad, images.length, nextImages.length)
-
-    if (numLoad < nextImages.length) {  
+    if (nextImages.length < numLoad) {  
       setLoading(true)
 
       try {
         // Get just what we need
-        const response = await axios.get(api.getNextImageNamesForAnnotation(annotation, nextImages.length - numLoad), {
-          params: { offset: nextImages.length }
+        const offset = nextImages.length
+        const n = numLoad - nextImages.length
+
+        const response = await axios.get(api.getNextImageNamesForAnnotation(annotation.name, n), {
+          params: { offset: offset }
         })
+
+        console.log(response.data)
         
         dispatch({ 
           type: 'updateImages', 
-          // XXX: Need to add this as optional parameter to updateImages
           ids: response.data.image_base_names
         })
   
         setLoading(false)  
   
         // Load cache
-        getNextImages(annotation, numLoad, cacheSize);
+        getNextImages(annotation.name, numLoad, cacheSize);
       }
       catch (error) {
         console.log(error)
@@ -105,11 +103,9 @@ export const AnnotationBrowser = () => {
     const annotation = annotationTypes.find(({ name }) => name === value)
 
     dispatch({ type: 'setAnnotation', annotation: annotation })
+    dispatch({ type: 'clearImages' })
 
     getNewImages(annotation.name)
-
-
-
 
     axios.get(api.getNextImageNamesForAnnotation(annotation.name, 200))
       .then(response => {    
