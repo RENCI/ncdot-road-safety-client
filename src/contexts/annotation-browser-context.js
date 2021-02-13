@@ -47,13 +47,20 @@ const reducer = (state, action) => {
         nextImages: state.nextImages.concat(action.ids.map(createImage))        
       }
 
-    case 'updateImages':
+    case 'updateImages': {
+      let images = state.nextImages.slice(0, state.numLoad)
+
+      if (images.length < state.numLoad && action.ids) {
+        images = images.concat(action.ids.slice(0, state.numLoad - images.length).map(createImage))
+      }
+
       return {
         ...state,
-        images: state.nextImages.slice(0, state.numLoad),
+        images: images,
         nextImages: state.nextImages.slice(state.numLoad),
         oldImages: [...state.images]
       }
+    }
 
     case 'goBack':
       return {

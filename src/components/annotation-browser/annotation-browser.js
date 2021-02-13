@@ -4,12 +4,13 @@ import { CloudUploadOutlined, ArrowLeftOutlined, QuestionCircleOutlined } from '
 import axios from 'axios'
 import { AnnotationsContext, AnnotationBrowserContext } from '../../contexts'
 import { AnnotationPanel } from '../annotation-panel'
-import { api, views } from '../../api'
+import { api } from '../../api'
 import './annotation-browser.css'
 
 const { Option } = Select
 
 export const AnnotationBrowser = () => {
+  const [noMoreImages, setNoMoreImages] = useState(false)
   const [annotationTypes] = useContext(AnnotationsContext)
   const [state, dispatch] = useContext(AnnotationBrowserContext)
   const [saving, setSaving] = useState(false)
@@ -20,11 +21,19 @@ export const AnnotationBrowser = () => {
 
   const cacheSize = numLoad * 4;
 
+  const done = images.length === 0 && noMoreImages
+
   const getNextImages = (annotation, offset, numImages) => {
     // Get next images, but don't wait for them
     axios.get(api.getNextImageNamesForAnnotation(annotation, numImages), {
       params: { offset: offset }
-    }).then(response => {     
+    }).then(response => {
+        const imageNames = response.data.image_base_names
+
+        if (imageNames.length < numImages) {
+          setNoMoreImages(true)
+        }
+
         dispatch({ 
           type: 'addNextImages', 
           ids: response.data.image_base_names
@@ -38,9 +47,6 @@ export const AnnotationBrowser = () => {
   const getNewImages = async annotation => {
     setLoading(true)
 
-    // Start loading cache
-    getNextImages(annotation, numLoad, cacheSize);
-
     try {
       const response = await axios.get(api.getNextImageNamesForAnnotation(annotation, numLoad))
       
@@ -50,6 +56,9 @@ export const AnnotationBrowser = () => {
       })
 
       setLoading(false)  
+
+      // Load cache
+      getNextImages(annotation, numLoad, cacheSize);
     }
     catch (error) {
       console.log(error)
@@ -57,15 +66,51 @@ export const AnnotationBrowser = () => {
   }  
 
   const updateImages = async () => {
-    dispatch({ type: 'updateImages' })
+    if (nextImages.length < numLoad) {  
+      setLoading(true)
 
-    getNextImages(annotation.name, cacheSize, numLoad)
+      try {
+        // Get just what we need
+        const offset = nextImages.length
+        const n = numLoad - nextImages.length
+
+        const response = await axios.get(api.getNextImageNamesForAnnotation(annotation.name, n), {
+          params: { offset: offset }
+        })
+
+        console.log(response.data)
+        
+        dispatch({ 
+          type: 'updateImages', 
+          ids: response.data.image_base_names
+        })
+  
+        setLoading(false)  
+  
+        // Load cache
+        getNextImages(annotation.name, numLoad, cacheSize);
+      }
+      catch (error) {
+        console.log(error)
+      }  
+    }
+    else {
+      dispatch({ type: 'updateImages' })
+
+      const offset = nextImages.length
+      const n = cacheSize - (nextImages.length - numLoad)
+
+      if (n > 0) getNextImages(annotation.name, offset, n)
+    }
   }
 
   const handleAnnotationChange = value => {
     const annotation = annotationTypes.find(({ name }) => name === value)
+    
+    setNoMoreImages(false)
 
     dispatch({ type: 'setAnnotation', annotation: annotation })
+    dispatch({ type: 'clearImages' })
 
     getNewImages(annotation.name)
   }
@@ -114,7 +159,7 @@ export const AnnotationBrowser = () => {
         duration: 2
       })
 
-      images.length <= nextImages.length ? updateImages() : getNewImages(annotation.name)
+      updateImages()
 
       saveButton.current.focus()
     }
@@ -137,7 +182,7 @@ export const AnnotationBrowser = () => {
     }
   }
 
-  const saveButtonGroup = (
+  const SaveButtonGroup = ({ isFirst }) => (
     <div className='buttonBox'>
       <Button
         className='iconButton'
@@ -150,7 +195,7 @@ export const AnnotationBrowser = () => {
         onClick={ handleBackClick } />
       <Button               
         className='iconButton saveButton' 
-        ref={ saveButton }
+        ref={ isFirst ? saveButton : null }
         type='primary' 
         htmlType='submit'
         loading={ saving }
@@ -188,47 +233,60 @@ export const AnnotationBrowser = () => {
             value={ numLoad }
             onChange={ handleNumLoadChange } />
         </Form.Item>
-        { annotation && 
-          <>
-            <Form.Item>
-              <Alert message={ 
-                <div className='helpMessageDiv'>
-                  <div className='helpMessage'>
-                    Select <strong>left</strong>, <strong>front</strong>, and <strong>right</strong> images containing: <strong>{ annotation.name }</strong>
-                  </div> 
-                  <Button
-                    className='iconButton'
-                    type='link'
-                    href='https://docs.google.com/document/d/1-CeqPD1b1cFyMjwYivoBlRXfQp-IuHPBP_sWTLoHHXg/edit?usp=sharing'
-                    icon={ <QuestionCircleOutlined style={{ fontSize: 'large' }} /> }
-                  />
-                </div>
-              } /> 
-            </Form.Item>
-            <Form.Item>
-              { saveButtonGroup }
-            </Form.Item>
-          </> }
-      { loading ?  
-          <Spin className='spin' tip='Loading...' /> : 
-        annotation ?
+        { done ? 
           <Form.Item>
-            <Space direction='vertical' size='middle' className='panels'>            
-              { images.map((image, i) => (
-                <AnnotationPanel 
-                  key={ i } 
-                  image={ image } 
-                  flagOptions={ annotation.flags }
-                  userFlagOptions={ userFlags } />
-              ))}
-            </Space> 
+            <Alert 
+              type='success'
+              message={ <><strong>{ annotation.name }</strong> annotation completed!</> }
+            />
           </Form.Item>
-      : null } 
-      { annotation && 
-        <Form.Item>
-          { saveButtonGroup }
-        </Form.Item>
-       }
+          : 
+          <>
+            { annotation && 
+              <>
+                <Form.Item>
+                  <Alert message={ 
+                    <div className='helpMessageDiv'>
+                      <div className='helpMessage'>
+                        Select <strong>left</strong>, <strong>front</strong>, and <strong>right</strong> images containing: <strong>{ annotation.name }</strong>
+                      </div> 
+                      <Button
+                        className='iconButton'
+                        type='link'
+                        href='https://docs.google.com/document/d/1-CeqPD1b1cFyMjwYivoBlRXfQp-IuHPBP_sWTLoHHXg/edit?usp=sharing'
+                        icon={ <QuestionCircleOutlined style={{ fontSize: 'large' }} /> }
+                      />
+                    </div>
+                  } /> 
+                </Form.Item>
+                <Form.Item>
+                  <SaveButtonGroup isFirst={ true } />
+                </Form.Item>
+              </> 
+            }
+            { loading ?  
+                <Spin className='spin' tip='Loading...' /> : 
+              annotation ?
+                <Form.Item>
+                  <Space direction='vertical' size='middle' className='panels'>            
+                    { images.map((image, i) => (
+                      <AnnotationPanel 
+                        key={ i } 
+                        image={ image } 
+                        flagOptions={ annotation.flags }
+                        userFlagOptions={ userFlags } />
+                    ))}
+                  </Space> 
+                </Form.Item>
+              : null 
+            } 
+            { annotation && 
+              <Form.Item>
+                { <SaveButtonGroup /> }
+              </Form.Item>
+            }
+          </>
+        }
       </Form> 
       { nextImages.map(({ id }, i) => (
         <Fragment key={ i }>
