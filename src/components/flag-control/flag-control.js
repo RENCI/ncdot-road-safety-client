@@ -20,8 +20,9 @@ export const FlagControl = ({ flags, options, userOptions, onFlagChange, onPopov
         <Select 
           mode='tags'
           placeholder='Add flags'
+          defaultOpen={ true }
           value={ flags }
-          style={{ width: 300 }}
+          style={{ width: 300 }}          
           onChange={ onChange }
         >
           { options.map((option, i) => (
