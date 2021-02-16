@@ -1,5 +1,16 @@
+.flags {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+}
+
 .flagButton {
     margin-right: 12px;
+}
+
+.flagButton div {
+  display: flex;
+  flex-direction: column;
 }
 
 .flagButton button {

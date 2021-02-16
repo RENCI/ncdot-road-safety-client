@@ -46,13 +46,16 @@ export const AnnotationPanel = ({ image, flagOptions, userFlagOptions }) => {
     }
   }
 
-  // XXX: This work for this panel, but need to push up to handle all panels
   const onPopoverVisibleChange = visible => {
     setPopoverVisible(visible)
   }
 
+  const onKeyPress = evt => {
+    console.log(evt.key)
+  }
+
   return (    
-    <div className='annotationPanel'>
+    <div className='annotationPanel' onKeyPress={ onKeyPress }>
       <FlagControl        
         flags={ flags }
         options={ flagOptions }

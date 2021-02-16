@@ -1,44 +1,80 @@
-import React from 'react'
-import { Popover, Button, Select } from 'antd'
+import React, { useState } from 'react'
+import { Popover, Button, Input } from 'antd'
 import { FlagOutlined, UserOutlined } from '@ant-design/icons'
 import './flag-control.css'
 
-const { Option } = Select;
-
 export const FlagControl = ({ flags, options, userOptions, onFlagChange, onPopoverVisibleChange }) => {
+  const [newFlag, setNewFlag] = useState('')
+
   const onKeyPress = evt => {
     evt.stopPropagation()
   }
 
-  const onChange = flags => {
-    onFlagChange(flags)
+  const onFlagClick = flag => {
+    if (flags.includes(flag)) {
+      onFlagChange(flags.filter(currentFlag => currentFlag !== flag))
+    }
+    else {
+      onFlagChange(flags.concat(flag))
+    }
+  }
+
+  const onInputChange = evt => {
+    setNewFlag(evt.target.value)
+  }
+
+  const onInputPressEnter = evt => {
+    const flag = evt.target.value
+
+    if (flag === '') return
+
+    if (!flags.includes(flag)) {
+      onFlagChange(flags.concat(flag))
+    }    
+
+    setNewFlag('')
   }
 
   const popoverContent = () => {
     return (
-      <div onKeyPress={ onKeyPress }>
-        <Select 
-          mode='tags'
-          placeholder='Add flags'
-          defaultOpen={ true }
-          value={ flags }
-          style={{ width: 300 }}          
-          onChange={ onChange }
-        >
-          { options.map((option, i) => (
-            <Option key={ i } value={ option }>
+      <div 
+        className='flags'
+        onKeyPress={ onKeyPress }
+      >
+        { options.map((option, i) => (
+          <Button 
+            key={ i }
+            className='mb-2'
+            type={ flags.includes(option) ? 'primary' : 'default' }
+            shape='round'
+            size='small'
+            onClick={ () => onFlagClick(option) }
+          >
+            <u>{ option[0] }</u>{ option.slice(1) }
+          </Button>
+        ))}      
+        { userOptions.map((option, i) => (
+          <Button
+            key={ 'user_' + i }
+            className='mb-2'
+            type={ flags.includes(option) ? 'primary' : 'default' }
+            shape='round'
+            size='small'
+            onClick={ () => onFlagClick(option) }
+          >
+            <div className='userOption'>
+              <UserOutlined />
               { option }
-            </Option>
-          ))}
-          { userOptions.map((option, i) => (
-            <Option key={ "user_" + i } value={ option }>
-              <div className='userOption'>
-                <UserOutlined />
-                { option }
-              </div>
-            </Option>
-          ))}
-        </Select>
+            </div>
+          </Button>
+        ))}
+        <Input 
+          placeholder='Add new flag' 
+          value={ newFlag }
+          size='small'
+          onChange= { onInputChange }
+          onPressEnter={ onInputPressEnter }
+        />
       </div>      
     )
   }
@@ -58,7 +94,7 @@ export const FlagControl = ({ flags, options, userOptions, onFlagChange, onPopov
           type={ hasFlags ? 'primary' : 'default' } 
           ghost={ hasFlags }
         >
-          <div style={{ display: "flex", flexDirection: "column"}}>
+          <div>
             <FlagOutlined />
             <div style={{ visibility: !hasFlags ? 'hidden' : null }}>
               { flags.length }
