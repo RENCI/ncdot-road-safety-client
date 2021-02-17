@@ -6,11 +6,12 @@ import './annotation-panel.css'
 
 export const AnnotationPanel = ({ image, flagOptions, userFlagOptions }) => {
   const [popoverVisible, setPopoverVisible] = useState(false)
+  const [tooltip, setTooltip] = useState(null)
   const [, dispatch] = useContext(AnnotationBrowserContext)
 
   const { id, present, flags } = image;
 
-  const handleImageClick = (id, view) => {
+  const onImageClick = (id, view) => {
     const viewPresent = 
       present ? present[view] === "absent" ? "present" : present[view] === "present" ? "irrelevant" : "absent"
       : "absent"
@@ -23,7 +24,11 @@ export const AnnotationPanel = ({ image, flagOptions, userFlagOptions }) => {
     })
   }
 
-  const onFlagChange = newFlags => {     
+  const onFlagChange = flag => {     
+    const newFlags = flags.includes(flag) ? 
+      flags.filter(currentFlag => currentFlag !== flag) :
+      flags.concat(flag)
+
     dispatch({
       type: 'setFlags',
       id: id,
@@ -50,23 +55,40 @@ export const AnnotationPanel = ({ image, flagOptions, userFlagOptions }) => {
     setPopoverVisible(visible)
   }
 
-  const onKeyPress = evt => {
-    console.log(evt.key)
+  const onImageKeyPress = evt => {
+    const flag = flagOptions.concat(userFlagOptions).find(flag => {
+      return flag[0].toLowerCase() === evt.key.toLowerCase()
+    })
+
+    if (flag) {
+      onFlagChange(flag)
+
+      if (flags.includes(flag)) {
+        setTooltip("Removed " + flag)        
+      }
+      else {
+        setTooltip("Added " + flag)
+      }
+
+      setTimeout(() => setTooltip(null), 3000)
+    }
   }
 
   return (    
-    <div className='annotationPanel' onKeyPress={ onKeyPress }>
+    <div className='annotationPanel'>
       <FlagControl        
         flags={ flags }
         options={ flagOptions }
         userOptions={ userFlagOptions }
+        tooltip={ tooltip }
         onFlagChange={ onFlagChange }
         onPopoverVisibleChange={ onPopoverVisibleChange }
       />
       <Scene 
         id={ id } 
         present={ present }                 
-        handleClick={ handleImageClick }         
+        onClick={ onImageClick }
+        onKeyPress={ onImageKeyPress }
       />      
       { popoverVisible && <div className='overlay' /> }
     </div>

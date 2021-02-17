@@ -1,22 +1,13 @@
 import React, { useState } from 'react'
-import { Popover, Button, Input } from 'antd'
+import { Tooltip, Popover, Button, Input } from 'antd'
 import { FlagOutlined, UserOutlined } from '@ant-design/icons'
 import './flag-control.css'
 
-export const FlagControl = ({ flags, options, userOptions, onFlagChange, onPopoverVisibleChange }) => {
+export const FlagControl = ({ flags, options, userOptions, tooltip, onFlagChange, onPopoverVisibleChange }) => {
   const [newFlag, setNewFlag] = useState('')
 
   const onKeyPress = evt => {
     evt.stopPropagation()
-  }
-
-  const onFlagClick = flag => {
-    if (flags.includes(flag)) {
-      onFlagChange(flags.filter(currentFlag => currentFlag !== flag))
-    }
-    else {
-      onFlagChange(flags.concat(flag))
-    }
   }
 
   const onInputChange = evt => {
@@ -28,9 +19,7 @@ export const FlagControl = ({ flags, options, userOptions, onFlagChange, onPopov
 
     if (flag === '') return
 
-    if (!flags.includes(flag)) {
-      onFlagChange(flags.concat(flag))
-    }    
+    onFlagChange(flag)
 
     setNewFlag('')
   }
@@ -48,7 +37,7 @@ export const FlagControl = ({ flags, options, userOptions, onFlagChange, onPopov
             type={ flags.includes(option) ? 'primary' : 'default' }
             shape='round'
             size='small'
-            onClick={ () => onFlagClick(option) }
+            onClick={ () => onFlagChange(option) }
           >
             <u>{ option[0] }</u>{ option.slice(1) }
           </Button>
@@ -60,7 +49,7 @@ export const FlagControl = ({ flags, options, userOptions, onFlagChange, onPopov
             type={ flags.includes(option) ? 'primary' : 'default' }
             shape='round'
             size='small'
-            onClick={ () => onFlagClick(option) }
+            onClick={ () => onFlagChange(option) }
           >
             <div className='userOption'>
               <UserOutlined />
@@ -83,6 +72,12 @@ export const FlagControl = ({ flags, options, userOptions, onFlagChange, onPopov
 
   return (    
     <div className='flagButton' >
+    <Tooltip 
+      title={ tooltip }
+      visible={ tooltip !== null }
+      placement='right'
+      color='blue'
+    >
       <Popover
         title='Flag image'
         content={ popoverContent } 
@@ -102,6 +97,7 @@ export const FlagControl = ({ flags, options, userOptions, onFlagChange, onPopov
           </div>
         </Button>
       </Popover>
+    </Tooltip>
     </div>
   )
 }

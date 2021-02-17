@@ -5,7 +5,9 @@ import { Image } from '../image'
 import { api } from '../../api'
 import './scene.css'
 
-export const Scene = ({ id, present, handleClick }) => {
+export const Scene = ({ id, present, onClick, onKeyPress }) => {
+  const [active, setActive] = useState(false)
+
   const hasAnnotation = present ? Object.values(present).reduce((p, c) => {
     return p === 'irrelevant' || c === 'irrelevant' ? 'irrelevant'
       : p === 'present' || c === 'present' ? 'present'
@@ -20,39 +22,65 @@ export const Scene = ({ id, present, handleClick }) => {
 
   const loading = loadedCount < 3
 
-  const handleLoad = () => {
+  const onLoad = () => {
     setLoadedCount(loadedCount + 1)
   }
+
+  const onMouseOver = () => {
+    if (!active) {
+      setActive(true)
+    }
+  }
+
+  const onMouseLeave = () => {
+    if (active) setActive(false)
+  }
+
+  const hasOutline = !loading && (hasAnnotation === 'present' || hasAnnotation === 'irrelevant' || active)
+
+  const outlineWidth =
+    (hasAnnotation === 'present' || hasAnnotation === 'irrelevant') && active ? '6px' :
+    hasAnnotation === 'present' || hasAnnotation === 'irrelevant' ? '4px' :
+    '2px'
+
+  const outlineColor = 
+    hasAnnotation === 'present' ? '#52c41a' : // XXX: Magic number matching value in image.css
+    hasAnnotation === 'irrelevant' ? '#ebc815' : // XXX: Magic number matching value in image.css
+    '#000'
 
   return (
     <div 
       className='scene' 
-      style={{ 
-        outline: loading ? null :
-          hasAnnotation === 'present' ? '6px solid #52c41a' : // XXX: Magic number matching value in image.css
-          hasAnnotation === 'irrelevant' ? '6px solid #ebc815' : // XXX: Magic number matching value in image.css
-          null
-      }}
+      style={{ outline: hasOutline ? outlineWidth + ' solid ' + outlineColor : null }}
+      onMouseOver={ onMouseOver }
+      onMouseLeave={ onMouseLeave }
+      onKeyPress={ onKeyPress }      
     >
       { loading && <Spin className='spinner'/> }
       <Image 
         url={ api.getImage(id, 'left') } 
         loading={ loading }
         present={ present ? present.left : null }
-        handleLoad={ handleLoad }
-        handleClick={ handleClick ? () => handleClick(id, 'left') : null } />
+        onLoad={ onLoad }
+        onClick={ onClick ? () => onClick(id, 'left') : null } 
+        onKeyPress={ onKeyPress }
+      />
       <Image 
         url={ api.getImage(id, 'front') } 
         loading={ loading }
         present={ present ? present.front : null }
-        handleLoad={ handleLoad } 
-        handleClick={ handleClick ? () => handleClick(id, 'front') : null } />
+        onLoad={ onLoad } 
+        onClick={ onClick ? () => onClick(id, 'front') : null } 
+        onKeyPress={ onKeyPress }
+      />
       <Image 
         url={ api.getImage(id, 'right') } 
         loading={ loading }
         present={ present ? present.right : null }
-        handleLoad={ handleLoad }
-        handleClick={ handleClick ? () => handleClick(id, 'right') : null } />        
+        onLoad={ onLoad }
+        onClick={ onClick ? () => onClick(id, 'right') : null }
+        onKeyPress={ onKeyPress }
+      />        
     </div>
   )
 }
@@ -60,5 +88,5 @@ export const Scene = ({ id, present, handleClick }) => {
 Scene.propTypes = {
   id: PropTypes.string.isRequired,
   present: PropTypes.object,
-  handleClick: PropTypes.func
+  onClick: PropTypes.func
 }
