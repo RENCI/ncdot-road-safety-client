@@ -6,8 +6,9 @@ const initialState = {
   oldImages: [],
   numLoad: 5,
   annotation: null,
+  userFlags: [],
   userFlagCounts: {},
-  userFlags: []
+  flagShortcuts: {}
 };
 
 const createImage = id => {
@@ -22,6 +23,27 @@ const createImage = id => {
     },
     flags: []
   }
+}
+
+const addShortcut = (shortcuts, flag) => {
+  const used = Object.values(shortcuts).map(({ key }) => key)
+
+  for (let i = 0; i < flag.length; i++) {
+    const c = flag[i].toLowerCase()
+
+    if (!used.includes(c)) {
+      shortcuts[flag] = { 
+        key: c, 
+        index: i
+      }
+
+      break;
+    }
+  }
+
+  console.log(shortcuts)
+
+  return shortcuts
 }
 
 const reducer = (state, action) => {
@@ -122,7 +144,11 @@ const reducer = (state, action) => {
       const newState = {...state}
 
       action.addFlags.forEach(flag => {
-        if (!newState.userFlagCounts[flag]) newState.userFlagCounts[flag] = 0
+        if (!newState.userFlagCounts[flag]) {
+          newState.userFlagCounts[flag] = 0
+
+          addShortcut(newState.flagShortcuts, flag)
+        }
 
         newState.userFlagCounts[flag]++
       })
@@ -135,7 +161,10 @@ const reducer = (state, action) => {
         
         newState.userFlagCounts[flag]--
 
-        if (newState.userFlagCounts[flag] === 0) delete newState.userFlagCounts[flag]
+        if (newState.userFlagCounts[flag] === 0) {
+          delete newState.userFlagCounts[flag]
+          delete newState.flagShortcuts[flag]
+        }
       })
 
       newState.userFlags = Object.keys(newState.userFlagCounts)
@@ -153,8 +182,11 @@ const reducer = (state, action) => {
       return {
         ...state,
         annotation: action.annotation,        
-        nextImages: []
-      }
+        nextImages: [],
+        userFlags: [],
+        userFlagCounts: {},
+        flagShortcuts: action.annotation.flags.reduce(addShortcut, {})
+    }
 
     default: 
       throw new Error('Invalid annotation browser context action: ' + action.type)

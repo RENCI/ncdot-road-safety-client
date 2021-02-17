@@ -3,7 +3,7 @@ import { Tooltip, Popover, Button, Input } from 'antd'
 import { FlagOutlined, UserOutlined } from '@ant-design/icons'
 import './flag-control.css'
 
-export const FlagControl = ({ flags, options, userOptions, tooltip, onFlagChange, onPopoverVisibleChange }) => {
+export const FlagControl = ({ flags, options, userOptions, shortcuts, tooltip, onFlagChange, onPopoverVisibleChange }) => {
   const [newFlag, setNewFlag] = useState('')
 
   const onKeyPress = evt => {
@@ -25,38 +25,41 @@ export const FlagControl = ({ flags, options, userOptions, tooltip, onFlagChange
   }
 
   const popoverContent = () => {
+    const optionDisplay = (option, i, isUserOption) => {
+      const shortcut = shortcuts[option]
+      const j = shortcut ? shortcut.index : 0
+
+      const display = shortcut ? 
+        <>{ option.slice(0, j) }<u>{ option[j] }</u>{ option.slice(j + 1) }</> : 
+        option
+
+      return (
+        <Button 
+          key={ isUserOption ? 'user_' + i : i }
+          className='mb-2'
+          type={ flags.includes(option) ? 'primary' : 'default' }
+          shape='round'
+          size='small'
+          onClick={ () => onFlagChange(option) }
+        >
+          { isUserOption ? 
+            <div className='userOption'>
+              <UserOutlined />
+              { display }
+            </div>
+          : display
+          }
+        </Button>
+      )
+    }
+
     return (
       <div 
         className='flags'
         onKeyPress={ onKeyPress }
       >
-        { options.map((option, i) => (
-          <Button 
-            key={ i }
-            className='mb-2'
-            type={ flags.includes(option) ? 'primary' : 'default' }
-            shape='round'
-            size='small'
-            onClick={ () => onFlagChange(option) }
-          >
-            <u>{ option[0] }</u>{ option.slice(1) }
-          </Button>
-        ))}      
-        { userOptions.map((option, i) => (
-          <Button
-            key={ 'user_' + i }
-            className='mb-2'
-            type={ flags.includes(option) ? 'primary' : 'default' }
-            shape='round'
-            size='small'
-            onClick={ () => onFlagChange(option) }
-          >
-            <div className='userOption'>
-              <UserOutlined />
-              { option }
-            </div>
-          </Button>
-        ))}
+        { options.map((option, i) => optionDisplay(option, i, false)) }      
+        { userOptions.map((option, i) => optionDisplay(option, i, true)) }
         <Input 
           placeholder='Add new flag' 
           value={ newFlag }

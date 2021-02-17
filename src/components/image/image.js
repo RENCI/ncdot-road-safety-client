@@ -111,6 +111,7 @@ Image.propTypes = {
   url: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
   present: PropTypes.string,
-  handleLoad: PropTypes.func.isRequired,
-  handleClick: PropTypes.func
+  onLoad: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
+  onKeyPress: PropTypes.func
 }

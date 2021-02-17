@@ -4,7 +4,7 @@ import { Scene } from '../scene'
 import { FlagControl } from '../flag-control'
 import './annotation-panel.css'
 
-export const AnnotationPanel = ({ image, flagOptions, userFlagOptions }) => {
+export const AnnotationPanel = ({ image, flagOptions, userFlagOptions, flagShortcuts }) => {
   const [popoverVisible, setPopoverVisible] = useState(false)
   const [tooltip, setTooltip] = useState(null)
   const [, dispatch] = useContext(AnnotationBrowserContext)
@@ -56,7 +56,9 @@ export const AnnotationPanel = ({ image, flagOptions, userFlagOptions }) => {
   }
 
   const onImageKeyPress = evt => {
-    const flag = flagOptions.concat(userFlagOptions).find(flag => {
+    const flag = 
+    
+    flagOptions.concat(userFlagOptions).find(flag => {
       return flag[0].toLowerCase() === evt.key.toLowerCase()
     })
 
@@ -80,6 +82,7 @@ export const AnnotationPanel = ({ image, flagOptions, userFlagOptions }) => {
         flags={ flags }
         options={ flagOptions }
         userOptions={ userFlagOptions }
+        shortcuts={ flagShortcuts }
         tooltip={ tooltip }
         onFlagChange={ onFlagChange }
         onPopoverVisibleChange={ onPopoverVisibleChange }
