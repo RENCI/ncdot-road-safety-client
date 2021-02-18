@@ -81,11 +81,11 @@ export const AnnotationBrowser = () => {
     dispatch({ type: 'setNumLoad', numLoad: value })
   }
 
-  const handleBackClick = async () => {
+  const onBackClick = async () => {
     dispatch({ type: 'goBack' })
   }
 
-  const handleSaveClick = async () => {    
+  const onSaveClick = async () => {    
     setSaving(true);
 
     axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
@@ -139,9 +139,14 @@ export const AnnotationBrowser = () => {
     }
   }
 
-  const handleKeyPress = event => {
-    if (event.key === 'Enter' || event.key === 's') {
-      handleSaveClick()
+  const onKeyDown = event => {
+
+    console.log(event)
+    if (event.key === 'Enter') {
+      onSaveClick()
+    }
+    else if (event.key === 'Backspace' && previousImages.length > 0) {
+      onBackClick()
     }
   }
 
@@ -155,7 +160,7 @@ export const AnnotationBrowser = () => {
         disabled={ previousImages.length === 0 }
         size='large'      
         icon={ <ArrowLeftOutlined /> }
-        onClick={ handleBackClick } />
+        onClick={ onBackClick } />
       <Button               
         className='iconButton saveButton' 
         ref={ isFirst ? saveButton : null }
@@ -165,7 +170,7 @@ export const AnnotationBrowser = () => {
         disabled={ !annotation }
         size='large'                
         icon={ <CloudUploadOutlined /> }
-        onClick={ handleSaveClick }>
+        onClick={ onSaveClick }>
           Save and advance
       </Button>
     </div>
@@ -174,7 +179,7 @@ export const AnnotationBrowser = () => {
   return (
     <>
       <Form 
-        onKeyPress={ handleKeyPress }
+        onKeyDown={ onKeyDown }
       >         
         <Form.Item label='Select annotation'>
           <Select

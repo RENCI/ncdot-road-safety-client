@@ -8,7 +8,7 @@ export const FlagControl = ({
 }) => {
   const [newFlag, setNewFlag] = useState('')
 
-  const onKeyPress = evt => {
+  const onKeyDown = evt => {
     evt.stopPropagation()
   }
 
@@ -72,7 +72,7 @@ export const FlagControl = ({
     return (
       <div 
         className='flags'
-        onKeyPress={ onKeyPress }
+        onKeyDown={ onKeyDown }
       >
         { options.map((option, i) => optionDisplay(option, i, false)) }      
         { userOptions.map((option, i) => optionDisplay(option, i, true)) }
