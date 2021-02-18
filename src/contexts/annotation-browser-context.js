@@ -31,6 +31,8 @@ const addShortcut = (shortcuts, flag) => {
   for (let i = 0; i < flag.length; i++) {
     const c = flag[i].toLowerCase()
 
+    if (c < 'a' || c > 'z') continue;
+
     if (!used.includes(c)) {
       shortcuts[flag] = { 
         key: c, 
@@ -40,6 +42,8 @@ const addShortcut = (shortcuts, flag) => {
       break;
     }
   }
+
+  console.log(shortcuts)
 
   return shortcuts
 }

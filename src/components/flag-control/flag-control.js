@@ -32,8 +32,12 @@ export const FlagControl = ({
       const j = shortcut ? shortcut.index : 0
 
       const display = shortcut ? 
-        <>{ option.slice(0, j) }<u>{ option[j] }</u>{ option.slice(j + 1) }</> : 
-        option
+        <span style={{ whiteSpace: 'pre-wrap' }}>
+          { option.slice(0, j) }
+          <u>{ option[j] }</u>
+          { option.slice(j + 1) }
+        </span> 
+        : option
 
       return (
         <div 
