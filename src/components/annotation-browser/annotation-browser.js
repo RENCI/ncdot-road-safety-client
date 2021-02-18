@@ -10,45 +10,28 @@ import './annotation-browser.css'
 const { Option } = Select
 
 export const AnnotationBrowser = () => {
-  const [noMoreImages, setNoMoreImages] = useState(false)
+  const [gotImages, setGotImages] = useState(false)
   const [annotationTypes] = useContext(AnnotationsContext)
   const [state, dispatch] = useContext(AnnotationBrowserContext)
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(false)
   const saveButton = useRef(null)
 
-  const { images, nextImages, oldImages, numLoad, annotation, userFlags, flagShortcuts } = {...state}
+  const { images, previousImages, imageCache, numLoad, annotation, userFlags, flagShortcuts } = {...state}
 
   const cacheSize = numLoad * 4;
 
-  const done = images.length === 0 && noMoreImages
+  const done = gotImages && images.length === 0
 
-  const getNextImages = (annotation, offset, numImages) => {
-    // Get next images, but don't wait for them
-    axios.get(api.getNextImageNamesForAnnotation(annotation, numImages), {
-      params: { offset: offset }
-    }).then(response => {
-        const imageNames = response.data.image_base_names
-
-        if (imageNames.length < numImages) {
-          setNoMoreImages(true)
-        }
-
-        dispatch({ 
-          type: 'addNextImages', 
-          ids: response.data.image_base_names
-        }) 
-      })
-      .catch(error => {
-        console.log(error)
-      })
-  }
-
-  const getNewImages = async annotation => {
+  const getFirstImages = async annotation => {
     setLoading(true)
 
     try {
+      console.log(annotation, numLoad)
+
       const response = await axios.get(api.getNextImageNamesForAnnotation(annotation, numLoad))
+
+      console.log(response.data)
       
       dispatch({ 
         type: 'setImages', 
@@ -56,72 +39,47 @@ export const AnnotationBrowser = () => {
       })
 
       setLoading(false)  
+      setGotImages(true)
 
       // Load cache
-      getNextImages(annotation, numLoad, cacheSize);
+      getCacheImages(annotation, cacheSize);
     }
     catch (error) {
       console.log(error)
     }  
-  }  
+  } 
 
-  const updateImages = async () => {
-    if (nextImages.length < numLoad) {  
-      setLoading(true)
+  const getCacheImages = (annotation, numImages) => {
+    // Get next images, but don't wait for them
+    axios.get(api.getNextImageNamesForAnnotation(annotation, numImages)).then(response => {
+      dispatch({ 
+        type: 'setCacheImages', 
+        ids: response.data.image_base_names
+      }) 
+    })
+    .catch(error => {
+      console.log(error)
+    })
+  } 
 
-      try {
-        // Get just what we need
-        const offset = nextImages.length
-        const n = numLoad - nextImages.length
-
-        const response = await axios.get(api.getNextImageNamesForAnnotation(annotation.name, n), {
-          params: { offset: offset }
-        })
-
-        console.log(response.data)
-        
-        dispatch({ 
-          type: 'updateImages', 
-          ids: response.data.image_base_names
-        })
-  
-        setLoading(false)  
-  
-        // Load cache
-        getNextImages(annotation.name, numLoad, cacheSize);
-      }
-      catch (error) {
-        console.log(error)
-      }  
-    }
-    else {
-      dispatch({ type: 'updateImages' })
-
-      const offset = nextImages.length
-      const n = cacheSize - (nextImages.length - numLoad)
-
-      if (n > 0) getNextImages(annotation.name, offset, n)
-    }
-  }
-
-  const handleAnnotationChange = value => {
+  const onAnnotationChange = value => {
     const annotation = annotationTypes.find(({ name }) => name === value)
     
-    setNoMoreImages(false)
+    setGotImages(false)
 
     dispatch({ type: 'setAnnotation', annotation: annotation })
     dispatch({ type: 'clearImages' })
 
-    getNewImages(annotation.name)
+    getFirstImages(annotation.name)
   }
 
   useEffect(() => {
     if (annotationTypes.length > 0) {
-      handleAnnotationChange(annotationTypes[0].name)
+      onAnnotationChange(annotationTypes[0].name)
     } 
   }, [annotationTypes])
 
-  const handleNumLoadChange = value => {
+  const onNumLoadChange = value => {
     dispatch({ type: 'setNumLoad', numLoad: value })
   }
 
@@ -136,7 +94,9 @@ export const AnnotationBrowser = () => {
     axios.defaults.xsrfCookieName = 'csrftoken'
 
     try {
-      await axios.post(api.saveAnnotations, {
+      const response = await axios.post(api.saveAnnotations, {
+        return_image_count: numLoad,
+        annotation_name: annotation.name,
         annotations: images.map(({ id, present, flags }) => {
           const systemFlags = flags.filter(flag => annotation.flags.includes(flag))
           const userFlags = flags.filter(flag => !annotation.flags.includes(flag))
@@ -151,6 +111,8 @@ export const AnnotationBrowser = () => {
         })
       })
       
+      console.log(response.data)
+
       setSaving(false)
 
       notification.success({
@@ -159,7 +121,12 @@ export const AnnotationBrowser = () => {
         duration: 2
       })
 
-      updateImages()
+      dispatch({ 
+        type: 'setImages', 
+        ids: response.data.image_base_names
+      })    
+      
+      getCacheImages(annotation.name, cacheSize);
 
       saveButton.current.focus()
     }
@@ -189,7 +156,7 @@ export const AnnotationBrowser = () => {
         type='primary'
         ghost
         htmlType='button'
-        disabled={ oldImages.length === 0 }
+        disabled={ previousImages.length === 0 }
         size='large'      
         icon={ <ArrowLeftOutlined /> }
         onClick={ handleBackClick } />
@@ -217,7 +184,7 @@ export const AnnotationBrowser = () => {
           <Select
             placeholder='Select annotation'
             value={ annotation ? annotation.name : ''} 
-            onChange={ handleAnnotationChange }
+            onChange={ onAnnotationChange }
           >
             { annotationTypes.map(({ name }, i) => (
               <Option key={ i } value={ name }>
@@ -231,7 +198,7 @@ export const AnnotationBrowser = () => {
             min={ 1 } 
             max={ 20 }
             value={ numLoad }
-            onChange={ handleNumLoadChange } />
+            onChange={ onNumLoadChange } />
         </Form.Item>
         { done ? 
           <Form.Item>
@@ -289,7 +256,7 @@ export const AnnotationBrowser = () => {
           </>
         }
       </Form> 
-      { nextImages.map(({ id }, i) => (
+      { imageCache.map((id, i) => (
         <Fragment key={ i }>
           <link rel='prefetch' href={ api.getImage(id, 'left') } />
           <link rel='prefetch' href={ api.getImage(id, 'front') } />
