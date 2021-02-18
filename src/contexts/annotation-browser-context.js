@@ -43,8 +43,6 @@ const addShortcut = (shortcuts, flag) => {
     }
   }
 
-  console.log(shortcuts)
-
   return shortcuts
 }
 

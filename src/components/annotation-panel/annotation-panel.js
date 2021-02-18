@@ -55,10 +55,10 @@ export const AnnotationPanel = ({ image, flagOptions, userFlagOptions, flagShort
       onFlagChange(flag)
 
       if (flags.includes(flag)) {
-        setTooltip("Removed " + flag)        
+        setTooltip('Removed ' + flag)        
       }
       else {
-        setTooltip("Added " + flag)
+        setTooltip('Added ' + flag)
       }
 
       if (tooltipTimeout.current) clearTimeout(tooltipTimeout.current)

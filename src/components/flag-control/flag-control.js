@@ -32,7 +32,7 @@ export const FlagControl = ({
       const j = shortcut ? shortcut.index : 0
 
       const display = shortcut ? 
-        <span style={{ whiteSpace: 'pre-wrap' }}>
+        <span className='shortcutOption'>
           { option.slice(0, j) }
           <u>{ option[j] }</u>
           { option.slice(j + 1) }
@@ -51,8 +51,8 @@ export const FlagControl = ({
             onClick={ () => onFlagChange(option) }
           >
             { isUserOption ? 
-              <div className='alignVertical userOption'>
-                <UserOutlined />
+              <div className='alignVertical'>
+                <UserOutlined className='userIcon' />
                 { display }
               </div>
             : display
@@ -93,10 +93,19 @@ export const FlagControl = ({
 
   const hasFlags = flags.length > 0;
 
+  const tooltipText = text => (
+    text ?
+      <>
+        { text.substr(0, text.indexOf(' ')) }
+        <strong>{ text.substr(text.indexOf(' ')) }</strong>
+      </>
+    : null
+  )
+
   return (    
     <div className='flagButton' >
       <Tooltip 
-        title={ tooltip }
+        title={ tooltipText(tooltip) }
         visible={ tooltip !== null }
         placement='right'
         color={ tooltip && tooltip.includes('Added') ? 'blue' : null }

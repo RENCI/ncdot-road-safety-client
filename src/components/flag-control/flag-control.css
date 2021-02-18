@@ -23,6 +23,10 @@
   align-items: center;
 }
 
-.userOption span {
+.userIcon {
   margin-right: .2em;
+}
+
+.shortcutOption {
+  white-space: pre-wrap
 }
