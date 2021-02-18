@@ -124,7 +124,7 @@ export const AnnotationBrowser = () => {
       
       getCacheImages(annotation.name);
 
-      saveButton.current.focus()
+      if (saveButton.current) saveButton.current.focus()
     }
     catch (error) {
       setSaving(false)
@@ -140,8 +140,6 @@ export const AnnotationBrowser = () => {
   }
 
   const onKeyDown = event => {
-
-    console.log(event)
     if (event.key === 'Enter') {
       onSaveClick()
     }
