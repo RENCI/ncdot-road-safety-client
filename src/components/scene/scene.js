@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { Spin } from 'antd'
+import { blue } from '@ant-design/colors'
 import { Image } from '../image'
 import { api } from '../../api'
 import './scene.css'
@@ -36,25 +37,23 @@ export const Scene = ({ id, present, onClick, onKeyPress }) => {
     if (active) setActive(false)
   }
 
-  const hasOutline = !loading && (hasAnnotation === 'present' || hasAnnotation === 'irrelevant' || active)
-
   const outlineWidth =
     (hasAnnotation === 'present' || hasAnnotation === 'irrelevant') && active ? '6px' :
     hasAnnotation === 'present' || hasAnnotation === 'irrelevant' ? '4px' :
-    '2px'
+    active ? '2px' :
+    '1px'
 
   const outlineColor = 
     hasAnnotation === 'present' ? '#52c41a' : // XXX: Magic number matching value in image.css
     hasAnnotation === 'irrelevant' ? '#ebc815' : // XXX: Magic number matching value in image.css
-    '#000'
+    blue.primary
 
   return (
     <div 
       className='scene' 
-      style={{ outline: hasOutline ? outlineWidth + ' solid ' + outlineColor : null }}
+      style={{ outline: outlineWidth + ' solid ' + outlineColor }}
       onMouseOver={ onMouseOver }
-      onMouseLeave={ onMouseLeave }
-      onKeyPress={ onKeyPress }      
+      onMouseLeave={ onMouseLeave }      
     >
       { loading && <Spin className='spinner'/> }
       <Image 

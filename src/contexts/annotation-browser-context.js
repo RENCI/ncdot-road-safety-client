@@ -7,7 +7,6 @@ const initialState = {
   numLoad: 5,
   annotation: null,
   userFlags: [],
-  userFlagCounts: {},
   flagShortcuts: {}
 };
 
@@ -40,8 +39,6 @@ const addShortcut = (shortcuts, flag) => {
       break;
     }
   }
-
-  console.log(shortcuts)
 
   return shortcuts
 }
@@ -129,47 +126,47 @@ const reducer = (state, action) => {
     }
 
     case 'setFlags': {
-      const newState = {...state}
+      const images = [...state.images]
+      const userFlags = [...state.userFlags]
+      const flagShortcuts = {...state.flagShortcuts}
 
-      const image = newState.images.find(({ id }) => id === action.id)
+      const image = images.find(({ id }) => id === action.id)
+
+      action.flags.forEach(flag => {
+        if (!state.annotation.flags.includes(flag) && !userFlags.includes(flag)) {
+          userFlags.push(flag)
+          addShortcut(flagShortcuts, flag)
+        }
+      })
 
       if (image) {
         image.flags = action.flags
       }
 
-      return newState
+      return {
+        ...state,
+        images: images,
+        userFlags: userFlags,
+        flagShortcuts: flagShortcuts
+      }
     }
 
-    case 'updateUserFlags': {
-      const newState = {...state}
+    case 'removeUserFlagOption': {
+      const flagShortcuts = {...state.flagShortcuts}
 
-      action.addFlags.forEach(flag => {
-        if (!newState.userFlagCounts[flag]) {
-          newState.userFlagCounts[flag] = 0
+      delete flagShortcuts[action.option]
 
-          addShortcut(newState.flagShortcuts, flag)
-        }
-
-        newState.userFlagCounts[flag]++
-      })
-
-      action.removeFlags.forEach(flag => {
-        if (!newState.userFlagCounts[flag]) {
-          console.log('Warning: user flag not present')   
-          return       
-        }
-        
-        newState.userFlagCounts[flag]--
-
-        if (newState.userFlagCounts[flag] === 0) {
-          delete newState.userFlagCounts[flag]
-          delete newState.flagShortcuts[flag]
-        }
-      })
-
-      newState.userFlags = Object.keys(newState.userFlagCounts)
-
-      return newState
+      return {
+        ...state,
+        images: state.images.map(image => (
+          {
+            ...image,
+            flags: image.flags.filter(flag => flag !== action.option)
+          }  
+        )),
+        userFlags: state.userFlags.filter(flag => flag !== action.option),
+        flagShortcuts: flagShortcuts
+      }
     }
 
     case 'setNumLoad':

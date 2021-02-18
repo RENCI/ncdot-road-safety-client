@@ -24,7 +24,7 @@ export const AnnotationPanel = ({ image, flagOptions, userFlagOptions, flagShort
     })
   }
 
-  const onFlagChange = flag => {     
+  const onFlagChange = flag => {
     const newFlags = flags.includes(flag) ? 
       flags.filter(currentFlag => currentFlag !== flag) :
       flags.concat(flag)
@@ -34,33 +34,21 @@ export const AnnotationPanel = ({ image, flagOptions, userFlagOptions, flagShort
       id: id,
       flags: newFlags
     })
-
-    // Send any user flag changes
-    const oldUserFlags = flags.filter(flag => !flagOptions.includes(flag))
-    const newUserFlags = newFlags.filter(flag => !flagOptions.includes(flag))
-
-    const addFlags = newUserFlags.filter(flag => !oldUserFlags.includes(flag))
-    const removeFlags = oldUserFlags.filter(flag => !newUserFlags.includes(flag))
-
-    if (addFlags.length > 0 || removeFlags.length > 0) {
-      dispatch({ 
-        type: 'updateUserFlags',
-        addFlags: addFlags,
-        removeFlags: removeFlags
-      })
-    }
   }
 
   const onPopoverVisibleChange = visible => {
     setPopoverVisible(visible)
   }
 
-  const onImageKeyPress = evt => {
-    const flag = 
-    
-    flagOptions.concat(userFlagOptions).find(flag => {
-      return flag[0].toLowerCase() === evt.key.toLowerCase()
+  const onRemoveUserFlagOption = option => {
+    dispatch({
+      type: 'removeUserFlagOption',
+      option: option
     })
+  }
+
+  const onImageKeyPress = evt => {
+    const flag = Object.keys(flagShortcuts).find(flag => flagShortcuts[flag].key === evt.key.toLowerCase())
 
     if (flag) {
       onFlagChange(flag)
@@ -86,6 +74,7 @@ export const AnnotationPanel = ({ image, flagOptions, userFlagOptions, flagShort
         tooltip={ tooltip }
         onFlagChange={ onFlagChange }
         onPopoverVisibleChange={ onPopoverVisibleChange }
+        onRemoveUserFlagOption={ onRemoveUserFlagOption }
       />
       <Scene 
         id={ id } 

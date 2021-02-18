@@ -5,7 +5,7 @@
 }
 
 .flagButton {
-    margin-right: 12px;
+  margin-right: 12px;
 }
 
 .flagButton div {
@@ -14,15 +14,15 @@
 }
 
 .flagButton button {
-    height: 100%;
-    width: 40px;
+  height: 100%;
+  width: 40px;
 }
 
-.userOption {
-    display: flex;
-    align-items: center;
+.alignVertical {
+  display: flex;
+  align-items: center;
 }
 
 .userOption span {
-    margin-right: .2em;
+  margin-right: .2em;
 }

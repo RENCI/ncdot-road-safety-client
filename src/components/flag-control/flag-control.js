@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { Tooltip, Popover, Button, Input } from 'antd'
-import { FlagOutlined, UserOutlined } from '@ant-design/icons'
+import { FlagOutlined, UserOutlined, CloseOutlined } from '@ant-design/icons'
 import './flag-control.css'
 
-export const FlagControl = ({ flags, options, userOptions, shortcuts, tooltip, onFlagChange, onPopoverVisibleChange }) => {
+export const FlagControl = ({ 
+  flags, options, userOptions, shortcuts, tooltip, onFlagChange, onPopoverVisibleChange, onRemoveUserFlagOption
+}) => {
   const [newFlag, setNewFlag] = useState('')
 
   const onKeyPress = evt => {
@@ -34,22 +36,36 @@ export const FlagControl = ({ flags, options, userOptions, shortcuts, tooltip, o
         option
 
       return (
-        <Button 
+        <div 
           key={ isUserOption ? 'user_' + i : i }
-          className='mb-2'
-          type={ flags.includes(option) ? 'primary' : 'default' }
-          shape='round'
-          size='small'
-          onClick={ () => onFlagChange(option) }
+          className='alignVertical mb-2'
         >
-          { isUserOption ? 
-            <div className='userOption'>
-              <UserOutlined />
-              { display }
-            </div>
-          : display
+          <Button 
+            type={ flags.includes(option) ? 'primary' : 'default' }
+            shape='round'
+            size='small'
+            onClick={ () => onFlagChange(option) }
+          >
+            { isUserOption ? 
+              <div className='alignVertical userOption'>
+                <UserOutlined />
+                { display }
+              </div>
+            : display
+            }
+          </Button>
+          { isUserOption && 
+            <Button
+              type='text'
+              size='small'
+              onClick={ () => onRemoveUserFlagOption(option) }
+            >
+              <div className='alignVertical'>
+                <CloseOutlined />
+              </div>
+            </Button>
           }
-        </Button>
+        </div>
       )
     }
 
@@ -75,32 +91,32 @@ export const FlagControl = ({ flags, options, userOptions, shortcuts, tooltip, o
 
   return (    
     <div className='flagButton' >
-    <Tooltip 
-      title={ tooltip }
-      visible={ tooltip !== null }
-      placement='right'
-      color='blue'
-    >
-      <Popover
-        title='Flag image'
-        content={ popoverContent } 
+      <Tooltip 
+        title={ tooltip }
+        visible={ tooltip !== null }
         placement='right'
-        trigger='click'
-        onVisibleChange={ onPopoverVisibleChange }
+        color='blue'
       >
-        <Button 
-          type={ hasFlags ? 'primary' : 'default' } 
-          ghost={ hasFlags }
+        <Popover
+          title='Flag image'
+          content={ popoverContent } 
+          placement='right'
+          trigger='click'
+          onVisibleChange={ onPopoverVisibleChange }
         >
-          <div>
-            <FlagOutlined />
-            <div style={{ visibility: !hasFlags ? 'hidden' : null }}>
-              { flags.length }
+          <Button 
+            type={ hasFlags ? 'primary' : 'default' } 
+            ghost={ hasFlags }
+          >
+            <div>
+              <FlagOutlined />
+              <div style={{ visibility: !hasFlags ? 'hidden' : null }}>
+                { flags.length }
+              </div>
             </div>
-          </div>
-        </Button>
-      </Popover>
-    </Tooltip>
+          </Button>
+        </Popover>
+      </Tooltip>
     </div>
   )
 }
