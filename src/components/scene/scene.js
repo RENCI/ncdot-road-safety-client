@@ -51,7 +51,7 @@ export const Scene = ({ id, present, onClick, onKeyPress }) => {
   return (
     <div 
       className='scene' 
-      style={{ outline: outlineWidth + ' solid ' + outlineColor }}
+      style={{ outline: loading ? null : outlineWidth + ' solid ' + outlineColor }}
       onMouseOver={ onMouseOver }
       onMouseLeave={ onMouseLeave }      
     >

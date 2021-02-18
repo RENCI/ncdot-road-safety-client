@@ -27,11 +27,7 @@ export const AnnotationBrowser = () => {
     setLoading(true)
 
     try {
-      console.log(annotation, numLoad)
-
       const response = await axios.get(api.getNextImageNamesForAnnotation(annotation, numLoad))
-
-      console.log(response.data)
       
       dispatch({ 
         type: 'setImages', 
@@ -42,16 +38,18 @@ export const AnnotationBrowser = () => {
       setGotImages(true)
 
       // Load cache
-      getCacheImages(annotation, cacheSize);
+      getCacheImages(annotation);
     }
     catch (error) {
       console.log(error)
     }  
   } 
 
-  const getCacheImages = (annotation, numImages) => {
+  const getCacheImages = annotation => {
     // Get next images, but don't wait for them
-    axios.get(api.getNextImageNamesForAnnotation(annotation, numImages)).then(response => {
+    axios.get(api.getNextImageNamesForAnnotation(annotation, cacheSize)).then(response => {
+      console.lo
+
       dispatch({ 
         type: 'setCacheImages', 
         ids: response.data.image_base_names
@@ -111,8 +109,6 @@ export const AnnotationBrowser = () => {
         })
       })
       
-      console.log(response.data)
-
       setSaving(false)
 
       notification.success({
@@ -126,7 +122,7 @@ export const AnnotationBrowser = () => {
         ids: response.data.image_base_names
       })    
       
-      getCacheImages(annotation.name, cacheSize);
+      getCacheImages(annotation.name);
 
       saveButton.current.focus()
     }

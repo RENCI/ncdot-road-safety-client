@@ -71,7 +71,7 @@ const reducer = (state, action) => {
     case 'setCacheImages':
       return {
         ...state,
-        imageCache: [...state.nextImages]        
+        imageCache: [...action.ids]        
       }
 
     case 'goBack':
