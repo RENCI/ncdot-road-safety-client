@@ -60,7 +60,7 @@ export const Image = ({ url, loading, present, onLoad, onClick, onKeyPress }) =>
   }
 
   const onMouseOver = () => {
-    imageRef.current.focus()
+    imageRef.current.focus({ preventScroll: true })
   }
 
   const filterString = `brightness(${ brightness * 100 }%) contrast(${ contrast * 100}%)`

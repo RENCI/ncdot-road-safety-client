@@ -1,10 +1,11 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useRef } from 'react'
 import { AnnotationBrowserContext } from '../../contexts'
 import { Scene } from '../scene'
 import { FlagControl } from '../flag-control'
 import './annotation-panel.css'
 
 export const AnnotationPanel = ({ image, flagOptions, userFlagOptions, flagShortcuts }) => {
+  const tooltipTimeout = useRef()
   const [popoverVisible, setPopoverVisible] = useState(false)
   const [tooltip, setTooltip] = useState(null)
   const [, dispatch] = useContext(AnnotationBrowserContext)
@@ -60,7 +61,9 @@ export const AnnotationPanel = ({ image, flagOptions, userFlagOptions, flagShort
         setTooltip("Added " + flag)
       }
 
-      setTimeout(() => setTooltip(null), 3000)
+      if (tooltipTimeout.current) clearTimeout(tooltipTimeout.current)
+
+      tooltipTimeout.current = setTimeout(() => setTooltip(null), 3000)
     }
   }
 

@@ -2,8 +2,9 @@ import React, { createContext, useReducer } from 'react'
 
 const initialState = {
   images: [],
-  nextImages: [],
-  oldImages: [],
+  viewedImages: [],
+  previousImages: [],
+  imageCache: [],
   numLoad: 5,
   annotation: null,
   userFlags: [],
@@ -50,56 +51,36 @@ const reducer = (state, action) => {
       return {
         ...state, 
         images: [],
-        nextImages: [],
-        oldImages: []
+        viewImages: [],
+        previousImages: [],
+        imageCache: []
       }
 
     case 'setImages':
       return {
         ...state,
-        images: action.ids.map(createImage)
+        images: action.ids.map(id => {
+          const image = state.viewedImages.find(image => image.id === id)
+
+          return image ? image : createImage(id)
+        }),
+        viewedImages: [],
+        previousImages: [...state.images]
       }
 
-    case 'addNextImages':
+    case 'setCacheImages':
       return {
         ...state,
-        nextImages: state.nextImages.concat(action.ids.map(createImage))        
+        imageCache: [...action.ids]        
       }
-
-    case 'updateImages': {
-      let images = state.nextImages.slice(0, state.numLoad)
-
-      if (images.length < state.numLoad && action.ids) {
-        images = images.concat(action.ids.slice(0, state.numLoad - images.length).map(createImage))
-      }
-
-      return {
-        ...state,
-        images: images,
-        nextImages: state.nextImages.slice(state.numLoad),
-        oldImages: [...state.images]
-      }
-    }
 
     case 'goBack':
       return {
         ...state,
-        images: [...state.oldImages],
-        nextImages: state.images.concat(state.nextImages.slice(0, -state.numLoad)),
-        oldImages: []
-      }
-
-    case 'addImage': {     
-      const image = createImage(action.id)
-
-      image.metadata = action.metadata
-      image.annotations = action.annotations
-
-      return {
-        ...state,
-        images: [...state.images, image]        
-      }      
-    } 
+        images: [...state.previousImages],
+        viewedImages: [...state.images],
+        previousImages: []
+      } 
 
     case 'setAnnotationPresent': {
       const newState = {...state}
@@ -108,18 +89,6 @@ const reducer = (state, action) => {
 
       if (image) {
         image.present[action.view] = action.present
-      }
-
-      return newState
-    }
-
-    case 'setAnnotationRelevant': {
-      const newState = {...state}
-
-      const image = newState.images.find(({ id }) => id === action.id)
-
-      if (image) {
-        image.relevant[action.view] = action.relevant
       }
 
       return newState
