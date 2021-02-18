@@ -95,7 +95,7 @@ export const FlagControl = ({
         title={ tooltip }
         visible={ tooltip !== null }
         placement='right'
-        color='blue'
+        color={ tooltip && tooltip.includes('Added') ? 'blue' : null }
       >
         <Popover
           title='Flag image'
