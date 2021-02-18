@@ -1,43 +1,88 @@
-import React from 'react'
-import { Popover, Button, Select } from 'antd'
-import { FlagOutlined, UserOutlined } from '@ant-design/icons'
+import React, { useState } from 'react'
+import { Tooltip, Popover, Button, Input } from 'antd'
+import { FlagOutlined, UserOutlined, CloseOutlined } from '@ant-design/icons'
 import './flag-control.css'
 
-const { Option } = Select;
+export const FlagControl = ({ 
+  flags, options, userOptions, shortcuts, tooltip, onFlagChange, onPopoverVisibleChange, onRemoveUserFlagOption
+}) => {
+  const [newFlag, setNewFlag] = useState('')
 
-export const FlagControl = ({ flags, options, userOptions, onFlagChange, onPopoverVisibleChange }) => {
   const onKeyPress = evt => {
     evt.stopPropagation()
   }
 
-  const onChange = flags => {
-    onFlagChange(flags)
+  const onInputChange = evt => {
+    setNewFlag(evt.target.value)
+  }
+
+  const onInputPressEnter = evt => {
+    const flag = evt.target.value
+
+    if (flag === '') return
+
+    onFlagChange(flag)
+
+    setNewFlag('')
   }
 
   const popoverContent = () => {
-    return (
-      <div onKeyPress={ onKeyPress }>
-        <Select 
-          mode='tags'
-          placeholder='Add flags'
-          value={ flags }
-          style={{ width: 300 }}
-          onChange={ onChange }
+    const optionDisplay = (option, i, isUserOption) => {
+      const shortcut = shortcuts[option]
+      const j = shortcut ? shortcut.index : 0
+
+      const display = shortcut ? 
+        <>{ option.slice(0, j) }<u>{ option[j] }</u>{ option.slice(j + 1) }</> : 
+        option
+
+      return (
+        <div 
+          key={ isUserOption ? 'user_' + i : i }
+          className='alignVertical mb-2'
         >
-          { options.map((option, i) => (
-            <Option key={ i } value={ option }>
-              { option }
-            </Option>
-          ))}
-          { userOptions.map((option, i) => (
-            <Option key={ "user_" + i } value={ option }>
-              <div className='userOption'>
+          <Button 
+            type={ flags.includes(option) ? 'primary' : 'default' }
+            shape='round'
+            size='small'
+            onClick={ () => onFlagChange(option) }
+          >
+            { isUserOption ? 
+              <div className='alignVertical userOption'>
                 <UserOutlined />
-                { option }
+                { display }
               </div>
-            </Option>
-          ))}
-        </Select>
+            : display
+            }
+          </Button>
+          { isUserOption && 
+            <Button
+              type='text'
+              size='small'
+              onClick={ () => onRemoveUserFlagOption(option) }
+            >
+              <div className='alignVertical'>
+                <CloseOutlined />
+              </div>
+            </Button>
+          }
+        </div>
+      )
+    }
+
+    return (
+      <div 
+        className='flags'
+        onKeyPress={ onKeyPress }
+      >
+        { options.map((option, i) => optionDisplay(option, i, false)) }      
+        { userOptions.map((option, i) => optionDisplay(option, i, true)) }
+        <Input 
+          placeholder='Add new flag' 
+          value={ newFlag }
+          size='small'
+          onChange= { onInputChange }
+          onPressEnter={ onInputPressEnter }
+        />
       </div>      
     )
   }
@@ -46,25 +91,32 @@ export const FlagControl = ({ flags, options, userOptions, onFlagChange, onPopov
 
   return (    
     <div className='flagButton' >
-      <Popover
-        title='Flag image'
-        content={ popoverContent } 
+      <Tooltip 
+        title={ tooltip }
+        visible={ tooltip !== null }
         placement='right'
-        trigger='click'
-        onVisibleChange={ onPopoverVisibleChange }
+        color='blue'
       >
-        <Button 
-          type={ hasFlags ? 'primary' : 'default' } 
-          ghost={ hasFlags }
+        <Popover
+          title='Flag image'
+          content={ popoverContent } 
+          placement='right'
+          trigger='click'
+          onVisibleChange={ onPopoverVisibleChange }
         >
-          <div style={{ display: "flex", flexDirection: "column"}}>
-            <FlagOutlined />
-            <div style={{ visibility: !hasFlags ? 'hidden' : null }}>
-              { flags.length }
+          <Button 
+            type={ hasFlags ? 'primary' : 'default' } 
+            ghost={ hasFlags }
+          >
+            <div>
+              <FlagOutlined />
+              <div style={{ visibility: !hasFlags ? 'hidden' : null }}>
+                { flags.length }
+              </div>
             </div>
-          </div>
-        </Button>
-      </Popover>
+          </Button>
+        </Popover>
+      </Tooltip>
     </div>
   )
 }
