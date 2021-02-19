@@ -63,6 +63,10 @@ export const Image = ({ url, loading, present, onLoad, onClick, onKeyPress }) =>
     imageRef.current.focus({ preventScroll: true })
   }
 
+  const onMouseOut = () => {
+    imageRef.current.blur()
+  }
+
   const filterString = `brightness(${ brightness * 100 }%) contrast(${ contrast * 100}%)`
 
   return (
@@ -94,6 +98,7 @@ export const Image = ({ url, loading, present, onLoad, onClick, onKeyPress }) =>
             onDoubleClick={ onDoubleClick }
             onError={ onError }
             onMouseOver={ onMouseOver }
+            onMouseOut={ onMouseOut }
             onKeyPress={ onKeyPress }
           />     
           { loading ? null

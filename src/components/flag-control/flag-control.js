@@ -8,10 +8,6 @@ export const FlagControl = ({
 }) => {
   const [newFlag, setNewFlag] = useState('')
 
-  const onKeyDown = evt => {
-    evt.stopPropagation()
-  }
-
   const onInputChange = evt => {
     setNewFlag(evt.target.value)
   }
@@ -74,10 +70,7 @@ export const FlagControl = ({
     }
 
     return (
-      <div 
-        className='flags'
-        onKeyDown={ onKeyDown }
-      >
+      <div className='flags'>
         { options.map((option, i) => optionDisplay(option, i, false)) }      
         { userOptions.map((option, i) => optionDisplay(option, i, true)) }
         <Input 
