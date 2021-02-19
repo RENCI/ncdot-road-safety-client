@@ -54,16 +54,23 @@ export const AnnotationPanel = ({ image, flagOptions, userFlagOptions, flagShort
     if (flag) {
       onFlagChange(flag)
 
-      if (flags.includes(flag)) {
-        setTooltip('Removed ' + flag)        
+      if (popoverVisible) {
+        setTooltip(null)
+
+        if (tooltipTimeout.current) clearTimeout(tooltipTimeout.current)
       }
       else {
-        setTooltip('Added ' + flag)
+        if (flags.includes(flag)) {
+          setTooltip('Removed ' + flag)        
+        }
+        else {
+          setTooltip('Added ' + flag)
+        }
+
+        if (tooltipTimeout.current) clearTimeout(tooltipTimeout.current)
+
+        tooltipTimeout.current = setTimeout(() => setTooltip(null), 3000)
       }
-
-      if (tooltipTimeout.current) clearTimeout(tooltipTimeout.current)
-
-      tooltipTimeout.current = setTimeout(() => setTooltip(null), 3000)
     }
   }
 
@@ -79,10 +86,11 @@ export const AnnotationPanel = ({ image, flagOptions, userFlagOptions, flagShort
         onPopoverVisibleChange={ onPopoverVisibleChange }
         onRemoveUserFlagOption={ onRemoveUserFlagOption }
       />
+
       <Scene 
         id={ id } 
         present={ present }                 
-        onClick={ onImageClick }
+        onClick={ onImageClick } 
         onKeyPress={ onImageKeyPress }
       />      
       { popoverVisible && <div className='overlay' /> }

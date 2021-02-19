@@ -140,11 +140,16 @@ export const AnnotationBrowser = () => {
   }
 
   const onKeyDown = event => {
-    if (event.key === 'Enter') {
-      onSaveClick()
-    }
-    else if (event.key === 'Backspace' && previousImages.length > 0) {
-      onBackClick()
+    if (event.target.nodeName.toLowerCase() === 'input') return
+
+    switch (event.key) {
+      case 'Enter': 
+        onSaveClick()
+        break
+      
+      case 'Backspace':
+        onBackClick()
+        break
     }
   }
 
@@ -163,7 +168,6 @@ export const AnnotationBrowser = () => {
         className='iconButton saveButton' 
         ref={ isFirst ? saveButton : null }
         type='primary' 
-        htmlType='submit'
         loading={ saving }
         disabled={ !annotation }
         size='large'                
