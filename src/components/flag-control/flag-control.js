@@ -4,7 +4,8 @@ import { FlagOutlined, UserOutlined, CloseOutlined } from '@ant-design/icons'
 import './flag-control.css'
 
 export const FlagControl = ({ 
-  flags, options, userOptions, shortcuts, tooltip, onFlagChange, onPopoverVisibleChange, onRemoveUserFlagOption
+  flags, options, userOptions, shortcuts, tooltip, 
+  onFlagChange, onPopoverVisibleChange, onRemoveUserFlagOption, onKeyPress
 }) => {
   const [newFlag, setNewFlag] = useState('')
 
@@ -20,6 +21,10 @@ export const FlagControl = ({
     onFlagChange(flag)
 
     setNewFlag('')
+  }
+
+  const onInputKeyPress = evt => {
+    evt.stopPropagation()
   }
 
   const popoverContent = () => {
@@ -70,7 +75,11 @@ export const FlagControl = ({
     }
 
     return (
-      <div className='flags'>
+      <div 
+        className='flags'
+        tabIndex='-1'
+        onKeyPress={ onKeyPress }
+      >
         { options.map((option, i) => optionDisplay(option, i, false)) }      
         { userOptions.map((option, i) => optionDisplay(option, i, true)) }
         <Input 
@@ -79,6 +88,7 @@ export const FlagControl = ({
           size='small'
           onChange= { onInputChange }
           onPressEnter={ onInputPressEnter }
+          onKeyPress= { onInputKeyPress }
         />
       </div>      
     )
@@ -96,7 +106,10 @@ export const FlagControl = ({
   )
 
   return (    
-    <div className='flagButton' >
+    <div 
+      className='flagButton'              
+      onKeyPress={ onKeyPress }
+    >
       <Tooltip 
         title={ tooltipText(tooltip) }
         visible={ tooltip !== null }

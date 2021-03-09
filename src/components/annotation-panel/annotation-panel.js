@@ -48,7 +48,7 @@ export const AnnotationPanel = ({ image, flagOptions, userFlagOptions, flagShort
     })
   }
 
-  const onImageKeyPress = evt => {
+  const onKeyPress = evt => {
     const flag = Object.keys(flagShortcuts).find(flag => flagShortcuts[flag].key === evt.key.toLowerCase())
 
     if (flag) {
@@ -82,16 +82,17 @@ export const AnnotationPanel = ({ image, flagOptions, userFlagOptions, flagShort
         userOptions={ userFlagOptions }
         shortcuts={ flagShortcuts }
         tooltip={ tooltip }
-        onFlagChange={ onFlagChange }
+        onFlagChange={ onFlagChange }        
         onPopoverVisibleChange={ onPopoverVisibleChange }
         onRemoveUserFlagOption={ onRemoveUserFlagOption }
+        onKeyPress= { onKeyPress }
       />
 
       <Scene 
         id={ id } 
         present={ present }                 
         onClick={ onImageClick } 
-        onKeyPress={ onImageKeyPress }
+        onKeyPress={ onKeyPress }
       />      
       { popoverVisible && <div className='overlay' /> }
     </div>
