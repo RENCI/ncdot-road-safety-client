@@ -29,3 +29,9 @@
 .helpMessage {
   flex: 1
 }
+
+.annotation-counts {
+  position: absolute;
+  right: 2rem;
+  top: 2rem;
+}
