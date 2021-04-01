@@ -9,7 +9,7 @@ const initialState = {
   annotation: null,
   userFlags: [],
   flagShortcuts: {},
-  annotationsCount: 0,
+  annotatedImagesCount: 0,
 };
 
 const createImage = id => {
@@ -157,6 +157,12 @@ const reducer = (state, action) => {
         flagShortcuts: action.annotation.flags.reduce(addShortcut, {})
     }
 
+    case 'updateAnnotatedImagesCount':
+      return {
+        ...state,
+        annotatedImagesCount: state.annotatedImagesCount + action.num,
+      }
+
     default: 
       throw new Error('Invalid annotation browser context action: ' + action.type)
   }
@@ -166,7 +172,7 @@ export const AnnotationBrowserContext = createContext(initialState)
 
 export const AnnotationBrowserProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState)
- 
+
   return (
     <AnnotationBrowserContext.Provider value={ [state, dispatch] }>
       { children }
