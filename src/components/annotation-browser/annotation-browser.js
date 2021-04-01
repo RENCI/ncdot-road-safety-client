@@ -108,6 +108,11 @@ export const AnnotationBrowser = () => {
           }
         })
       })
+
+      dispatch({ 
+        type: 'updateAnnotatedImagesCount', 
+        num: state.images.length
+      }) 
       
       setSaving(false)
 
@@ -180,6 +185,9 @@ export const AnnotationBrowser = () => {
 
   return (
     <>
+      <div className="annotation-counts">
+        Total Annotated Images: { state.annotatedImagesCount }<br/>
+      </div>
       <Form 
         onKeyDown={ onKeyDown }
       >         
