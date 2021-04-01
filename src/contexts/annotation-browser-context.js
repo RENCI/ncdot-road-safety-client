@@ -8,7 +8,8 @@ const initialState = {
   numLoad: 5,
   annotation: null,
   userFlags: [],
-  flagShortcuts: {}
+  flagShortcuts: {},
+  annotationsCount: 0,
 };
 
 const createImage = id => {
