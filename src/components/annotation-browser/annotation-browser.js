@@ -185,9 +185,6 @@ export const AnnotationBrowser = () => {
 
   return (
     <>
-      <div className="annotation-counts">
-        Total Annotated Images: { state.annotatedImagesCount }<br/>
-      </div>
       <Form 
         onKeyDown={ onKeyDown }
       >         
@@ -226,7 +223,8 @@ export const AnnotationBrowser = () => {
                   <Alert message={ 
                     <div className='helpMessageDiv'>
                       <div className='helpMessage'>
-                        Select <strong>left</strong>, <strong>front</strong>, and <strong>right</strong> images containing: <strong>{ annotation.name }</strong>
+                        Select <strong>left</strong>, <strong>front</strong>, and <strong>right</strong> images containing: <strong>{ annotation.name }</strong> <br/>
+                        You have annotated { state.annotatedImagesCount } images during this session.
                       </div> 
                       <Button
                         className='iconButton'
