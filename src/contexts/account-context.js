@@ -9,11 +9,13 @@ export const AccountProvider = ({ children }) => {
   const [account, setAccount] = useState()
 
   useEffect(() => {
-    setAccount({ id: 13 })
+    const userId = document.getElementById('user_id').value
+    setAccount({ id: userId })
   }, [])
  
   return (
     <AccountContext.Provider value={{ account }}>
+      <pre>{JSON.stringify(account, null, 2)}</pre>
       { children }
     </AccountContext.Provider>
   )
