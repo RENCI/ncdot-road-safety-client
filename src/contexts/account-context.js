@@ -1,21 +1,24 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import axios from 'axios'
+import { api } from '../api'
 
-const AccountContext = createContext({ })
+const AccountContext = createContext()
 
-const useAccount = () => useContext(AccountContext)
+export const useAccount = () => useContext(AccountContext)
 
 export const AccountProvider = ({ children }) => {
-  const [account, setAccount] = useState()
+  const [account, setAccount] = useState({ })
 
   useEffect(() => {
     const userId = document.getElementById('user_id').value
-    setAccount({ id: userId })
+    const fetchAccountDetails = async () => {
+      const response = await api.getAccountDetails(userId)
+      setAccount(response.data)
+    }
+    fetchAccountDetails()
   }, [])
  
   return (
-    <AccountContext.Provider value={{ account }}>
-      <pre>{JSON.stringify(account, null, 2)}</pre>
+    <AccountContext.Provider value={{ account: account }}>
       { children }
     </AccountContext.Provider>
   )

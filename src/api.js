@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 export const views = {
   front: 1,
   left: 5,
@@ -17,5 +19,6 @@ export const api = {
   getRouteInfo: id => `/get_route_info/${ id }/`,
   getAnnotationSet: '/get_annotation_set/',
   saveAnnotations: '/save_annotations/',
-  getImageAnnotations: id => `/get_image_annotations/${ id }/`
+  getImageAnnotations: id => `/get_image_annotations/${ id }/`,
+  getAccountDetails: id => axios.get(`get_user_info/${ id }`),
 }
