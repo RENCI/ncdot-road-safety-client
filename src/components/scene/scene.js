@@ -6,7 +6,7 @@ import { Image } from '../image'
 import { api } from '../../api'
 import './scene.css'
 
-export const Scene = ({ id, present, onClick, onKeyPress }) => {
+export const Scene = ({ id, present, autoAdjust, onClick, onKeyPress }) => {
   const [active, setActive] = useState(false)
 
   const hasAnnotation = present ? Object.values(present).reduce((p, c) => {
@@ -60,6 +60,7 @@ export const Scene = ({ id, present, onClick, onKeyPress }) => {
         url={ api.getImage(id, 'left') } 
         loading={ loading }
         present={ present ? present.left : null }
+        autoAdjust={ autoAdjust }
         onLoad={ onLoad }
         onClick={ onClick ? () => onClick(id, 'left') : null } 
         onKeyPress={ onKeyPress }
@@ -68,6 +69,7 @@ export const Scene = ({ id, present, onClick, onKeyPress }) => {
         url={ api.getImage(id, 'front') } 
         loading={ loading }
         present={ present ? present.front : null }
+        autoAdjust={ autoAdjust }
         onLoad={ onLoad } 
         onClick={ onClick ? () => onClick(id, 'front') : null } 
         onKeyPress={ onKeyPress }
@@ -76,6 +78,7 @@ export const Scene = ({ id, present, onClick, onKeyPress }) => {
         url={ api.getImage(id, 'right') } 
         loading={ loading }
         present={ present ? present.right : null }
+        autoAdjust={ autoAdjust }
         onLoad={ onLoad }
         onClick={ onClick ? () => onClick(id, 'right') : null }
         onKeyPress={ onKeyPress }
@@ -87,5 +90,6 @@ export const Scene = ({ id, present, onClick, onKeyPress }) => {
 Scene.propTypes = {
   id: PropTypes.string.isRequired,
   present: PropTypes.object,
+  autoAdjust: PropTypes.bool,
   onClick: PropTypes.func
 }

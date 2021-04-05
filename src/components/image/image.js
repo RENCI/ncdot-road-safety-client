@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { CheckCircleOutlined, StopOutlined } from '@ant-design/icons'
 import './image.css'
 
-export const Image = ({ url, loading, present, onLoad, onClick, onKeyPress }) => { 
+export const Image = ({ url, loading, present, autoAdjust, onLoad, onClick, onKeyPress }) => { 
   const [error, setError] = useState(false)
   const [pointerDown, setPointerDown] = useState(false)
   const [drag, setDrag] = useState(false)
@@ -20,6 +20,17 @@ export const Image = ({ url, loading, present, onLoad, onClick, onKeyPress }) =>
   const canvasHeight = 100
 
   const movementScale = 0.01;
+
+  useEffect(() => {
+    if (autoAdjust) {
+      setBrightness(autoBrightness)
+      setContrast(autoContrast)
+    }
+    else {
+      setBrightness(1)
+      setContrast(1)
+    }
+  }, [autoAdjust])
 
   const getIntensities = pixels => {
     // Return array of intensities from rgba array
@@ -55,8 +66,10 @@ export const Image = ({ url, loading, present, onLoad, onClick, onKeyPress }) =>
     setAutoBrightness(brightness)
     setAutoContrast(contrast)
 
-    setBrightness(brightness)
-    setContrast(contrast)
+    if (autoAdjust) {
+      setBrightness(brightness)
+      setContrast(contrast)
+    }
 
     onLoad()
   }
@@ -97,8 +110,14 @@ export const Image = ({ url, loading, present, onLoad, onClick, onKeyPress }) =>
 
   const onDoubleClick = evt => {
     if (evt.shiftKey && evt.button === 0) {
-      setBrightness(1)
-      setContrast(1)
+      if (autoAdjust) {
+        setBrightness(autoBrightness)
+        setContrast(autoContrast)
+      }
+      else {
+        setBrightness(1)
+        setContrast(1)
+      }
     }
   }
 
@@ -114,7 +133,7 @@ export const Image = ({ url, loading, present, onLoad, onClick, onKeyPress }) =>
     imageRef.current.blur()
   }
 
-  const filterString = `brightness(${ brightness }) contrast(${ contrast })`
+  const filterString = `brightness(${ brightness })contrast(${ contrast })`
 
   return (
     <div className='imageDiv'>
@@ -169,6 +188,7 @@ Image.propTypes = {
   url: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
   present: PropTypes.string,
+  autoAdjust: PropTypes.bool,
   onLoad: PropTypes.func.isRequired,
   onClick: PropTypes.func,
   onKeyPress: PropTypes.func
