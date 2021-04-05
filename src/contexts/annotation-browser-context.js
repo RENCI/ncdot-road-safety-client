@@ -7,6 +7,7 @@ const initialState = {
   imageCache: [],
   numLoad: 5,
   annotation: null,
+  autoAdjust: true,
   userFlags: [],
   flagShortcuts: {}
 };
@@ -154,7 +155,13 @@ const reducer = (state, action) => {
         userFlags: [],
         userFlagCounts: {},
         flagShortcuts: action.annotation.flags.reduce(addShortcut, {})
-    }
+      }
+
+    case 'setAutoAdjust':
+      return {
+        ...state,
+        autoAdjust: action.autoAdjust
+      }
 
     default: 
       throw new Error('Invalid annotation browser context action: ' + action.type)

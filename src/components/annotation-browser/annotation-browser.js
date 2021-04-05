@@ -1,5 +1,5 @@
 import React, { useState, useContext, useRef, useEffect, Fragment } from 'react'
-import { Form, Space, Select, InputNumber, Button, Spin, Alert, notification } from 'antd'
+import { Form, Space, Select, Row, Col, InputNumber, Button, Switch, Spin, Alert, notification } from 'antd'
 import { CloudUploadOutlined, ArrowLeftOutlined, QuestionCircleOutlined } from '@ant-design/icons'
 import axios from 'axios'
 import { AnnotationsContext, AnnotationBrowserContext } from '../../contexts'
@@ -17,7 +17,16 @@ export const AnnotationBrowser = () => {
   const [loading, setLoading] = useState(false)
   const saveButton = useRef(null)
 
-  const { images, previousImages, imageCache, numLoad, annotation, userFlags, flagShortcuts } = {...state}
+  const { 
+    images, 
+    previousImages, 
+    imageCache, 
+    numLoad, 
+    annotation, 
+    autoAdjust, 
+    userFlags, 
+    flagShortcuts 
+  } = {...state}
 
   const cacheSize = numLoad * 4;
 
@@ -79,6 +88,10 @@ export const AnnotationBrowser = () => {
 
   const onNumLoadChange = value => {
     dispatch({ type: 'setNumLoad', numLoad: value })
+  }
+
+  const onAutoAdjustChange = checked => {
+    dispatch({ type: 'setAutoAdjust', autoAdjust: checked })
   }
 
   const onBackClick = async () => {
@@ -196,12 +209,27 @@ export const AnnotationBrowser = () => {
             ))}
           </Select>
         </Form.Item>
-        <Form.Item label='Number of images:'>
-          <InputNumber
-            min={ 1 } 
-            max={ 20 }
-            value={ numLoad }
-            onChange={ onNumLoadChange } />
+        <Form.Item>
+          <Row gutter={ 8 }>
+            <Col>
+              <Form.Item label='Number of images:'>
+                <InputNumber
+                  min={ 1 } 
+                  max={ 20 }
+                  value={ numLoad }
+                  onChange={ onNumLoadChange } 
+                />
+              </Form.Item>
+            </Col>
+            <Col>
+              <Form.Item label='Auto adjust images'>
+                <Switch 
+                  checked={ autoAdjust }
+                  onChange={ onAutoAdjustChange }
+                />
+              </Form.Item>
+            </Col>
+          </Row>
         </Form.Item>
         { done ? 
           <Form.Item>
@@ -243,6 +271,7 @@ export const AnnotationBrowser = () => {
                       <AnnotationPanel 
                         key={ i } 
                         image={ image } 
+                        autoAdjust={ autoAdjust }
                         flagOptions={ annotation.flags }
                         userFlagOptions={ userFlags }
                         flagShortcuts={ flagShortcuts } />

@@ -4,7 +4,7 @@ import { Scene } from '../scene'
 import { FlagControl } from '../flag-control'
 import './annotation-panel.css'
 
-export const AnnotationPanel = ({ image, flagOptions, userFlagOptions, flagShortcuts }) => {
+export const AnnotationPanel = ({ image, autoAdjust, flagOptions, userFlagOptions, flagShortcuts }) => {
   const tooltipTimeout = useRef()
   const [popoverVisible, setPopoverVisible] = useState(false)
   const [tooltip, setTooltip] = useState(null)
@@ -91,6 +91,7 @@ export const AnnotationPanel = ({ image, flagOptions, userFlagOptions, flagShort
       <Scene 
         id={ id } 
         present={ present }                 
+        autoAdjust={ autoAdjust }
         onClick={ onImageClick } 
         onKeyPress={ onKeyPress }
       />      
