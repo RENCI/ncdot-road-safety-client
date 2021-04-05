@@ -2,7 +2,7 @@ import React, { useState, useContext, useRef, useEffect, Fragment } from 'react'
 import { Form, Space, Select, Row, Col, InputNumber, Button, Switch, Spin, Alert, notification } from 'antd'
 import { CloudUploadOutlined, ArrowLeftOutlined, QuestionCircleOutlined } from '@ant-design/icons'
 import axios from 'axios'
-import { AnnotationsContext, AnnotationBrowserContext } from '../../contexts'
+import { AnnotationsContext, AnnotationBrowserContext, useAccount } from '../../contexts'
 import { AnnotationPanel } from '../annotation-panel'
 import { api } from '../../api'
 import './annotation-browser.css'
@@ -10,6 +10,7 @@ import './annotation-browser.css'
 const { Option } = Select
 
 export const AnnotationBrowser = () => {
+  const { currentAnnotations, storeSceneId } = useAccount()
   const [gotImages, setGotImages] = useState(false)
   const [annotationTypes] = useContext(AnnotationsContext)
   const [state, dispatch] = useContext(AnnotationBrowserContext)
@@ -98,7 +99,7 @@ export const AnnotationBrowser = () => {
     dispatch({ type: 'goBack' })
   }
 
-  const onSaveClick = async () => {    
+  const onSaveClick = async () => {
     setSaving(true);
 
     axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
@@ -122,11 +123,6 @@ export const AnnotationBrowser = () => {
         })
       })
 
-      dispatch({ 
-        type: 'updateAnnotatedImagesCount', 
-        num: state.images.length
-      }) 
-      
       setSaving(false)
 
       notification.success({
