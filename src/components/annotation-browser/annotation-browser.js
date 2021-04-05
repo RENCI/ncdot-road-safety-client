@@ -10,7 +10,7 @@ import './annotation-browser.css'
 const { Option } = Select
 
 export const AnnotationBrowser = () => {
-  const { currentAnnotations, addSavedImages } = useAccount()
+  const { currentAnnotations, addSavedImages, savedImages } = useAccount()
   const [gotImages, setGotImages] = useState(false)
   const [annotationTypes] = useContext(AnnotationsContext)
   const [state, dispatch] = useContext(AnnotationBrowserContext)
@@ -250,7 +250,7 @@ export const AnnotationBrowser = () => {
                     <div className='helpMessageDiv'>
                       <div className='helpMessage'>
                         Select <strong>left</strong>, <strong>front</strong>, and <strong>right</strong> images containing: <strong>{ annotation.name }</strong> <br/>
-                        You have annotated <strong>{ state.annotatedImagesCount }</strong> images during this session
+                        You have annotated <strong>{ savedImages.length }</strong> images during this session.
                       </div> 
                       <Button
                         className='iconButton'
