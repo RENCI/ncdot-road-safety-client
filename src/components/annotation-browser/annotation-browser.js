@@ -252,7 +252,7 @@ export const AnnotationBrowser = () => {
                     <div className='helpMessageDiv'>
                       <div className='helpMessage'>
                         Select <strong>left</strong>, <strong>front</strong>, and <strong>right</strong> images containing: <strong>{ annotation.name }</strong> <br/>
-                        You have annotated { state.annotatedImagesCount } images during this session.
+                        You have annotated <strong>{ state.annotatedImagesCount }</strong> images during this session
                       </div> 
                       <Button
                         className='iconButton'
