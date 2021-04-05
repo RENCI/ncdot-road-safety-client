@@ -121,6 +121,11 @@ export const AnnotationBrowser = () => {
           }
         })
       })
+
+      dispatch({ 
+        type: 'updateAnnotatedImagesCount', 
+        num: state.images.length
+      }) 
       
       setSaving(false)
 
@@ -246,7 +251,8 @@ export const AnnotationBrowser = () => {
                   <Alert message={ 
                     <div className='helpMessageDiv'>
                       <div className='helpMessage'>
-                        Select <strong>left</strong>, <strong>front</strong>, and <strong>right</strong> images containing: <strong>{ annotation.name }</strong>
+                        Select <strong>left</strong>, <strong>front</strong>, and <strong>right</strong> images containing: <strong>{ annotation.name }</strong> <br/>
+                        You have annotated { state.annotatedImagesCount } images during this session.
                       </div> 
                       <Button
                         className='iconButton'
