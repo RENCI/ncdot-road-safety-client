@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
+import { useLocalStorage } from '../hooks'
 import { api } from '../api'
 
 const AccountContext = createContext()
@@ -7,7 +8,7 @@ export const useAccount = () => useContext(AccountContext)
 
 export const AccountProvider = ({ children }) => {
   const [account, setAccount] = useState({ })
-  const [currentAnnotations, setCurrentAnnotations] = useState([])
+  const [savedImages, setSavedImages] = useLocalStorage('images', [])
 
   useEffect(() => {
     const userId = document.getElementById('user_id').value
@@ -21,8 +22,8 @@ export const AccountProvider = ({ children }) => {
   return (
     <AccountContext.Provider value={{
       account: account,
-      currentAnnotations,
-      storeSceneId: id => setCurrentAnnotations([ ...currentAnnotations, id ]),
+      savedImages,
+      addSavedImages: images => setSavedImages([ ...savedImages, ...images ]),
     }}>
       { children }
     </AccountContext.Provider>

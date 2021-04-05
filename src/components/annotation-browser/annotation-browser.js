@@ -10,7 +10,7 @@ import './annotation-browser.css'
 const { Option } = Select
 
 export const AnnotationBrowser = () => {
-  const { currentAnnotations, storeSceneId } = useAccount()
+  const { currentAnnotations, addSavedImages } = useAccount()
   const [gotImages, setGotImages] = useState(false)
   const [annotationTypes] = useContext(AnnotationsContext)
   const [state, dispatch] = useContext(AnnotationBrowserContext)
@@ -123,7 +123,7 @@ export const AnnotationBrowser = () => {
         })
       })
 
-      storeSceneId('tester')
+      addSavedImages(images)
       
       setSaving(false)
 
