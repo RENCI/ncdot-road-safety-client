@@ -123,6 +123,8 @@ export const AnnotationBrowser = () => {
         })
       })
 
+      storeSceneId('tester')
+      
       setSaving(false)
 
       notification.success({
