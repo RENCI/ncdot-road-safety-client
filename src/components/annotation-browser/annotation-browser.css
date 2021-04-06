@@ -29,3 +29,13 @@
 .helpMessage {
   flex: 1
 }
+
+
+.annotation-summary {
+}
+
+.annotation-summary > .title {
+}
+
+.annotation-summary > .body {
+}
