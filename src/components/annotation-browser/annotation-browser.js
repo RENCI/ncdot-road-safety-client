@@ -262,9 +262,7 @@ export const AnnotationBrowser = () => {
                     </Fragment>
                   } /> 
                   <br />
-                  <Alert type="success" message={ 
-                    <AnnotationCounts />
-                  } /> 
+                  <AnnotationCounts />
                 </Form.Item>
                 <Form.Item>
                   <SaveButtonGroup isFirst={ true } />

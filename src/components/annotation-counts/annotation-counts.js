@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useAccount } from '../../contexts'
+import { Collapse, Space } from 'antd'
+
+const { Panel } = Collapse
 
 export const AnnotationCounts = () => {
   const { savedImages } = useAccount()
@@ -28,14 +31,15 @@ export const AnnotationCounts = () => {
   }, [savedImages])
 
   return (
-    <div className="annotation-summary">
-      <h4 className="title">Annotation Summary</h4>
-      <div className="body">
-        You have saved <strong>{ savedImages.length }</strong> images during this session.<br/>
-        You have annotated <strong>{ counts.annotations }</strong> guardrails.<br/>
-        You have flagged <strong>{ counts.flags }</strong> images as irrelevant.
-      </div>
-    </div>
+    <Space direction="vertical" style={{ width: '100%' }}>
+      <Collapse collapsible="header">
+        <Panel header="Annotation Summary" key="1">
+          You have saved <strong>{ savedImages.length }</strong> images during this session.<br/>
+          You have annotated <strong>{ counts.annotations }</strong> guardrails.<br/>
+          You have flagged <strong>{ counts.flags }</strong> images as irrelevant.
+        </Panel>
+      </Collapse>
+    </Space>
   )
 }
 
