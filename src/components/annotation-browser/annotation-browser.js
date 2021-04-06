@@ -4,7 +4,7 @@ import { CloudUploadOutlined, ArrowLeftOutlined, QuestionCircleOutlined } from '
 import axios from 'axios'
 import { AnnotationsContext, AnnotationBrowserContext, useAccount } from '../../contexts'
 import { AnnotationPanel } from '../annotation-panel'
-import { AnnotationCounts } from '../annotation-counts'
+import { AnnotationSummary } from '../annotation-counts'
 import { api } from '../../api'
 import './annotation-browser.css'
 const { Option } = Select
@@ -262,7 +262,7 @@ export const AnnotationBrowser = () => {
                     </Fragment>
                   } /> 
                   <br />
-                  <AnnotationCounts annotationName={ annotation.name }/>
+                  <AnnotationSummary annotationName={ annotation.name }/>
                 </Form.Item>
                 <Form.Item>
                   <SaveButtonGroup isFirst={ true } />

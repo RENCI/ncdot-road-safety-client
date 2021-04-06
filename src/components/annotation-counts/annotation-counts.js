@@ -5,7 +5,7 @@ import { Collapse, Space } from 'antd'
 
 const { Panel } = Collapse
 
-export const AnnotationCounts = ({ annotationName }) => {
+export const AnnotationSummary = ({ annotationName }) => {
   const { savedImages } = useAccount()
   const [counts, setCounts] = useState({
     images: 0,
@@ -44,6 +44,6 @@ export const AnnotationCounts = ({ annotationName }) => {
   )
 }
 
-AnnotationCounts.propTypes = {
+AnnotationSummary.propTypes = {
   annotationName: PropTypes.string.isRerquired,
 }
