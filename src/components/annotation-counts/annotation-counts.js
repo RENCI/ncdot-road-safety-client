@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
 import { useAccount } from '../../contexts'
 import { Collapse, Space } from 'antd'
 
@@ -43,3 +44,6 @@ export const AnnotationCounts = ({ annotationName }) => {
   )
 }
 
+AnnotationCounts.propTypes = {
+  annotationName: PropTypes.string.isRerquired,
+}
