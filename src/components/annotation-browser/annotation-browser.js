@@ -4,13 +4,13 @@ import { CloudUploadOutlined, ArrowLeftOutlined, QuestionCircleOutlined } from '
 import axios from 'axios'
 import { AnnotationsContext, AnnotationBrowserContext, useAccount } from '../../contexts'
 import { AnnotationPanel } from '../annotation-panel'
+import { AnnotationCounts } from '../annotation-counts'
 import { api } from '../../api'
 import './annotation-browser.css'
-
 const { Option } = Select
 
 export const AnnotationBrowser = () => {
-  const { currentAnnotations, addSavedImages, savedImages } = useAccount()
+  const { addSavedImages } = useAccount()
   const [gotImages, setGotImages] = useState(false)
   const [annotationTypes] = useContext(AnnotationsContext)
   const [state, dispatch] = useContext(AnnotationBrowserContext)
@@ -247,18 +247,23 @@ export const AnnotationBrowser = () => {
               <>
                 <Form.Item>
                   <Alert message={ 
-                    <div className='helpMessageDiv'>
-                      <div className='helpMessage'>
-                        Select <strong>left</strong>, <strong>front</strong>, and <strong>right</strong> images containing: <strong>{ annotation.name }</strong> <br/>
-                        You have annotated <strong>{ savedImages.length }</strong> images during this session.
-                      </div> 
-                      <Button
-                        className='iconButton'
-                        type='link'
-                        href='https://docs.google.com/document/d/1-CeqPD1b1cFyMjwYivoBlRXfQp-IuHPBP_sWTLoHHXg/edit?usp=sharing'
-                        icon={ <QuestionCircleOutlined style={{ fontSize: 'large' }} /> }
-                      />
-                    </div>
+                    <Fragment>
+                      <div className='helpMessageDiv'>
+                        <div className='helpMessage'>
+                          Select <strong>left</strong>, <strong>front</strong>, and <strong>right</strong> images containing: <strong>{ annotation.name }</strong> <br/>
+                        </div> 
+                        <Button
+                          className='iconButton'
+                          type='link'
+                          href='https://docs.google.com/document/d/1-CeqPD1b1cFyMjwYivoBlRXfQp-IuHPBP_sWTLoHHXg/edit?usp=sharing'
+                          icon={ <QuestionCircleOutlined style={{ fontSize: 'large' }} /> }
+                        />
+                      </div>
+                    </Fragment>
+                  } /> 
+                  <br />
+                  <Alert type="success" message={ 
+                    <AnnotationCounts />
                   } /> 
                 </Form.Item>
                 <Form.Item>
