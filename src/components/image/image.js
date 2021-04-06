@@ -32,12 +32,14 @@ export const Image = ({ url, loading, present, autoAdjust, onLoad, onClick, onKe
     }
   }, [autoAdjust])
 
+  const intensity = (r, g, b) => r * 0.299 + g * 0.587 + b * 0.114
+
   const getIntensities = pixels => {
     // Return array of intensities from rgba array
     let intensities = [];
 
     for (let i = 0; i < pixels.length; i += 4) {
-      intensities.push((pixels[i] + pixels[i + 1] + pixels[i + 2]) / 3);
+      intensities.push(intensity(pixels[i], pixels[i + 1], pixels[i + 2]));
     }
 
     return intensities
@@ -54,14 +56,15 @@ export const Image = ({ url, loading, present, autoAdjust, onLoad, onClick, onKe
     const context = canvasRef.current.getContext("2d")
     
     context.drawImage(imageRef.current, 0, 0, canvasWidth, canvasHeight)
-    const pixels = context.getImageData(0, 0, canvasWidth, canvasHeight).data
+    const image = context.getImageData(0, 0, canvasWidth, canvasHeight)
 
-    const intensities = getIntensities(pixels)
+    const intensities = getIntensities(image.data)
+
     const m = mean(intensities)
     const sd = stdDev(intensities, m)
 
-    const brightness = m === 0 ? 1 : 127 / m
-    const contrast = m / sd * 0.5
+    const brightness = m === 0 ? 1 : 128 / m
+    const contrast = Math.max(1, 128 / (sd * 5))
 
     setAutoBrightness(brightness)
     setAutoContrast(contrast)
@@ -171,7 +174,7 @@ export const Image = ({ url, loading, present, autoAdjust, onLoad, onClick, onKe
             : present === "present" ? <CheckCircleOutlined className='imageIcon checkIcon' /> 
             : present === "irrelevant" ? <StopOutlined className='imageIcon exclamationIcon' /> 
             : null
-          }
+          }   
           <canvas 
             ref={ canvasRef } 
             width={ canvasWidth } 
