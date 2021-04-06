@@ -4,7 +4,7 @@ import { Collapse, Space } from 'antd'
 
 const { Panel } = Collapse
 
-export const AnnotationCounts = () => {
+export const AnnotationCounts = ({ annotationName }) => {
   const { savedImages } = useAccount()
   const [counts, setCounts] = useState({
     images: 0,
@@ -35,7 +35,7 @@ export const AnnotationCounts = () => {
       <Collapse collapsible="header">
         <Panel header="Annotation Summary" key="1">
           You have saved <strong>{ savedImages.length }</strong> images during this session.<br/>
-          You have annotated <strong>{ counts.annotations }</strong> guardrails.<br/>
+          You have annotated <strong>{ counts.annotations }</strong> { annotationName }.<br/>
           You have flagged <strong>{ counts.flags }</strong> images as irrelevant.
         </Panel>
       </Collapse>

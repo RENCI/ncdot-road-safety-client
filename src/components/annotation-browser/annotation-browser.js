@@ -262,7 +262,7 @@ export const AnnotationBrowser = () => {
                     </Fragment>
                   } /> 
                   <br />
-                  <AnnotationCounts />
+                  <AnnotationCounts annotationName={ annotation.name }/>
                 </Form.Item>
                 <Form.Item>
                   <SaveButtonGroup isFirst={ true } />
