@@ -45,5 +45,5 @@ export const AnnotationSummary = ({ annotationName }) => {
 }
 
 AnnotationSummary.propTypes = {
-  annotationName: PropTypes.string.isRerquired,
+  annotationName: PropTypes.string.isRequired,
 }
