@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { Alert } from 'antd'
 import PropTypes from 'prop-types'
 import { CheckCircleOutlined, StopOutlined } from '@ant-design/icons'
+import { getAutoAdjustValues } from './auto-adjust'
 import './image.css'
 
 export const Image = ({ url, loading, present, autoAdjust, onLoad, onClick, onKeyPress }) => { 
@@ -53,18 +54,7 @@ export const Image = ({ url, loading, present, autoAdjust, onLoad, onClick, onKe
   }, 0) / values.length)
 
   const onImageLoad = () => {
-    const context = canvasRef.current.getContext("2d")
-    
-    context.drawImage(imageRef.current, 0, 0, canvasWidth, canvasHeight)
-    const image = context.getImageData(0, 0, canvasWidth, canvasHeight)
-
-    const intensities = getIntensities(image.data)
-
-    const m = mean(intensities)
-    const sd = stdDev(intensities, m)
-
-    const brightness = m === 0 ? 1 : 128 / m
-    const contrast = Math.max(1, 128 / (sd * 5))
+    const { brightness, contrast } = getAutoAdjustValues(imageRef, canvasRef)
 
     setAutoBrightness(brightness)
     setAutoContrast(contrast)
