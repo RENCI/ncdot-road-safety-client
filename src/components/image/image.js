@@ -33,12 +33,14 @@ export const Image = ({ url, loading, present, autoAdjust, onLoad, onClick, onKe
     }
   }, [autoAdjust])
 
+  const intensity = (r, g, b) => r * 0.299 + g * 0.587 + b * 0.114
+
   const getIntensities = pixels => {
     // Return array of intensities from rgba array
     let intensities = [];
 
     for (let i = 0; i < pixels.length; i += 4) {
-      intensities.push((pixels[i] + pixels[i + 1] + pixels[i + 2]) / 3);
+      intensities.push(intensity(pixels[i], pixels[i + 1], pixels[i + 2]));
     }
 
     return intensities
@@ -162,7 +164,7 @@ export const Image = ({ url, loading, present, autoAdjust, onLoad, onClick, onKe
             : present === "present" ? <CheckCircleOutlined className='imageIcon checkIcon' /> 
             : present === "irrelevant" ? <StopOutlined className='imageIcon exclamationIcon' /> 
             : null
-          }
+          }   
           <canvas 
             ref={ canvasRef } 
             width={ canvasWidth } 
