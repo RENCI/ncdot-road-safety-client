@@ -2,14 +2,15 @@ import React, { useState, useContext, useRef, useEffect, Fragment } from 'react'
 import { Form, Space, Select, Row, Col, InputNumber, Button, Switch, Spin, Alert, notification } from 'antd'
 import { CloudUploadOutlined, ArrowLeftOutlined, QuestionCircleOutlined } from '@ant-design/icons'
 import axios from 'axios'
-import { AnnotationsContext, AnnotationBrowserContext } from '../../contexts'
+import { AnnotationsContext, AnnotationBrowserContext, useAccount } from '../../contexts'
 import { AnnotationPanel } from '../annotation-panel'
+import { AnnotationSummary } from '../annotation-counts'
 import { api } from '../../api'
 import './annotation-browser.css'
-
 const { Option } = Select
 
 export const AnnotationBrowser = () => {
+  const { addSavedImages } = useAccount()
   const [gotImages, setGotImages] = useState(false)
   const [annotationTypes] = useContext(AnnotationsContext)
   const [state, dispatch] = useContext(AnnotationBrowserContext)
@@ -98,7 +99,7 @@ export const AnnotationBrowser = () => {
     dispatch({ type: 'goBack' })
   }
 
-  const onSaveClick = async () => {    
+  const onSaveClick = async () => {
     setSaving(true);
 
     axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
@@ -122,10 +123,7 @@ export const AnnotationBrowser = () => {
         })
       })
 
-      dispatch({ 
-        type: 'updateAnnotatedImagesCount', 
-        num: state.images.length
-      }) 
+      addSavedImages(images)
       
       setSaving(false)
 
@@ -249,19 +247,22 @@ export const AnnotationBrowser = () => {
               <>
                 <Form.Item>
                   <Alert message={ 
-                    <div className='helpMessageDiv'>
-                      <div className='helpMessage'>
-                        Select <strong>left</strong>, <strong>front</strong>, and <strong>right</strong> images containing: <strong>{ annotation.name }</strong> <br/>
-                        You have annotated <strong>{ state.annotatedImagesCount }</strong> images during this session
-                      </div> 
-                      <Button
-                        className='iconButton'
-                        type='link'
-                        href='https://docs.google.com/document/d/1-CeqPD1b1cFyMjwYivoBlRXfQp-IuHPBP_sWTLoHHXg/edit?usp=sharing'
-                        icon={ <QuestionCircleOutlined style={{ fontSize: 'large' }} /> }
-                      />
-                    </div>
+                    <Fragment>
+                      <div className='helpMessageDiv'>
+                        <div className='helpMessage'>
+                          Select <strong>left</strong>, <strong>front</strong>, and <strong>right</strong> images containing: <strong>{ annotation.name }</strong> <br/>
+                        </div> 
+                        <Button
+                          className='iconButton'
+                          type='link'
+                          href='https://docs.google.com/document/d/1-CeqPD1b1cFyMjwYivoBlRXfQp-IuHPBP_sWTLoHHXg/edit?usp=sharing'
+                          icon={ <QuestionCircleOutlined style={{ fontSize: 'large' }} /> }
+                        />
+                      </div>
+                    </Fragment>
                   } /> 
+                  <br />
+                  <AnnotationSummary annotationName={ annotation.name }/>
                 </Form.Item>
                 <Form.Item>
                   <SaveButtonGroup isFirst={ true } />

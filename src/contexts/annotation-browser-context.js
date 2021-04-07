@@ -164,12 +164,6 @@ const reducer = (state, action) => {
         autoAdjust: action.autoAdjust
       }
 
-    case 'updateAnnotatedImagesCount':
-      return {
-        ...state,
-        annotatedImagesCount: state.annotatedImagesCount + action.num,
-      }
-
     default: 
       throw new Error('Invalid annotation browser context action: ' + action.type)
   }

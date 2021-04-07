@@ -7,6 +7,7 @@ export const useAccount = () => useContext(AccountContext)
 
 export const AccountProvider = ({ children }) => {
   const [account, setAccount] = useState({ })
+  const [savedImages, setSavedImages] = useState([])
 
   useEffect(() => {
     const userId = document.getElementById('user_id').value
@@ -16,9 +17,13 @@ export const AccountProvider = ({ children }) => {
     }
     fetchAccountDetails()
   }, [])
- 
+
   return (
-    <AccountContext.Provider value={{ account: account }}>
+    <AccountContext.Provider value={{
+      account: account,
+      savedImages,
+      addSavedImages: images => setSavedImages(Array.from(new Set([ ...savedImages, ...images ]))),
+    }}>
       { children }
     </AccountContext.Provider>
   )
