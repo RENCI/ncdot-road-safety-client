@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { Alert } from 'antd'
 import PropTypes from 'prop-types'
 import { CheckCircleOutlined, StopOutlined } from '@ant-design/icons'
+import { getAutoAdjustValues } from './auto-adjust'
 import './image.css'
 
 export const Image = ({ url, loading, present, autoAdjust, onLoad, onClick, onKeyPress }) => { 
@@ -32,36 +33,8 @@ export const Image = ({ url, loading, present, autoAdjust, onLoad, onClick, onKe
     }
   }, [autoAdjust])
 
-  const getIntensities = pixels => {
-    // Return array of intensities from rgba array
-    let intensities = [];
-
-    for (let i = 0; i < pixels.length; i += 4) {
-      intensities.push((pixels[i] + pixels[i + 1] + pixels[i + 2]) / 3);
-    }
-
-    return intensities
-  }
-
-  const mean = values => values.reduce((sum, value) => sum + value, 0) / values.length
-
-  const stdDev = (values, mean) => Math.sqrt(values.reduce((sum, value) => {
-    const v = value - mean
-    return sum + v * v
-  }, 0) / values.length)
-
   const onImageLoad = () => {
-    const context = canvasRef.current.getContext("2d")
-    
-    context.drawImage(imageRef.current, 0, 0, canvasWidth, canvasHeight)
-    const pixels = context.getImageData(0, 0, canvasWidth, canvasHeight).data
-
-    const intensities = getIntensities(pixels)
-    const m = mean(intensities)
-    const sd = stdDev(intensities, m)
-
-    const brightness = m === 0 ? 1 : 127 / m
-    const contrast = m / sd * 0.5
+    const { brightness, contrast } = getAutoAdjustValues(imageRef, canvasRef)
 
     setAutoBrightness(brightness)
     setAutoContrast(contrast)
