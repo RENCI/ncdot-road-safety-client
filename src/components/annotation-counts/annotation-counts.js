@@ -33,7 +33,7 @@ export const AnnotationSummary = ({ annotationName }) => {
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
-      <Collapse collapsible="header">
+      <Collapse>
         <Panel header="Annotation Summary" key="1">
           You have saved <strong>{ savedImages.length }</strong> images during this session.<br/>
           You have annotated <strong>{ counts.annotations }</strong> { annotationName }.<br/>
@@ -45,5 +45,5 @@ export const AnnotationSummary = ({ annotationName }) => {
 }
 
 AnnotationSummary.propTypes = {
-  annotationName: PropTypes.string.isRerquired,
+  annotationName: PropTypes.string.isRequired,
 }
