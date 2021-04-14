@@ -4,13 +4,13 @@ import { CloudUploadOutlined, ArrowLeftOutlined, QuestionCircleOutlined } from '
 import axios from 'axios'
 import { AnnotationsContext, AnnotationBrowserContext, useAccount } from '../../contexts'
 import { AnnotationPanel } from '../annotation-panel'
-import { AnnotationSummary } from '../annotation-counts'
+import { AnnotationSummary } from '../annotation-summary'
 import { api } from '../../api'
 import './annotation-browser.css'
 const { Option } = Select
 
 export const AnnotationBrowser = () => {
-  const { addSavedImages } = useAccount()
+  const user = useAccount()
   const [gotImages, setGotImages] = useState(false)
   const [annotationTypes] = useContext(AnnotationsContext)
   const [state, dispatch] = useContext(AnnotationBrowserContext)
@@ -122,8 +122,6 @@ export const AnnotationBrowser = () => {
           }
         })
       })
-
-      addSavedImages(images)
       
       setSaving(false)
 
@@ -139,6 +137,8 @@ export const AnnotationBrowser = () => {
       })    
       
       getCacheImages(annotation.name);
+
+      user.refreshAnnotationDetails()
 
       if (saveButton.current) saveButton.current.focus()
     }
