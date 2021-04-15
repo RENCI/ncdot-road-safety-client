@@ -22,7 +22,7 @@ export const AnnotationSummary = ({ annotationName }) => {
             ( <span className="annotation-count positive">{ currentAnnotations.positive }</span> positive,{` `}
               <span className="annotation-count negative">{ currentAnnotations.negative }</span> negative ) <br />
           <strong>Overall:</strong>{` `}
-            <span className="annotation-count">{ previousAnnotations.positive + previousAnnotations.negative }</span> images{` `}
+            <span className="annotation-count">{ previousAnnotations.positive + previousAnnotations.negative + currentAnnotations.positive + currentAnnotations.negative }</span> images{` `}
             ( <span className="annotation-count positive">{previousAnnotations.positive }</span> positive,{` `}
               <span className="annotation-count negative">{previousAnnotations.negative }</span> negative )<br />
         </Panel>
