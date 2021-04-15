@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useMemo, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useAccount } from '../../contexts'
 import { Collapse, Space, Typography } from 'antd'
@@ -10,8 +10,8 @@ const { Panel } = Collapse
 export const AnnotationSummary = ({ annotationName }) => {
   const { annotationDetails, refreshAnnotationDetails } = useAccount()
 
-  const currentAnnotations = useMemo(() => annotationDetails.current[annotationName] || 0, [annotationDetails])
-  const previousAnnotations = useMemo(() => annotationDetails.previous[annotationName] || 0, [annotationDetails])
+  const currentAnnotations = annotationDetails.current[annotationName]
+  const previousAnnotations = annotationDetails.previous[annotationName]
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
