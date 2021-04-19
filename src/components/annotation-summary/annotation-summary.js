@@ -18,13 +18,25 @@ export const AnnotationSummary = ({ annotationName }) => {
       <Collapse collapsible="header">
         <Panel header={ <Fragment>Annotation Summary for <strong>{ annotationName }</strong></Fragment> } key="1">
           <strong>During this Session:</strong>{` `}
-            <span className="annotation-count">{ currentAnnotations.positive + currentAnnotations.negative }</span> images{` `}
-            ( <span className="annotation-count positive">{ currentAnnotations.positive }</span> positive,{` `}
-              <span className="annotation-count negative">{ currentAnnotations.negative }</span> negative ) <br />
+            {
+              currentAnnotations && (
+              <Fragment>
+                <span className="annotation-count">{ currentAnnotations.positive + currentAnnotations.negative }</span> images{` `}
+                ( <span className="annotation-count positive">{ currentAnnotations.positive }</span> positive,{` `}
+                  <span className="annotation-count negative">{ currentAnnotations.negative }</span> negative ) <br />
+              </Fragment>
+            )
+          }
           <strong>Overall:</strong>{` `}
-            <span className="annotation-count">{ previousAnnotations.positive + previousAnnotations.negative + currentAnnotations.positive + currentAnnotations.negative }</span> images{` `}
-            ( <span className="annotation-count positive">{previousAnnotations.positive }</span> positive,{` `}
-              <span className="annotation-count negative">{previousAnnotations.negative }</span> negative )<br />
+            {
+              previousAnnotations && (
+                <Fragment>
+                  <span className="annotation-count">{ previousAnnotations.positive + previousAnnotations.negative + currentAnnotations.positive + currentAnnotations.negative }</span> images{` `}
+                  ( <span className="annotation-count positive">{previousAnnotations.positive }</span> positive,{` `}
+                    <span className="annotation-count negative">{previousAnnotations.negative }</span> negative )<br />
+                </Fragment>
+              )
+            }
         </Panel>
       </Collapse>
     </Space>
