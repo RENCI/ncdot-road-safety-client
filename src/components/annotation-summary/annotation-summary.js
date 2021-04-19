@@ -32,8 +32,8 @@ export const AnnotationSummary = ({ annotationName }) => {
               previousAnnotations && (
                 <Fragment>
                   <span className="annotation-count">{ previousAnnotations.positive + previousAnnotations.negative + currentAnnotations.positive + currentAnnotations.negative }</span> images{` `}
-                  ( <span className="annotation-count positive">{previousAnnotations.positive }</span> positive,{` `}
-                    <span className="annotation-count negative">{previousAnnotations.negative }</span> negative )<br />
+                  ( <span className="annotation-count positive">{ previousAnnotations.positive + currentAnnotations.positive }</span> positive,{` `}
+                    <span className="annotation-count negative">{ previousAnnotations.negative + currentAnnotations.positive }</span> negative )<br />
                 </Fragment>
               )
             }
