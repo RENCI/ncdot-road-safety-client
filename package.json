@@ -10,7 +10,7 @@
     },
     "dependencies": {
         "@ant-design/icons": "^4.2.2",
-        "antd": "~4.15",
+        "antd": "~4.10",
         "axios": "^0.21.1",
         "esri-loader": "^2.15.0",
         "react": "^16.13.1",
