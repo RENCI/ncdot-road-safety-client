@@ -15,7 +15,7 @@ export const AnnotationSummary = ({ annotationName }) => {
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
-      <Collapse collapsible="header">
+      <Collapse>
         <Panel header={ <Fragment>Annotation Summary for <strong>{ annotationName }</strong></Fragment> } key="1">
           <strong>During this Session:</strong>{` `}
             {
