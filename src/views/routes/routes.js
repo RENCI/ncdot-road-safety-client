@@ -6,6 +6,24 @@ import { useRoutes } from '../../contexts'
 
 const { Title } = Typography
 
+const columns = [
+  {
+    title: 'ID',
+    dataIndex: 'id',
+    key: 'id',
+  },
+  {
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name',
+  },
+  {
+    title: 'Actions',
+    key: 'actions',
+    render: (text, record) => <Space size="middle" align="center"><Link to={ `/routes/${ record.id }/1` }>Browse <ArrowRightOutlined /></Link></Space>,
+  },
+]
+
 export const BrowseRoutesView = () => {
   const { routes } = useRoutes()
 
@@ -24,23 +42,7 @@ export const BrowseRoutesView = () => {
           id: id,
           name: `Route ${ id }`,
         })) }
-        columns={ [
-          {
-            title: 'ID',
-            dataIndex: 'id',
-            key: 'id',
-          },
-          {
-            title: 'Name',
-            dataIndex: 'name',
-            key: 'name',
-          },
-          {
-            title: 'Actions',
-            key: 'actions',
-            render: (text, record) =><Space size="middle" align="center"><Link to={ `/routes/${ record.id }/1` }>Browse <ArrowRightOutlined /></Link></Space>,
-          },
-        ] }
+        columns={ columns }
       />
     </Fragment>
   )
