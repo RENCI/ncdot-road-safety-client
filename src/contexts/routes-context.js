@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react'
-import axios from 'axios'
+import { api } from '../api'
 
 const initialState = []
 
@@ -19,26 +19,22 @@ export const RoutesProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState)
 
   useEffect(() => {
-    (async () => {
-      try {
-        const response = await axios.get('/get_all_routes/')
-
+    const fetchAllRoutes = async () => await api.getAllRoutes()
+      .then(response => {
         dispatch({ 
           type: 'setRoutes',
           routes: [...response.data.route_ids]
         })
-      }
-      catch (error) {
-        console.log(error)
-      }
-    })()
+      })
+      .catch(error => console.error(error))
+    fetchAllRoutes()
   }, [])
- 
+
   return (
-    <RoutesContext.Provider value={ [state, dispatch] }>
+    <RoutesContext.Provider value={{ routes: state, dispatch }}>
       { children }
     </RoutesContext.Provider>
   )
-}
+} 
 
 export const useRoutes = () => useContext(RoutesContext)
