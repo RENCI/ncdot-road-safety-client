@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react'
-import { Typography } from 'antd'
+import { Link } from 'react-router-dom'
+import { Breadcrumb, Typography } from 'antd'
 import { useParams } from 'react-router-dom'
 import { api } from '../../api'
 
@@ -31,7 +32,15 @@ export const BrowseRouteView = (props) => {
   return (
     <Fragment>
       <Title level={ 1 }>Route { routeID }</Title>
-
+      <Breadcrumb>
+        <Breadcrumb.Item>
+          <Link to="/routes">Routes</Link>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>
+          <Link to={ `/routes/${ routeID }` }>{ routeID }</Link>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>{ imageIndex }</Breadcrumb.Item>
+      </Breadcrumb>
     </Fragment>
   )
 }
