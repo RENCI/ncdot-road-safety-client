@@ -1,7 +1,6 @@
-import React, { Fragment, useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { Fragment, useEffect, useMemo, useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
 import { Breadcrumb, Typography } from 'antd'
-import { useParams } from 'react-router-dom'
 import { api } from '../../api'
 
 const { Title } = Typography
@@ -15,11 +14,20 @@ export const BrowseRouteView = (props) => {
 
   console.log({ routeID, imageIndex })
 
-  // grab the image base names for all scenes along this route
+  const index = useMemo(() => {
+    // if no route or no images on route
+    if (!routeID || imageIDs.length === 0) { return 0 }
+    // if image index lies outside 0..(# of images)
+    if (imageIndex < 1 || imageIndex > imageIDs.length) { return 0 }
+    // if the image index contains only digits
+    if (/^\d+$/.test(imageIndex)) { return +imageIndex }
+    return 1
+  }, [imageIDs, imageIndex])
+
+    // grab the image base names for all scenes along this route
   useEffect(() => {
     const fetchRouteImageBaseNames = async () => await api.getRouteInfo(routeID)
       .then(response => {
-        console.log(response)
         if (response?.data?.route_image_base_names) {
           setImageIDs(response.data.route_image_base_names)
         }
@@ -35,16 +43,17 @@ export const BrowseRouteView = (props) => {
   // when scene/location changes,
   // fetch metadata for the current location's scene
   useEffect(() => {
+    console.log(routeID, imageIDs[imageIndex - 1])
     const fetchSceneMetadata = async () => await api.getImageMetadata(imageIDs[index])
       .then(response => {
-        console.log(response)
-        setCurrentLocation(response.data.metadata)
+        const coordinates = { lat: response.data.metadata.lat, long: response.data.metadata.long }
+        setCurrentLocation(coordinates)
       })
       .catch(error => console.error(error))
     if (imageIDs.length && index) {
       fetchSceneMetadata()
     }
-  }, [routeID, imageIndex])
+  }, [imageIDs, routeID, imageIndex])
 
   return (
     <Fragment>
@@ -58,8 +67,13 @@ export const BrowseRouteView = (props) => {
         </Breadcrumb.Item>
         <Breadcrumb.Item>{ imageIndex }</Breadcrumb.Item>
       </Breadcrumb>
+      <Title level={ 2 }>Image IDs</Title>
       <pre>
         { JSON.stringify(imageIDs, null, 2) }
+      </pre>
+      <Title level={ 2 }>Current Location</Title>
+      <pre>
+        { JSON.stringify(currentLocation, null, 2) }
       </pre>
     </Fragment>
   )

@@ -24,6 +24,14 @@ const columns = [
   },
 ]
 
+const ExpansionPanel = ({ data }) => {
+  return (
+    <pre>
+      { JSON.stringify(data, null, 2) }
+    </pre>
+  )
+}
+
 export const BrowseRoutesView = () => {
   const { routes } = useRoutes()
 
@@ -39,10 +47,16 @@ export const BrowseRoutesView = () => {
           pageSize: 20,
         }}
         dataSource={ routes.map(id => ({
+          key: id,
           id: id,
           name: `Route ${ id }`,
         })) }
         columns={ columns }
+        defaultSortField="id"
+        expandable={{
+          rowExpandable: record => true,
+          expandedRowRender: record => <ExpansionPanel data={ record } />
+        }}
       />
     </Fragment>
   )
