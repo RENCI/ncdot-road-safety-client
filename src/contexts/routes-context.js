@@ -1,4 +1,4 @@
-import React, { createContext, useReducer, useEffect } from 'react'
+import React, { createContext, useContext, useReducer, useEffect } from 'react'
 import axios from 'axios'
 
 const initialState = []
@@ -39,4 +39,6 @@ export const RoutesProvider = ({ children }) => {
       { children }
     </RoutesContext.Provider>
   )
-} 
+}
+
+export const useRoutes = () => useContext(RoutesContext)
