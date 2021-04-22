@@ -1,0 +1,12 @@
+.annotation-count {
+  color: #1890ff;
+  font-weight: bold;
+}
+
+.annotation-count.positive {
+  color: #5c9;
+}
+
+.annotation-count.negative {
+  color: #c55;
+}

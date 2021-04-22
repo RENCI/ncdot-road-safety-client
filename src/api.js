@@ -21,4 +21,5 @@ export const api = {
   saveAnnotations: '/save_annotations/',
   getImageAnnotations: id => `/get_image_annotations/${ id }/`,
   getAccountDetails: id => axios.get(`get_user_info/${ id }`),
+  getUserAnnotations: id => axios.get(`/get_user_annotation_info/${ id }/`),
 }

@@ -7,7 +7,16 @@ export const useAccount = () => useContext(AccountContext)
 
 export const AccountProvider = ({ children }) => {
   const [account, setAccount] = useState({ })
-  const [savedImages, setSavedImages] = useState([])
+  const [annotationDetails, setAnnotationDetails] = useState({ previous: { }, current: { } })
+
+  const refreshAnnotationDetails = async () => {
+    const userId = document.getElementById('user_id').value
+    const response = await api.getUserAnnotations(userId)
+    setAnnotationDetails({
+      previous: { ...response.data.total_annots_in_previous_rounds },
+      current: { ...response.data.total_annots_in_current_round },
+    })
+  }
 
   useEffect(() => {
     const userId = document.getElementById('user_id').value
@@ -16,13 +25,14 @@ export const AccountProvider = ({ children }) => {
       setAccount(response.data)
     }
     fetchAccountDetails()
+    refreshAnnotationDetails()
   }, [])
 
   return (
     <AccountContext.Provider value={{
-      account: account,
-      savedImages,
-      addSavedImages: images => setSavedImages(Array.from(new Set([ ...savedImages, ...images ]))),
+      account,
+      annotationDetails,
+      refreshAnnotationDetails,
     }}>
       { children }
     </AccountContext.Provider>
