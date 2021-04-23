@@ -49,6 +49,7 @@ const Breadcrumbs = () => {
 
 const BrowseButton = ({ url, tooltip, ...props }) => {
   const history = useHistory()
+  console.log(url)
   if (!tooltip) {
     return <Button type="primary" onClick={ () => history.push(url) } { ...props } style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} />
   }
@@ -64,16 +65,6 @@ BrowseButton.propTypes = {
   tooltip: PropTypes.string,
 }
 
-const RouteNavigation = () => {
-  const { imageIDs, index, routeID } = useRouteBrowseContext()
-  const tenNextIndex = useMemo(() => Math.min(imageIDs.length, index + 10), [index])
-  return (
-    <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem' }}>
-      <BrowseButton url={ `/routes/${ routeID }/${ tenNextIndex }` } disabled={ index + 10 > imageIDs.length } tooltip="Forward ten images">Forward 10 <FastForwardOutlined /></BrowseButton>
-    </div>
-  )
-}
-
 export const BrowseRouteView = (props) => {
   // grab parameters passed in from the route /routes/:routeID/:imageIndex
   // note that imageIndex is shifted by one for human readability
@@ -87,15 +78,11 @@ export const BrowseRouteView = (props) => {
   const index = useMemo(() => {
     // if no imageIndex
     if (!imageIndex) { return 0 }
-
     // if no route or no images on route
     if (!routeID || imageIDs.length === 0) { return 0 }
-
     const i = parseInt(imageIndex) - 1
-
     // if index lies outside 0..(# of images - 1)
     if (i < 0 || imageIDs.length < i + 1) { return 0 }
-    
     return i
   }, [imageIDs, imageIndex])
 
@@ -137,16 +124,17 @@ export const BrowseRouteView = (props) => {
   }, [imageIDs, routeID, index])
 
   return (
-    <RouteBrowseContext.Provider value={{ routeID, imageIDs, setImageIDs, index, imageIndex, currentLocation }}>
+    <RouteBrowseContext.Provider value={{ routeID, imageIDs, index, imageIndex, currentLocation }}>
       <Title level={ 1 }>Route { routeID }</Title>
 
       <Breadcrumbs />
       
-      <RouteNavigation />
 
       <SceneMetaData />
       
-      <Scene id={ imageIDs[index] } />
+      { imageIDs && index !== null ? <Scene id={ imageIDs[index] } /> : null }
+
+      <br/>
 
       <Title level={ 4 }>image base names along this route</Title>
       
