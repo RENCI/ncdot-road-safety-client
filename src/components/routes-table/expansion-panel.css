@@ -5,3 +5,12 @@
 .ant-typography-copy {
   display: inline-flex !important;
 }
+
+.map-placeholder {
+  background-color: #eee;
+  height: 100%;
+  color: #345;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

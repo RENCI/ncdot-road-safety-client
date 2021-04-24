@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Typography } from 'antd'
+import { Row, Col, Typography } from 'antd'
 import { api } from '../../api'
 import './expansion-panel.css'
 
 const { Paragraph, Title } = Typography
+
+const Map = () => <div className="map-placeholder">map</div>
 
 export const ExpansionPanel = ({ data: route }) => {
   const [imageIDs, setImageIDs] = useState([])
@@ -39,20 +41,27 @@ export const ExpansionPanel = ({ data: route }) => {
 
   return (
     <article>
-      <Paragraph strong copyable>{ route.id }</Paragraph>
+      <Row>
+          <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+            <Paragraph strong copyable>
+              { route.id }
+            </Paragraph>
+            <Paragraph>
+              { imageIDs.length } image{ imageIDs.length !== 1 ? 's' : '' } along this route
+            </Paragraph>
+            <Paragraph>
+              Start: { startingCoordinates.lat } latitude, { startingCoordinates.long } longitude<br/>
+              End: { endingCoordinates.lat } latitude, { endingCoordinates.long } longitude
+            </Paragraph>
+            <Paragraph>
+              <Link to={ `/routes/${ route.id }/1` }>Browse this route</Link>
+            </Paragraph>
+          </Col>
+          <Col xs={{ span: 0 }} lg={{ span: 12 }}>
+            <Map />
+          </Col>
+        </Row>
       
-      <Paragraph>
-        { imageIDs.length } image{ imageIDs.length !== 1 ? 's' : '' } along this route
-      </Paragraph>
-
-      <Paragraph>
-        Start: { startingCoordinates.lat } latitude, { startingCoordinates.long } longitude<br/>
-        End: { endingCoordinates.lat } latitude, { endingCoordinates.long } longitude
-      </Paragraph>
-
-      <Paragraph>
-        <Link to={ `/routes/${ route.id }/1` }>Browse this route</Link>
-      </Paragraph>
     </article>
     
   )
