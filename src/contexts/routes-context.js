@@ -23,7 +23,7 @@ export const RoutesProvider = ({ children }) => {
       .then(response => {
         dispatch({ 
           type: 'setRoutes',
-          routes: [...response.data.route_ids]
+          routes: [...response.data.route_ids].sort()
         })
       })
       .catch(error => console.error(error))

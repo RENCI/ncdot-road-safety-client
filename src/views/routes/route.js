@@ -94,19 +94,14 @@ export const BrowseRouteView = () => {
     setIndex(i)
   }, [imageIndex, imageIDs.length])
 
-  console.log('- - -')
-  console.log({ routeID })
-  console.log({ imageIndex })
-  console.log({ index })
-  console.log({ currentLocation })
+  console.table({ routeID, imageIndex, index })
+  console.table({ currentLocation })
 
   // grab the image base names for all scenes along this route
   useEffect(() => {
     const fetchRouteImageBaseNames = async () => await api.getRouteInfo(routeID)
       .then(response => {
-        if (response?.data?.route_image_base_names) {
-          setImageIDs(response.data.route_image_base_names)
-        }
+        setImageIDs(response?.data?.route_image_base_names)
       })
       .catch(error => console.error(error))
     fetchRouteImageBaseNames()
@@ -119,7 +114,6 @@ export const BrowseRouteView = () => {
   // when scene/location changes,
   // fetch metadata for the current location's scene
   useEffect(() => {
-    console.log(routeID, imageIDs[index])
     const fetchSceneMetadata = async () => await api.getImageMetadata(imageIDs[index])
       .then(response => {
         const coordinates = { lat: response.data.metadata.lat, long: response.data.metadata.long }
@@ -131,7 +125,7 @@ export const BrowseRouteView = () => {
     }
   }, [imageIDs, routeID, index])
 
-  const MemoizedScene = useMemo(() => <div>index: { index }<br/><Scene id={ imageIDs[index] } /></div>, [imageIDs, index])
+  const MemoizedScene = useMemo(() => <Scene id={ imageIDs[index] } />, [imageIDs, index])
 
   return (
     <RouteBrowseContext.Provider value={{ routeID, imageIDs, index, imageIndex, currentLocation }}>
@@ -152,12 +146,6 @@ export const BrowseRouteView = () => {
       
       <pre>
         { JSON.stringify(imageIDs, null, 2) }
-      </pre>
-      
-      <Title level={ 4 }>current location</Title>
-      
-      <pre>
-        { JSON.stringify(currentLocation, null, 2) }
       </pre>
       
     </RouteBrowseContext.Provider>
