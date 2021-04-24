@@ -21,8 +21,8 @@ const SceneMetaData = () => {
     <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', fontSize: '80%', opacity: 0.75 }}>
       <Paragraph style={{ textAlign: 'left' }}>
         { index + 1 } of { imageIDs.length }<br />
-        Image ID: { imageIDs[index] || '...' } <br/>
-        Route ID: { routeID || '...' } <br/>
+        Image ID: { imageIDs[index] || '...' } <br />
+        Route ID: { routeID || '...' } <br />
       </Paragraph>
       <Paragraph style={{ textAlign: 'right' }}>
         Latitude: { currentLocation.lat || '...' }<br />
@@ -150,22 +150,24 @@ export const BrowseRouteView = () => {
       <Title level={ 1 }>Route { routeID }</Title>
 
       <Breadcrumbs />
-      
+
+      <br /><hr /><br />
+
       <RouteNavigation />
 
-      <br/>
+      <br />
 
       <SceneMetaData />
       
       { MemoizedScene }
 
-      <br/>
+      <br /><hr /><br />
 
-      <Title level={ 4 }>image base names along this route</Title>
+      <Title level={ 6 }>image base names along this route</Title>
       
-      <pre>
-        { JSON.stringify(imageIDs, null, 2) }
-      </pre>
+      <ul>
+        { imageIDs.map((id, i) => <li key={ id } style={{ color: index === i ? '#1890ff' : 'inherit' }}>{ id }</li>) }
+      </ul>
       
     </RouteBrowseContext.Provider>
   )
