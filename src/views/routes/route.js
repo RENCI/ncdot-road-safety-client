@@ -47,27 +47,43 @@ const Breadcrumbs = () => {
   )
 }
 
-const BrowseButton = ({ url, tooltip, ...props }) => {
+const BrowseButton = ({ path, tooltip, ...props }) => {
   const history = useHistory()
-  
-  console.log(url)
-
-  if (!tooltip) {
-    return (
-      <Button type="primary" onClick={ () => history.push(url) } { ...props } style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} />
-    )
-  }
-
   return (
     <Tooltip placement="top" title={ tooltip }>
-      <Button type="primary" onClick={ () => history.push(url) } { ...props } style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} />
+      <Button type="primary" onClick={ () => history.push(path) } style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} { ...props } />
     </Tooltip>
   )
 }
 
 BrowseButton.propTypes = {
   url: PropTypes.string.isRequired,
-  tooltip: PropTypes.string,
+  tooltip: PropTypes.string.isRequired,
+}
+
+const RouteNavigation = () => {
+  const { imageIDs, index, routeID } = useRouteBrowseContext()
+
+  if (!(index + 1) || !imageIDs.length) return '...'
+
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem' }}>
+      <BrowseButton
+        path={ `/routes/${ routeID }/${ index }` }
+        disabled={ index <= 0 }
+        tooltip={ index <= 0 ? '' : 'Step backward' }
+      >
+        <StepBackwardOutlined /> Previous
+      </BrowseButton>
+      <BrowseButton
+        path={ `/routes/${ routeID }/${ index + 2 }` }
+        disabled={ imageIDs.length <= index + 1 }
+        tooltip={ imageIDs.length <= index + 1 ? '' : 'Step forward' }
+      >
+        Next <StepForwardOutlined />
+      </BrowseButton>
+    </div>
+  )
 }
 
 export const BrowseRouteView = () => {
@@ -126,6 +142,8 @@ export const BrowseRouteView = () => {
   }, [imageIDs, routeID, index])
 
   const MemoizedScene = useMemo(() => <Scene id={ imageIDs[index] } />, [imageIDs, index])
+  const prevIndex = useMemo(() => Math.max(1, index - 1), [index])
+  const nextIndex = useMemo(() => Math.min(imageIDs.length, index + 1), [index])
 
   return (
     <RouteBrowseContext.Provider value={{ routeID, imageIDs, index, imageIndex, currentLocation }}>
@@ -133,8 +151,9 @@ export const BrowseRouteView = () => {
 
       <Breadcrumbs />
       
-      <button onClick={ () => history.push(`/routes/${ routeID }/${ index }`) } disabled={ index <= 0 }>prev</button>
-      <button onClick={ () => history.push(`/routes/${ routeID }/${ index + 2 }`) } disabled={ imageIDs.length <= index + 1}>next</button>
+      <RouteNavigation />
+
+      <br/>
 
       <SceneMetaData />
       
