@@ -49,10 +49,15 @@ const Breadcrumbs = () => {
 
 const BrowseButton = ({ url, tooltip, ...props }) => {
   const history = useHistory()
+  
   console.log(url)
+
   if (!tooltip) {
-    return <Button type="primary" onClick={ () => history.push(url) } { ...props } style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} />
+    return (
+      <Button type="primary" onClick={ () => history.push(url) } { ...props } style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} />
+    )
   }
+
   return (
     <Tooltip placement="top" title={ tooltip }>
       <Button type="primary" onClick={ () => history.push(url) } { ...props } style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} />
@@ -65,26 +70,29 @@ BrowseButton.propTypes = {
   tooltip: PropTypes.string,
 }
 
-export const BrowseRouteView = (props) => {
+export const BrowseRouteView = () => {
+  const history = useHistory()
   // grab parameters passed in from the route /routes/:routeID/:imageIndex
   // note that imageIndex is shifted by one for human readability
-  const { routeID, imageIndex = 1 } = useParams()
+  const { routeID, imageIndex } = useParams()
   const [imageIDs, setImageIDs] = useState([])
   const [currentLocation, setCurrentLocation] = useState({})
+  const [index, setIndex] = useState(0)
 
-  // index for current location along route.
-  // first picture is index 1, ...
-  // not starting at 0, as that may be confusing for some users seeing the URL
-  const index = useMemo(() => {
-    // if no imageIndex
-    if (!imageIndex) { return 0 }
-    // if no route or no images on route
-    if (!routeID || imageIDs.length === 0) { return 0 }
+  useEffect(() => {
+    // use index 0...
+    // ...if no imageIndex
+    if (!imageIndex) { setIndex(0); return; }
+    // ...if no route or no images on route
+    if (!routeID || imageIDs.length === 0) { setIndex(0); return; }
     const i = parseInt(imageIndex) - 1
-    // if index lies outside 0..(# of images - 1)
-    if (i < 0 || imageIDs.length < i + 1) { return 0 }
-    return i
-  }, [imageIDs, imageIndex])
+    // ...if index lies outside 0..(# of images - 1)
+    if (i < 0 || imageIDs.length < i + 1) { setIndex(0); return; }
+
+    console.log(imageIndex)
+    console.log(i)
+    setIndex(i)
+  }, [imageIndex, imageIDs.length])
 
   console.log('- - -')
   console.log({ routeID })
@@ -102,11 +110,11 @@ export const BrowseRouteView = (props) => {
       })
       .catch(error => console.error(error))
     fetchRouteImageBaseNames()
-  }, [])
+  }, [routeID])
 
   // when scene/location changes,
   // update the document title with route & image info
-  useEffect(() => { document.title = `Route ${ routeID }, #${ index + 1 } | RHF` }, [routeID, imageIndex])
+  useEffect(() => { document.title = `Route ${ routeID }, #${ index + 1 } | RHF` }, [routeID, index])
 
   // when scene/location changes,
   // fetch metadata for the current location's scene
@@ -123,16 +131,20 @@ export const BrowseRouteView = (props) => {
     }
   }, [imageIDs, routeID, index])
 
+  const MemoizedScene = useMemo(() => <div>index: { index }<br/><Scene id={ imageIDs[index] } /></div>, [imageIDs, index])
+
   return (
     <RouteBrowseContext.Provider value={{ routeID, imageIDs, index, imageIndex, currentLocation }}>
       <Title level={ 1 }>Route { routeID }</Title>
 
       <Breadcrumbs />
       
+      <button onClick={ () => history.push(`/routes/${ routeID }/${ index }`) } disabled={ index < 0 }>prev</button>
+      <button onClick={ () => history.push(`/routes/${ routeID }/${ index + 2 }`) } disabled={ imageIDs.length <= index + 1}>next</button>
 
       <SceneMetaData />
       
-      { imageIDs && index !== null ? <Scene id={ imageIDs[index] } /> : null }
+      { MemoizedScene }
 
       <br/>
 
