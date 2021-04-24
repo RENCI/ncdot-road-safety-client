@@ -139,7 +139,7 @@ export const BrowseRouteView = () => {
 
       <Breadcrumbs />
       
-      <button onClick={ () => history.push(`/routes/${ routeID }/${ index }`) } disabled={ index < 0 }>prev</button>
+      <button onClick={ () => history.push(`/routes/${ routeID }/${ index }`) } disabled={ index <= 0 }>prev</button>
       <button onClick={ () => history.push(`/routes/${ routeID }/${ index + 2 }`) } disabled={ imageIDs.length <= index + 1}>next</button>
 
       <SceneMetaData />
