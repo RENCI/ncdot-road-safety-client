@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Typography } from 'antd'
 import { api } from '../../api'
+import './expansion-panel.css'
 
 const { Paragraph, Title } = Typography
 
@@ -37,15 +38,11 @@ export const ExpansionPanel = ({ data: route }) => {
   }, [imageIDs])
 
   return (
-    <pre>
-      <Title level={ 3 }>{ route.name }</Title>
-      
-      <Paragraph copyable>
-        { route.id }
-      </Paragraph>
+    <article>
+      <Paragraph strong copyable>{ route.id }</Paragraph>
       
       <Paragraph>
-        { imageIDs.length } images along this route
+        { imageIDs.length } image{ imageIDs.length !== 1 ? 's' : '' } along this route
       </Paragraph>
 
       <Paragraph>
@@ -56,7 +53,7 @@ export const ExpansionPanel = ({ data: route }) => {
       <Paragraph>
         <Link to={ `/routes/${ route.id }/1` }>Browse this route</Link>
       </Paragraph>
-    </pre>
+    </article>
     
   )
 }

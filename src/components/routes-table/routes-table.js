@@ -46,7 +46,8 @@ export const RoutesTable = () => {
       defaultSortField="id"
       expandable={{
         rowExpandable: record => true,
-        expandedRowRender: record => <ExpansionPanel data={ record } />
+        expandedRowRender: record => <ExpansionPanel data={ record } />,
+        expandedRowClassName: () => 'expansion-panel',
       }}
     />
   )
