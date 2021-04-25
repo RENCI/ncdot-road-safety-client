@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Row, Col, Typography } from 'antd'
 import { api } from '../../api'
+import { Map } from '../map'
+
 import './expansion-panel.css'
 
 const { Paragraph, Title } = Typography
-
-const Map = () => <div className="map-placeholder">map</div>
 
 export const ExpansionPanel = ({ data: route }) => {
   const [imageIDs, setImageIDs] = useState([])
