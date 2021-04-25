@@ -40,7 +40,7 @@ export const ExpansionPanel = ({ data: route }) => {
   }, [imageIDs])
 
   return (
-    <article>
+    <article className="expansion-panel">
       <Row>
           <Col xs={{ span: 24 }} lg={{ span: 12 }}>
             <Paragraph strong copyable>

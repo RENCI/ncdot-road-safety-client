@@ -1,3 +1,12 @@
+@keyframes fadein {
+  0%   { filter: opacity(0.0); }
+  100% { filter: opacity(2.0); }
+}
+
+.expansion-panel {
+  animation: fadein 250ms linear 1 normal;
+}
+
 /*
 * this styles the icon inside the copyable route ID inside the Text component.
 * this line causes the copy icon to be vertically aligned with the text to its left.
