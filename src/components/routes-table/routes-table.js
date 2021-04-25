@@ -1,27 +1,8 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
-import { Space, Table } from 'antd'
-import { ArrowRightOutlined } from '@ant-design/icons'
-import { ExpansionPanel } from './expansion-panel'
+import { Table } from 'antd'
 import { useRoutes } from '../../contexts'
-
-const columns = [
-  {
-    title: 'ID',
-    dataIndex: 'id',
-    key: 'id',
-  },
-  {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
-  },
-  {
-    title: 'Actions',
-    key: 'actions',
-    render: (text, record) => <Space size="middle" align="center"><Link to={ `/routes/${ record.id }/1` }>Browse <ArrowRightOutlined /></Link></Space>,
-  },
-]
+import { ExpansionPanel } from './expansion-panel'
+import { columns } from './columns'
 
 export const RoutesTable = () => {
   const { routes } = useRoutes()
