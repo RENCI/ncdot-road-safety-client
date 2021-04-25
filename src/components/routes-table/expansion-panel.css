@@ -6,11 +6,12 @@
   display: inline-flex !important;
 }
 
-.map-placeholder {
+.route-table-map {
   background-color: #eee;
   height: 100%;
   color: #345;
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 400px;
 }

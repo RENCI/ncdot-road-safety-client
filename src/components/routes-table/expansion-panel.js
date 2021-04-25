@@ -58,7 +58,7 @@ export const ExpansionPanel = ({ data: route }) => {
             </Paragraph>
           </Col>
           <Col xs={{ span: 0 }} lg={{ span: 12 }}>
-            <Map />
+            <Map points={ [startingCoordinates, endingCoordinates] }/>
           </Col>
         </Row>
       
