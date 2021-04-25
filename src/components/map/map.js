@@ -14,7 +14,7 @@ export const Map = ({ points }) => {
           center: [ncCenter.long, ncCenter.lat],
           zoom: 7
       }}>
-        { points.map(({ long, lat }) => <Marker key={ `${ long },${ lat }` } long={ long } lat={ lat } />) }
+        { points.map(props => <Marker key={ `${ props.long },${ props.lat }` } { ...props } />) }
       </EsriMap>
     </div>
   )

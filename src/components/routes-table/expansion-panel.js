@@ -58,7 +58,11 @@ export const ExpansionPanel = ({ data: route }) => {
             </Paragraph>
           </Col>
           <Col xs={{ span: 0 }} lg={{ span: 12 }}>
-            <Map points={ [startingCoordinates, endingCoordinates] }/>
+            <Map
+              points={ [
+                { ...startingCoordinates, color: 'teal', style: 'cross' },
+                { ...endingCoordinates, color: 'tomato', style: 'cross' },
+              ] } />
           </Col>
         </Row>
       

@@ -2,12 +2,21 @@ import React, { useEffect, useState } from 'react'
 import { loadModules } from 'esri-loader'
 
 // custom component for map location marker
-export const Marker = ({ view, lat, long, color = '#1890ff', size = 8 }) => {
+export const Marker = ({ view, lat, long, color = '#1890ff', size = '8px', style = 'circle' }) => {
   const [graphic, setGraphic] = useState(null)
 
   const mapPoint = ({ long, lat }) => {
     const point = { type: 'point', longitude: long, latitude: lat }
-    const markerSymbol = { type: 'simple-marker', size: size, color: color }
+    const markerSymbol = {
+      type: 'simple-marker',
+      size: size,
+      color: color,
+      style: style,
+      outline: {
+        color: ['x', 'cross'].includes(style) ? color :'black',
+        width: '2px',
+      }
+    }
     return ({
       geometry: point,
       symbol: markerSymbol,
