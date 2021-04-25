@@ -63,7 +63,7 @@ export const ExpansionPanel = ({ data: route }) => {
           <Map
             points={ [
               { ...startingCoordinates, color: 'teal', style: 'cross' },
-              { ...endingCoordinates, color: 'tomato', style: 'cross' },
+              { ...endingCoordinates, color: 'tomato', style: 'x' },
             ] } />
         </Col>
       </Row>
