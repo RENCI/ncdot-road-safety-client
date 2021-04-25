@@ -6,7 +6,7 @@ import { Map } from '../map'
 
 import './expansion-panel.css'
 
-const { Paragraph, Title } = Typography
+const { Paragraph, Text, Title } = Typography
 
 export const ExpansionPanel = ({ data: route }) => {
   const [imageIDs, setImageIDs] = useState([])
@@ -42,7 +42,8 @@ export const ExpansionPanel = ({ data: route }) => {
   return (
     <article className="expansion-panel">
       <Row>
-          <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+        <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+          <div className="route-details">
             <Paragraph strong copyable>
               { route.id }
             </Paragraph>
@@ -50,23 +51,22 @@ export const ExpansionPanel = ({ data: route }) => {
               { imageIDs.length } image{ imageIDs.length !== 1 ? 's' : '' } along this route
             </Paragraph>
             <Paragraph>
-              Start: { startingCoordinates.lat } latitude, { startingCoordinates.long } longitude<br/>
-              End: { endingCoordinates.lat } latitude, { endingCoordinates.long } longitude
+              <Text style={{ color: 'teal' }}>Start</Text>: { startingCoordinates.long } longitude, { startingCoordinates.lat } latitude<br />
+              <Text style={{ color: 'tomato' }}>End</Text>: { endingCoordinates.long } longitude, { endingCoordinates.lat } latitude
             </Paragraph>
             <Paragraph>
               <Link to={ `/routes/${ route.id }/1` }>Browse this route</Link>
             </Paragraph>
-          </Col>
-          <Col xs={{ span: 0 }} lg={{ span: 12 }}>
-            <Map
-              points={ [
-                { ...startingCoordinates, color: 'teal', style: 'cross' },
-                { ...endingCoordinates, color: 'tomato', style: 'cross' },
-              ] } />
-          </Col>
-        </Row>
-      
+          </div>
+        </Col>
+        <Col xs={{ span: 0 }} lg={{ span: 12 }}>
+          <Map
+            points={ [
+              { ...startingCoordinates, color: 'teal', style: 'cross' },
+              { ...endingCoordinates, color: 'tomato', style: 'cross' },
+            ] } />
+        </Col>
+      </Row>
     </article>
-    
   )
 }
