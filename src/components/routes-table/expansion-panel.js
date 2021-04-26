@@ -41,9 +41,8 @@ export const ExpansionPanel = ({ data: route }) => {
           api.getImageMetadata(imageIDs.slice(-1)) // last route image
         ])
         const [start, end] = response.map(res => res.data.metadata)
-        console.log(start, end)
-        setStartingCoordinates({ long: start.long, lat: start.lat, ...markerStyles.start, key: `${ route.id }-start-${ start.long },${ start.lat }`, })
-        setEndingCoordinates({ long: end.long, lat: end.lat, ...markerStyles.end, key: `${ route.id }-end-${ end.long },${ end.lat }`, })
+        setStartingCoordinates({ long: start.long, lat: start.lat, ...markerStyles.start })
+        setEndingCoordinates({ long: end.long, lat: end.lat, ...markerStyles.end })
         setLoadingMap(false)
       } catch (error) {
         console.log(error)
