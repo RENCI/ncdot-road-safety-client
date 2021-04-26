@@ -71,14 +71,14 @@ const RouteNavigation = () => {
       <BrowseButton
         path={ `/routes/${ routeID }/${ index }` }
         disabled={ index <= 0 }
-        tooltip={ index <= 0 ? '' : 'Step backward' }
+        tooltip="Step backward"
       >
         <StepBackwardOutlined /> Previous
       </BrowseButton>
       <BrowseButton
         path={ `/routes/${ routeID }/${ index + 2 }` }
         disabled={ imageIDs.length <= index + 1 }
-        tooltip={ imageIDs.length <= index + 1 ? '' : 'Step forward' }
+        tooltip="Step forward"
       >
         Next <StepForwardOutlined />
       </BrowseButton>
