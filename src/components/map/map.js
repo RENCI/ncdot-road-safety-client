@@ -15,7 +15,7 @@ export const Map = ({ markers }) => {
           center: [ncCenter.long, ncCenter.lat],
           zoom: 7
       }}>
-        { markers.map(({ key, ...props }) => <Marker key={ key } { ...props } />) }
+        { markers.length > 0 && markers.map(({ key, ...props }) => <Marker key={ key } { ...props } />) }
       </EsriMap>
     </div>
   )

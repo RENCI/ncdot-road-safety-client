@@ -5,6 +5,8 @@
 
 .expansion-panel {
   animation: fadein 250ms linear 1 normal;
+  border-left: 1px solid #f0f0f0;
+  border-right: 1px solid #f0f0f0;
 }
 
 .route-details {
@@ -30,5 +32,6 @@ tr.ant-table-expanded-row > td.ant-table-cell {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 400px;
+  height: 300px;
+  border-left: 1px solid #f0f0f0;
 }
