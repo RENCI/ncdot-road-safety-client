@@ -18,7 +18,7 @@ const useRouteBrowseContext = () => useContext(RouteBrowseContext)
 const SceneMetaData = () => {
   const { currentLocation, imageIDs, index, routeID } = useRouteBrowseContext()
   return (
-    <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', fontSize: '80%', opacity: 0.75 }}>
+    <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', fontSize: '80%', opacity: 0.75 }}>
       <Paragraph style={{ textAlign: 'left' }}>
         { index + 1 } of { imageIDs.length }<br />
         Image ID: { imageIDs[index] || '...' } <br />
