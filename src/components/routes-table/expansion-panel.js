@@ -51,8 +51,8 @@ export const ExpansionPanel = ({ data: route }) => {
               { imageIDs.length } image{ imageIDs.length !== 1 ? 's' : '' } along this route
             </Paragraph>
             <Paragraph>
-              <Text style={{ color: 'teal' }}>Start</Text>: { startingCoordinates.long } longitude, { startingCoordinates.lat } latitude<br />
-              <Text style={{ color: 'tomato' }}>End</Text>: { endingCoordinates.long } longitude, { endingCoordinates.lat } latitude
+              <Text style={{ color: 'teal' }}>&#x2b; Start</Text>: { startingCoordinates.long } longitude, { startingCoordinates.lat } latitude<br />
+              <Text style={{ color: 'tomato' }}>&times; End</Text>: { endingCoordinates.long } longitude, { endingCoordinates.lat } latitude
             </Paragraph>
             <Paragraph>
               <Link to={ `/routes/${ route.id }/1` }>Browse this route</Link>
