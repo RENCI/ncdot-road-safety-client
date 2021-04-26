@@ -12,7 +12,6 @@ const { Paragraph, Text, Title } = Typography
 const markerStyles = {
   start: { color: 'teal', style: 'cross' },
   end: { color: 'tomato', style: 'x' },
-  interior: { color: 'black', style: 'circle' }
 }
 
 export const ExpansionPanel = ({ data: route }) => {
