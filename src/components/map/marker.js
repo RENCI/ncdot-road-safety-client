@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
 import { loadModules } from 'esri-loader'
 
 // custom component for map location marker
-export const Marker = ({ view, lat, long, color = '#1890ff', size = '8px', style = 'circle' }) => {
+export const Marker = ({ view, lat, long, color, size, style }) => {
   const [graphic, setGraphic] = useState(null)
 
   const mapPoint = ({ long, lat }) => {
@@ -43,4 +44,22 @@ export const Marker = ({ view, lat, long, color = '#1890ff', size = '8px', style
 
   return null
 }
+
+Marker.propTypes = {
+  lat: PropTypes.number.isRequired,
+  long: PropTypes.number.isRequired,
+  color: PropTypes.string.isRequired,
+  size: PropTypes.string.isRequired,
+  style: PropTypes.oneOf(['circle', 'cross', 'diamond', 'square', 'triangle', 'x']),
+}
+
+Marker.defaultProps = {
+  color: '#1890ff',
+  size: '8px',
+  style: 'circle',
+}
+
+
+
+
 

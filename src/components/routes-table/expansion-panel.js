@@ -3,40 +3,55 @@ import { Link } from 'react-router-dom'
 import { Row, Col, Typography } from 'antd'
 import { api } from '../../api'
 import { Map } from '../map'
+import { Spin } from 'antd'
 
 import './expansion-panel.css'
 
 const { Paragraph, Text, Title } = Typography
 
+const markerStyles = {
+  start: { color: 'teal', style: 'cross' },
+  end: { color: 'tomato', style: 'x' },
+  interior: { color: 'black', style: 'circle' }
+}
+
 export const ExpansionPanel = ({ data: route }) => {
   const [imageIDs, setImageIDs] = useState([])
   const [startingCoordinates, setStartingCoordinates] = useState({ lat: 0, long: 0 })
   const [endingCoordinates, setEndingCoordinates] = useState({ lat: 0, long: 0 })
+  const [markers, setMarkers] = useState([])
+  const [loadingMap, setLoadingMap] = useState(true)
 
   useEffect(() => {
     const fetchRouteImageBaseNames = async () => await api.getRouteInfo(route.id)
       .then(response => {
-        if (response?.data?.route_image_base_names) {
-          setImageIDs(response.data.route_image_base_names)
-        }
+        setImageIDs(response.data.route_image_base_names)
       })
       .catch(error => console.error(error))
     fetchRouteImageBaseNames()
   }, [])
 
   useEffect(() => {
-    if (!imageIDs) { return }
-    const fetchEndpointCoordinates = async () => {
-      await api.getImageMetadata(imageIDs[0])
-        .then(response => {
-          setStartingCoordinates({ lat: response.data.metadata.lat, long: response.data.metadata.long })
-        })
-      await api.getImageMetadata(imageIDs[imageIDs.length - 1])
-        .then(response => {
-          setEndingCoordinates({ lat: response.data.metadata.lat, long: response.data.metadata.long })
-        })
+    if (!imageIDs.length) { return }
+
+    const constructMapMarkers = async () => {
+      try {
+        const response = await Promise.all([
+          api.getImageMetadata(imageIDs[0]), // first route image
+          api.getImageMetadata(imageIDs.slice(-1)) // last route image
+        ])
+        const [start, end] = response.map(res => res.data.metadata)
+        setMarkers([
+          ...markers,
+          { long: start.long, lat: start.lat, ...markerStyles.start, key: `${ route.id }-start-${ start.long },${ start.lat }`, },
+          { long: end.long, lat: end.lat, ...markerStyles.end, key: `${ route.id }-end-${ end.long },${ end.lat }`, },
+        ])
+        setLoadingMap(false)
+      } catch (error) {
+        console.log(error)
+      }
     }
-    fetchEndpointCoordinates()
+    constructMapMarkers()
   }, [imageIDs])
 
   return (
@@ -60,11 +75,7 @@ export const ExpansionPanel = ({ data: route }) => {
           </div>
         </Col>
         <Col xs={{ span: 0 }} lg={{ span: 12 }}>
-          <Map
-            points={ [
-              { ...startingCoordinates, color: 'teal', style: 'cross' },
-              { ...endingCoordinates, color: 'tomato', style: 'x' },
-            ] } />
+          <Map markers={ markers } />
         </Col>
       </Row>
     </article>
