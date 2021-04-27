@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { api } from '../../api'
 import { Typography } from 'antd'
 import { Scene } from '../../components/scene'
-import { Breadcrumbs, RouteBrowser, NavigationButtons, SceneMetadata, ScenePrefetch } from '../../components/route-browser'
+import { Breadcrumbs,NavigationButtons, NavigationSlider, RouteBrowser, SceneMetadata, ScenePrefetch } from '../../components/route-browser'
 
 const { Title } = Typography
 
@@ -49,7 +49,7 @@ export const BrowseRouteView = () => {
     const fetchSceneMetadata = async () => await api.getImageMetadata(imageIDs[index])
       .then(response => {
         const coordinates = { lat: response.data.metadata.lat, long: response.data.metadata.long }
-        setCurrentLocation(coordinates)
+        setCurrentLocation({ id: imageIDs[index], ...coordinates })
       })
       .catch(error => console.error(error))
     if (imageIDs.length && index + 1) {
@@ -66,6 +66,10 @@ export const BrowseRouteView = () => {
       <br /><hr /><br />
 
       <NavigationButtons />
+      
+      <br />
+
+      <NavigationSlider />
 
       <br />
 

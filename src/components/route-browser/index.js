@@ -1,5 +1,6 @@
 export * from './breadcrumbs'
 export * from './context'
 export * from './navigation-buttons'
+export * from './navigation-slider'
 export * from './scene-metadata'
 export * from './scene-prefetch'
