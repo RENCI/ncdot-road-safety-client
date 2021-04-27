@@ -57,7 +57,7 @@ const BrowseButton = ({ path, tooltip, ...props }) => {
 }
 
 BrowseButton.propTypes = {
-  url: PropTypes.string.isRequired,
+  path: PropTypes.string.isRequired,
   tooltip: PropTypes.string.isRequired,
 }
 
@@ -83,6 +83,16 @@ const RouteNavigation = () => {
         Next <StepForwardOutlined />
       </BrowseButton>
     </div>
+  )
+}
+
+const ScenePrefetch = ({ id }) => {
+  return (
+    <Fragment>
+      <link rel='prefetch' href={ api.getImage(id, 'left') } />
+      <link rel='prefetch' href={ api.getImage(id, 'front') } />
+      <link rel='prefetch' href={ api.getImage(id, 'right') } />
+    </Fragment>
   )
 }
 
@@ -168,7 +178,12 @@ export const BrowseRouteView = () => {
       <ul>
         { imageIDs.map((id, i) => <li key={ id } style={{ color: index === i ? '#1890ff' : 'inherit' }}>{ id }</li>) }
       </ul>
-      
+
+      { // prev scene
+        imageIDs.length > 0 && 0 <= index - 1 && <ScenePrefetch id={ imageIDs[index - 1] } /> }
+      { // next scene
+        imageIDs.length > 0 && index + 1 < imageIDs.length && <ScenePrefetch id={ imageIDs[index + 1] } /> }
+
     </RouteBrowseContext.Provider>
   )
 }
