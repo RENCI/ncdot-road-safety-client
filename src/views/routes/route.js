@@ -79,7 +79,7 @@ export const BrowseRouteView = () => {
 
       <br /><hr /><br />
 
-      <Map markers={ [currentLocation] } />
+      <Map markers={ [currentLocation] } height="400px" />
 
       <br /><hr /><br />
 

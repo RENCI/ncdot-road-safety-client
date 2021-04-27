@@ -26,12 +26,9 @@ tr.ant-table-expanded-row > td.ant-table-cell {
 }
 
 .route-table-map {
-  background-color: #eee;
-  height: 100%;
-  color: #345;
+  background-color: #ddd;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 300px;
   border-left: 1px solid #f0f0f0;
 }

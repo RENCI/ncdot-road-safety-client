@@ -5,11 +5,11 @@ import { Marker } from './marker'
 
 const ncCenter = { lat: 35.393809, long: -79.8431 }
 
-export const Map = ({ markers }) => {
+export const Map = ({ height, markers }) => {
   return (
     <div className="route-table-map">
       <EsriMap
-        style={{ overflow: 'hidden' }}
+        style={{ overflow: 'hidden', height: height }}
         mapProperties={{ basemap: 'gray-vector' }}
         viewProperties={{
           center: [ncCenter.long, ncCenter.lat],
@@ -22,10 +22,15 @@ export const Map = ({ markers }) => {
 }
 
 Map.propTypes = {
+  height: PropTypes.string.isRequired,
   markers: PropTypes.arrayOf(
     PropTypes.shape({
       long: PropTypes.number.isRequired,
       lat: PropTypes.number.isRequired,
     })
   )
+}
+
+Map.defaultProps = {
+  height: '300px',
 }
