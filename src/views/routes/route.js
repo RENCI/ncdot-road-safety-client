@@ -61,7 +61,7 @@ BrowseButton.propTypes = {
   tooltip: PropTypes.string.isRequired,
 }
 
-const RouteNavigation = () => {
+const RouteNavigationButtons = () => {
   const { imageIDs, index, routeID } = useRouteBrowseContext()
 
   if (!(index + 1) || !imageIDs.length) return '...'
@@ -163,7 +163,7 @@ export const BrowseRouteView = () => {
 
       <br /><hr /><br />
 
-      <RouteNavigation />
+      <RouteNavigationButtons />
 
       <br />
 
