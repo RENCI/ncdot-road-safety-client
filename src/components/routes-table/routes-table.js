@@ -1,16 +1,10 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Table } from 'antd'
-import { useRoutes } from '../../contexts'
 import { ExpansionPanel } from './expansion-panel'
 import { columns } from './columns'
 
-export const RoutesTable = () => {
-  const { routes } = useRoutes()
-
-  if (!routes.length) {
-    return <p>Fetching routes...</p>
-  }
-
+export const RoutesTable = ({ routes }) => {
   return (
     <Table
       pagination={{
@@ -32,4 +26,12 @@ export const RoutesTable = () => {
       }}
     />
   )
+}
+
+RoutesTable.propTypes = {
+  routes: PropTypes.array.isRequired,
+}
+
+RoutesTable.defaultProps = {
+  routes: [],
 }

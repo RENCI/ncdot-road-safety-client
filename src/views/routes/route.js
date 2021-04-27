@@ -1,103 +1,14 @@
 import React, { Fragment, useContext, useEffect, useMemo, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import { Link, useHistory, useParams } from 'react-router-dom'
 import { api } from '../../api'
-import { Breadcrumb, Button, Tooltip, Typography } from 'antd'
-import { ArrowRightOutlined, FastBackwardOutlined, StepBackwardOutlined, StepForwardOutlined, FastForwardOutlined } from '@ant-design/icons'
+import { Typography } from 'antd'
 import { Scene } from '../../components/scene'
+import { Breadcrumbs, RouteBrowser, NavigationButtons, SceneMetadata, ScenePrefetch } from '../../components/route-browser'
 
-const { Paragraph, Title } = Typography
-
-// context
-
-const RouteBrowseContext = React.createContext({ })
-const useRouteBrowseContext = () => useContext(RouteBrowseContext)
-
-// components
-
-const SceneMetaData = () => {
-  const { currentLocation, imageIDs, index, routeID } = useRouteBrowseContext()
-  return (
-    <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', fontSize: '80%', opacity: 0.75 }}>
-      <Paragraph style={{ textAlign: 'left' }}>
-        { index + 1 } of { imageIDs.length }<br />
-        Image ID: { imageIDs[index] || '...' } <br />
-        Route ID: { routeID || '...' } <br />
-      </Paragraph>
-      <Paragraph style={{ textAlign: 'right' }}>
-        Latitude: { currentLocation.lat || '...' }<br />
-        Longitude: { currentLocation.long || '...' }<br />
-      </Paragraph>
-    </div>
-  )
-}
-
-const Breadcrumbs = () => {
-  const { index, routeID } = useRouteBrowseContext()
-  return (
-    <Breadcrumb>
-      <Breadcrumb.Item>
-        <Link to="/routes">Routes</Link>
-      </Breadcrumb.Item>
-      <Breadcrumb.Item>
-        <Link to={ `/routes/${ routeID }` }>{ routeID }</Link>
-      </Breadcrumb.Item>
-      <Breadcrumb.Item>{ index + 1 }</Breadcrumb.Item>
-    </Breadcrumb>
-  )
-}
-
-const BrowseButton = ({ path, tooltip, ...props }) => {
-  const history = useHistory()
-  return (
-    <Tooltip placement="top" title={ tooltip }>
-      <Button type="primary" onClick={ () => history.push(path) } style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} { ...props } />
-    </Tooltip>
-  )
-}
-
-BrowseButton.propTypes = {
-  path: PropTypes.string.isRequired,
-  tooltip: PropTypes.string.isRequired,
-}
-
-const RouteNavigationButtons = () => {
-  const { imageIDs, index, routeID } = useRouteBrowseContext()
-
-  if (!(index + 1) || !imageIDs.length) return '...'
-
-  return (
-    <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem' }}>
-      <BrowseButton
-        path={ `/routes/${ routeID }/${ index }` }
-        disabled={ index <= 0 }
-        tooltip="Step backward"
-      >
-        <StepBackwardOutlined /> Previous
-      </BrowseButton>
-      <BrowseButton
-        path={ `/routes/${ routeID }/${ index + 2 }` }
-        disabled={ imageIDs.length <= index + 1 }
-        tooltip="Step forward"
-      >
-        Next <StepForwardOutlined />
-      </BrowseButton>
-    </div>
-  )
-}
-
-const ScenePrefetch = ({ id }) => {
-  return (
-    <Fragment>
-      <link rel='prefetch' href={ api.getImage(id, 'left') } />
-      <link rel='prefetch' href={ api.getImage(id, 'front') } />
-      <link rel='prefetch' href={ api.getImage(id, 'right') } />
-    </Fragment>
-  )
-}
+const { Title } = Typography
 
 export const BrowseRouteView = () => {
-  const history = useHistory()
   // grab parameters passed in from the route /routes/:routeID/:imageIndex
   // note that imageIndex is shifted by one for human readability
   const { routeID, imageIndex } = useParams()
@@ -114,14 +25,9 @@ export const BrowseRouteView = () => {
     const i = parseInt(imageIndex) - 1
     // ...if index lies outside 0..(# of images - 1)
     if (i < 0 || imageIDs.length < i + 1) { setIndex(0); return; }
-
-    console.log(imageIndex)
-    console.log(i)
+    // ok, let's go
     setIndex(i)
   }, [imageIndex, imageIDs.length])
-
-  console.table({ routeID, imageIndex, index })
-  console.table({ currentLocation })
 
   // grab the image base names for all scenes along this route
   useEffect(() => {
@@ -151,39 +57,27 @@ export const BrowseRouteView = () => {
     }
   }, [imageIDs, routeID, index])
 
-  const MemoizedScene = useMemo(() => <Scene id={ imageIDs[index] } />, [imageIDs, index])
-  const prevIndex = useMemo(() => Math.max(1, index - 1), [index])
-  const nextIndex = useMemo(() => Math.min(imageIDs.length, index + 1), [index])
-
   return (
-    <RouteBrowseContext.Provider value={{ routeID, imageIDs, index, imageIndex, currentLocation }}>
+    <RouteBrowser value={{ routeID, imageIDs, index, imageIndex, currentLocation }}>
       <Title level={ 1 }>Route { routeID }</Title>
 
       <Breadcrumbs />
 
       <br /><hr /><br />
 
-      <RouteNavigationButtons />
+      <NavigationButtons />
 
       <br />
 
-      <SceneMetaData />
-      
-      { MemoizedScene }
+      <SceneMetadata />
+      <Scene id={ imageIDs[index] } />
 
       <br /><hr /><br />
-
-      <Title level={ 6 }>image base names along this route</Title>
-      
-      <ul>
-        { imageIDs.map((id, i) => <li key={ id } style={{ color: index === i ? '#1890ff' : 'inherit' }}>{ id }</li>) }
-      </ul>
 
       { // prev scene
         imageIDs.length > 0 && 0 <= index - 1 && <ScenePrefetch id={ imageIDs[index - 1] } /> }
       { // next scene
         imageIDs.length > 0 && index + 1 < imageIDs.length && <ScenePrefetch id={ imageIDs[index + 1] } /> }
-
-    </RouteBrowseContext.Provider>
+    </RouteBrowser>
   )
 }
