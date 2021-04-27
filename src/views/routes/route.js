@@ -5,6 +5,7 @@ import { api } from '../../api'
 import { Typography } from 'antd'
 import { Scene } from '../../components/scene'
 import { Breadcrumbs,NavigationButtons, NavigationSlider, RouteBrowser, SceneMetadata, ScenePrefetch } from '../../components/route-browser'
+import { Map } from '../../components/map'
 
 const { Title } = Typography
 
@@ -78,10 +79,15 @@ export const BrowseRouteView = () => {
 
       <br /><hr /><br />
 
+      <Map markers={ [currentLocation] } />
+
+      <br /><hr /><br />
+
       { // prev scene
         imageIDs.length > 0 && 0 <= index - 1 && <ScenePrefetch id={ imageIDs[index - 1] } /> }
       { // next scene
         imageIDs.length > 0 && index + 1 < imageIDs.length && <ScenePrefetch id={ imageIDs[index + 1] } /> }
+
     </RouteBrowser>
   )
 }
