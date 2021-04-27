@@ -10,10 +10,7 @@ export const Breadcrumbs = () => {
       <Breadcrumb.Item>
         <Link to="/routes">Routes</Link>
       </Breadcrumb.Item>
-      <Breadcrumb.Item>
-        <Link to={ `/routes/${ routeID }` }>{ routeID }</Link>
-      </Breadcrumb.Item>
-      <Breadcrumb.Item>{ index + 1 }</Breadcrumb.Item>
+      <Breadcrumb.Item>{ routeID } #{ index + 1 }</Breadcrumb.Item>
     </Breadcrumb>
   )
 }
