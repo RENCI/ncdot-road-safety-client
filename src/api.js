@@ -10,7 +10,9 @@ export const views = {
 export const api = {
   logout: '/logout/',
   updateAccount: key => `/accounts/update/${ key }/`,
-  getImage: (id, dir) => `/get_image_by_name/${ id }${ views[dir] }.jpg`,
+  getImage: (id, dir, downsample) => downsample ? 
+    `/get_image_by_name/${ id }${ views[dir] }.jpg` : 
+    `/get_original_image_by_name/${ id }${ views[dir] }.jpg`,
   getImageNamesByLocation: (long, lat, count) => `/get_image_names_by_loc/${ long }/${ lat }/${ count }/`,
   getImageMetadata: id => axios.get(`/get_image_metadata/${ id }/`),
   getImageNamesByAnnotation: label => `/get_image_base_names_by_annot/${ label }/`,

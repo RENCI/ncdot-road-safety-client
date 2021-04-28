@@ -4,14 +4,14 @@ import { Scene } from '../scene'
 import { FlagControl } from '../flag-control'
 import './annotation-panel.css'
 
-export const AnnotationPanel = ({ image, autoAdjust, flagOptions, userFlagOptions, flagShortcuts }) => {
+export const AnnotationPanel = ({ image, autoAdjust, downsample, flagOptions, userFlagOptions, flagShortcuts }) => {
   const {} = useAccount()
   const tooltipTimeout = useRef()
   const [popoverVisible, setPopoverVisible] = useState(false)
   const [tooltip, setTooltip] = useState(null)
   const [, dispatch] = useContext(AnnotationBrowserContext)
 
-  const { id, present, flags } = image;
+  const { id, aspectRatio, present, flags } = image;
 
   const onImageClick = (id, view) => {
     const viewPresent = 
@@ -91,8 +91,10 @@ export const AnnotationPanel = ({ image, autoAdjust, flagOptions, userFlagOption
 
       <Scene 
         id={ id } 
+        aspectRatio={ aspectRatio }
         present={ present }                 
         autoAdjust={ autoAdjust }
+        downsample={ downsample }
         onClick={ onImageClick } 
         onKeyPress={ onKeyPress }
       />      
