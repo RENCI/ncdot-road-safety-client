@@ -8,6 +8,7 @@ const initialState = {
   numLoad: 5,
   annotation: null,
   autoAdjust: true,
+  downsample: true,
   userFlags: [],
   flagShortcuts: {},
   annotatedImagesCount: 0,
@@ -76,7 +77,7 @@ const reducer = (state, action) => {
     case 'setCacheImages':
       return {
         ...state,
-        imageCache: [...action.infoList]        
+        imageCache: action.infoList.map(({ base_name }) => base_name)        
       }
 
     case 'goBack':
@@ -163,6 +164,12 @@ const reducer = (state, action) => {
       return {
         ...state,
         autoAdjust: action.autoAdjust
+      }
+
+    case 'setDownsample':
+      return {
+        ...state,
+        downsample: action.downsample
       }
 
     default: 

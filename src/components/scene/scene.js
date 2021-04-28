@@ -6,7 +6,10 @@ import { Image } from '../image'
 import { api } from '../../api'
 import './scene.css'
 
-export const Scene = ({ id, aspectRatio, present, autoAdjust, onClick, onKeyPress }) => {
+export const Scene = ({ 
+  id, aspectRatio, downsample, present, autoAdjust, 
+  onClick, onKeyPress 
+}) => {
   const [active, setActive] = useState(false)
 
   const hasAnnotation = present ? Object.values(present).reduce((p, c) => {
@@ -57,17 +60,17 @@ export const Scene = ({ id, aspectRatio, present, autoAdjust, onClick, onKeyPres
     >
       { loading && <Spin className='spinner'/> }
       <Image 
-        url={ api.getImage(id, 'left') } 
+        url={ api.getImage(id, 'left', downsample) } 
         aspectRatio={ aspectRatio }
         loading={ loading }
         present={ present ? present.left : null }
-        autoAdjust={ autoAdjust }
+        autoAdjust={ autoAdjust }        
         onLoad={ onLoad }
         onClick={ onClick ? () => onClick(id, 'left') : null } 
         onKeyPress={ onKeyPress }
       />
       <Image 
-        url={ api.getImage(id, 'front') } 
+        url={ api.getImage(id, 'front', downsample) } 
         aspectRatio={ aspectRatio }
         loading={ loading }
         present={ present ? present.front : null }
@@ -77,7 +80,7 @@ export const Scene = ({ id, aspectRatio, present, autoAdjust, onClick, onKeyPres
         onKeyPress={ onKeyPress }
       />
       <Image 
-        url={ api.getImage(id, 'right') } 
+        url={ api.getImage(id, 'right', downsample) } 
         aspectRatio={ aspectRatio }
         loading={ loading }
         present={ present ? present.right : null }
