@@ -11,7 +11,7 @@ export const AnnotationPanel = ({ image, autoAdjust, flagOptions, userFlagOption
   const [tooltip, setTooltip] = useState(null)
   const [, dispatch] = useContext(AnnotationBrowserContext)
 
-  const { id, present, flags } = image;
+  const { id, aspectRatio, present, flags } = image;
 
   const onImageClick = (id, view) => {
     const viewPresent = 
@@ -91,6 +91,7 @@ export const AnnotationPanel = ({ image, autoAdjust, flagOptions, userFlagOption
 
       <Scene 
         id={ id } 
+        aspectRatio={ aspectRatio }
         present={ present }                 
         autoAdjust={ autoAdjust }
         onClick={ onImageClick } 

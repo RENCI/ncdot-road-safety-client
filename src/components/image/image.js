@@ -5,7 +5,10 @@ import { CheckCircleOutlined, StopOutlined } from '@ant-design/icons'
 import { getAutoAdjustValues } from './auto-adjust'
 import './image.css'
 
-export const Image = ({ url, loading, present, autoAdjust, onLoad, onClick, onKeyPress }) => { 
+export const Image = ({ 
+  url, aspectRatio, loading, present, autoAdjust, 
+  onLoad, onClick, onKeyPress 
+}) => { 
   const [error, setError] = useState(false)
   const [pointerDown, setPointerDown] = useState(false)
   const [drag, setDrag] = useState(false)
@@ -13,6 +16,7 @@ export const Image = ({ url, loading, present, autoAdjust, onLoad, onClick, onKe
   const [autoContrast, setAutoContrast] = useState(1)
   const [brightness, setBrightness] = useState(1)
   const [contrast, setContrast] = useState(1)
+  const [height, setHeight] = useState(0)
 
   const imageRef = useRef()
   const canvasRef = useRef()
@@ -21,6 +25,10 @@ export const Image = ({ url, loading, present, autoAdjust, onLoad, onClick, onKe
   const canvasHeight = 100
 
   const movementScale = 0.01;
+
+  useEffect(() => {
+    setHeight(imageRef.current.clientWidth / aspectRatio)
+  }, []);
 
   useEffect(() => {
     if (autoAdjust) {
@@ -32,26 +40,6 @@ export const Image = ({ url, loading, present, autoAdjust, onLoad, onClick, onKe
       setContrast(1)
     }
   }, [autoAdjust])
-
-  const intensity = (r, g, b) => r * 0.299 + g * 0.587 + b * 0.114
-
-  const getIntensities = pixels => {
-    // Return array of intensities from rgba array
-    let intensities = [];
-
-    for (let i = 0; i < pixels.length; i += 4) {
-      intensities.push(intensity(pixels[i], pixels[i + 1], pixels[i + 2]));
-    }
-
-    return intensities
-  }
-
-  const mean = values => values.reduce((sum, value) => sum + value, 0) / values.length
-
-  const stdDev = (values, mean) => Math.sqrt(values.reduce((sum, value) => {
-    const v = value - mean
-    return sum + v * v
-  }, 0) / values.length)
 
   const onImageLoad = () => {
     const { brightness, contrast } = getAutoAdjustValues(imageRef, canvasRef)
@@ -143,6 +131,7 @@ export const Image = ({ url, loading, present, autoAdjust, onLoad, onClick, onKe
             src={ url } 
             tabIndex='-1'
             width='100%' 
+            height={ height }
             style={{ 
               visibility: loading ? "hidden" : "visible",
               filter: filterString,  

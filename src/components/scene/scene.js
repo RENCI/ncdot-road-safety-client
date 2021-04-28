@@ -6,7 +6,7 @@ import { Image } from '../image'
 import { api } from '../../api'
 import './scene.css'
 
-export const Scene = ({ id, present, autoAdjust, onClick, onKeyPress }) => {
+export const Scene = ({ id, aspectRatio, present, autoAdjust, onClick, onKeyPress }) => {
   const [active, setActive] = useState(false)
 
   const hasAnnotation = present ? Object.values(present).reduce((p, c) => {
@@ -58,6 +58,7 @@ export const Scene = ({ id, present, autoAdjust, onClick, onKeyPress }) => {
       { loading && <Spin className='spinner'/> }
       <Image 
         url={ api.getImage(id, 'left') } 
+        aspectRatio={ aspectRatio }
         loading={ loading }
         present={ present ? present.left : null }
         autoAdjust={ autoAdjust }
@@ -67,6 +68,7 @@ export const Scene = ({ id, present, autoAdjust, onClick, onKeyPress }) => {
       />
       <Image 
         url={ api.getImage(id, 'front') } 
+        aspectRatio={ aspectRatio }
         loading={ loading }
         present={ present ? present.front : null }
         autoAdjust={ autoAdjust }
@@ -76,6 +78,7 @@ export const Scene = ({ id, present, autoAdjust, onClick, onKeyPress }) => {
       />
       <Image 
         url={ api.getImage(id, 'right') } 
+        aspectRatio={ aspectRatio }
         loading={ loading }
         present={ present ? present.right : null }
         autoAdjust={ autoAdjust }

@@ -41,7 +41,7 @@ export const AnnotationBrowser = () => {
       
       dispatch({ 
         type: 'setImages', 
-        ids: response.data.image_base_names
+        infoList: response.data.image_info_list
       })
 
       setLoading(false)  
@@ -58,11 +58,9 @@ export const AnnotationBrowser = () => {
   const getCacheImages = annotation => {
     // Get next images, but don't wait for them
     axios.get(api.getNextImageNamesForAnnotation(annotation, cacheSize)).then(response => {
-      console.lo
-
       dispatch({ 
         type: 'setCacheImages', 
-        ids: response.data.image_base_names
+        infoList: response.data.image_info_list
       }) 
     })
     .catch(error => {
@@ -133,8 +131,8 @@ export const AnnotationBrowser = () => {
 
       dispatch({ 
         type: 'setImages', 
-        ids: response.data.image_base_names
-      })    
+        infoList: response.data.image_info_list
+      })
       
       getCacheImages(annotation.name);
 
