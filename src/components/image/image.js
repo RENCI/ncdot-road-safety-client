@@ -6,7 +6,7 @@ import { getAutoAdjustValues } from './auto-adjust'
 import './image.css'
 
 export const Image = ({ 
-  url, aspectRatio, loading, present, autoAdjust, 
+  url, aspectRatio, loading, present, autoAdjust, downsample,
   onLoad, onClick, onKeyPress 
 }) => { 
   const [error, setError] = useState(false)
@@ -134,8 +134,9 @@ export const Image = ({
             height={ height }
             style={{ 
               visibility: loading ? "hidden" : "visible",
+              imageRendering: downsample ? "pixelated" : null,
               filter: filterString,  
-              cursor: drag ? 'move' : onClick ? 'pointer' : 'default' 
+              cursor: drag ? 'move' : onClick ? 'pointer' : 'default'
             }}
             draggable='false'
             onLoad={ onImageLoad } 
@@ -171,6 +172,7 @@ Image.propTypes = {
   loading: PropTypes.bool.isRequired,
   present: PropTypes.string,
   autoAdjust: PropTypes.bool,
+  downsample: PropTypes.bool,
   onLoad: PropTypes.func.isRequired,
   onClick: PropTypes.func,
   onKeyPress: PropTypes.func

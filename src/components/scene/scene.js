@@ -7,7 +7,7 @@ import { api } from '../../api'
 import './scene.css'
 
 export const Scene = ({ 
-  id, aspectRatio, downsample, present, autoAdjust, 
+  id, aspectRatio, downsample, present, autoAdjust,
   onClick, onKeyPress 
 }) => {
   const [active, setActive] = useState(false)
@@ -65,6 +65,7 @@ export const Scene = ({
         loading={ loading }
         present={ present ? present.left : null }
         autoAdjust={ autoAdjust }        
+        downsample={ downsample }
         onLoad={ onLoad }
         onClick={ onClick ? () => onClick(id, 'left') : null } 
         onKeyPress={ onKeyPress }
@@ -74,7 +75,8 @@ export const Scene = ({
         aspectRatio={ aspectRatio }
         loading={ loading }
         present={ present ? present.front : null }
-        autoAdjust={ autoAdjust }
+        autoAdjust={ autoAdjust }       
+        downsample={ downsample }
         onLoad={ onLoad } 
         onClick={ onClick ? () => onClick(id, 'front') : null } 
         onKeyPress={ onKeyPress }
@@ -84,7 +86,8 @@ export const Scene = ({
         aspectRatio={ aspectRatio }
         loading={ loading }
         present={ present ? present.right : null }
-        autoAdjust={ autoAdjust }
+        autoAdjust={ autoAdjust }       
+        downsample={ downsample }
         onLoad={ onLoad }
         onClick={ onClick ? () => onClick(id, 'right') : null }
         onKeyPress={ onKeyPress }
@@ -95,7 +98,9 @@ export const Scene = ({
 
 Scene.propTypes = {
   id: PropTypes.string.isRequired,
-  present: PropTypes.object,
+  aspectRatio: PropTypes.number,
+  downsample: PropTypes.bool,
   autoAdjust: PropTypes.bool,
+  present: PropTypes.object,
   onClick: PropTypes.func
 }
