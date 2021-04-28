@@ -218,7 +218,7 @@ export const AnnotationBrowser = () => {
           </Select>
         </Form.Item>
         <Form.Item>
-          <Row gutter={ 8 }>
+          <Row gutter={ 24 }>
             <Col>
               <Form.Item label='Number of images:'>
                 <InputNumber
