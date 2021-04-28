@@ -8,14 +8,16 @@ const initialState = {
   numLoad: 5,
   annotation: null,
   autoAdjust: true,
+  downsample: true,
   userFlags: [],
   flagShortcuts: {},
   annotatedImagesCount: 0,
 };
 
-const createImage = id => {
+const createImage = info => {
   return {
-    id: id,
+    id: info.base_name,
+    aspectRatio: info.aspect_ratio,
     metadata: {},
     annotations: [],
     present: {
@@ -63,10 +65,10 @@ const reducer = (state, action) => {
     case 'setImages':
       return {
         ...state,
-        images: action.ids.map(id => {
-          const image = state.viewedImages.find(image => image.id === id)
+        images: action.infoList.map(info => {
+          const image = state.viewedImages.find(({ id }) => id === info.base_name)
 
-          return image ? image : createImage(id)
+          return image ? image : createImage(info)
         }),
         viewedImages: [],
         previousImages: [...state.images]
@@ -75,7 +77,7 @@ const reducer = (state, action) => {
     case 'setCacheImages':
       return {
         ...state,
-        imageCache: [...action.ids]        
+        imageCache: action.infoList.map(({ base_name }) => base_name)        
       }
 
     case 'goBack':
@@ -162,6 +164,12 @@ const reducer = (state, action) => {
       return {
         ...state,
         autoAdjust: action.autoAdjust
+      }
+
+    case 'setDownsample':
+      return {
+        ...state,
+        downsample: action.downsample
       }
 
     default: 

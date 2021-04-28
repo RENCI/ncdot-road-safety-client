@@ -4,13 +4,13 @@ import { CloudUploadOutlined, ArrowLeftOutlined, QuestionCircleOutlined } from '
 import axios from 'axios'
 import { AnnotationsContext, AnnotationBrowserContext, useAccount } from '../../contexts'
 import { AnnotationPanel } from '../annotation-panel'
-import { AnnotationSummary } from '../annotation-counts'
+import { AnnotationSummary } from '../annotation-summary'
 import { api } from '../../api'
 import './annotation-browser.css'
 const { Option } = Select
 
 export const AnnotationBrowser = () => {
-  const { addSavedImages } = useAccount()
+  const user = useAccount()
   const [gotImages, setGotImages] = useState(false)
   const [annotationTypes] = useContext(AnnotationsContext)
   const [state, dispatch] = useContext(AnnotationBrowserContext)
@@ -25,6 +25,7 @@ export const AnnotationBrowser = () => {
     numLoad, 
     annotation, 
     autoAdjust, 
+    downsample,
     userFlags, 
     flagShortcuts 
   } = {...state}
@@ -41,7 +42,7 @@ export const AnnotationBrowser = () => {
       
       dispatch({ 
         type: 'setImages', 
-        ids: response.data.image_base_names
+        infoList: response.data.image_info_list
       })
 
       setLoading(false)  
@@ -58,11 +59,9 @@ export const AnnotationBrowser = () => {
   const getCacheImages = annotation => {
     // Get next images, but don't wait for them
     axios.get(api.getNextImageNamesForAnnotation(annotation, cacheSize)).then(response => {
-      console.lo
-
       dispatch({ 
         type: 'setCacheImages', 
-        ids: response.data.image_base_names
+        infoList: response.data.image_info_list
       }) 
     })
     .catch(error => {
@@ -95,6 +94,10 @@ export const AnnotationBrowser = () => {
     dispatch({ type: 'setAutoAdjust', autoAdjust: checked })
   }
 
+  const onDownsampleChange = checked => {
+    dispatch({ type: 'setDownsample', downsample: checked })
+  }
+
   const onBackClick = async () => {
     dispatch({ type: 'goBack' })
   }
@@ -123,7 +126,7 @@ export const AnnotationBrowser = () => {
         })
       })
 
-      addSavedImages(images)
+      console.log(response)
       
       setSaving(false)
 
@@ -135,10 +138,12 @@ export const AnnotationBrowser = () => {
 
       dispatch({ 
         type: 'setImages', 
-        ids: response.data.image_base_names
-      })    
+        infoList: response.data.image_info_list
+      })
       
-      getCacheImages(annotation.name);
+      getCacheImages(annotation.name)
+
+      user.refreshAnnotationDetails()
 
       if (saveButton.current) saveButton.current.focus()
     }
@@ -213,7 +218,7 @@ export const AnnotationBrowser = () => {
           </Select>
         </Form.Item>
         <Form.Item>
-          <Row gutter={ 8 }>
+          <Row gutter={ 24 }>
             <Col>
               <Form.Item label='Number of images:'>
                 <InputNumber
@@ -229,6 +234,14 @@ export const AnnotationBrowser = () => {
                 <Switch 
                   checked={ autoAdjust }
                   onChange={ onAutoAdjustChange }
+                />
+              </Form.Item>
+            </Col>
+            <Col>
+              <Form.Item label='Downsample images'>
+                <Switch 
+                  checked={ downsample }
+                  onChange={ onDownsampleChange }
                 />
               </Form.Item>
             </Col>
@@ -279,6 +292,7 @@ export const AnnotationBrowser = () => {
                         key={ i } 
                         image={ image } 
                         autoAdjust={ autoAdjust }
+                        downsample={ downsample }
                         flagOptions={ annotation.flags }
                         userFlagOptions={ userFlags }
                         flagShortcuts={ flagShortcuts } />
@@ -297,9 +311,9 @@ export const AnnotationBrowser = () => {
       </Form> 
       { imageCache.map((id, i) => (
         <Fragment key={ i }>
-          <link rel='prefetch' href={ api.getImage(id, 'left') } />
-          <link rel='prefetch' href={ api.getImage(id, 'front') } />
-          <link rel='prefetch' href={ api.getImage(id, 'right') } />
+          <link rel='prefetch' href={ api.getImage(id, 'left', downsample) } />
+          <link rel='prefetch' href={ api.getImage(id, 'front', downsample) } />
+          <link rel='prefetch' href={ api.getImage(id, 'right', downsample) } />
         </Fragment>
       ))}
     </>

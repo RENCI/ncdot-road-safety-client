@@ -6,7 +6,10 @@ import { Image } from '../image'
 import { api } from '../../api'
 import './scene.css'
 
-export const Scene = ({ id, present, autoAdjust, onClick, onKeyPress }) => {
+export const Scene = ({ 
+  id, aspectRatio, downsample, present, autoAdjust,
+  onClick, onKeyPress 
+}) => {
   const [active, setActive] = useState(false)
 
   const hasAnnotation = present ? Object.values(present).reduce((p, c) => {
@@ -57,28 +60,34 @@ export const Scene = ({ id, present, autoAdjust, onClick, onKeyPress }) => {
     >
       { loading && <Spin className='spinner'/> }
       <Image 
-        url={ api.getImage(id, 'left') } 
+        url={ api.getImage(id, 'left', downsample) } 
+        aspectRatio={ aspectRatio }
         loading={ loading }
         present={ present ? present.left : null }
-        autoAdjust={ autoAdjust }
+        autoAdjust={ autoAdjust }        
+        downsample={ downsample }
         onLoad={ onLoad }
         onClick={ onClick ? () => onClick(id, 'left') : null } 
         onKeyPress={ onKeyPress }
       />
       <Image 
-        url={ api.getImage(id, 'front') } 
+        url={ api.getImage(id, 'front', downsample) } 
+        aspectRatio={ aspectRatio }
         loading={ loading }
         present={ present ? present.front : null }
-        autoAdjust={ autoAdjust }
+        autoAdjust={ autoAdjust }       
+        downsample={ downsample }
         onLoad={ onLoad } 
         onClick={ onClick ? () => onClick(id, 'front') : null } 
         onKeyPress={ onKeyPress }
       />
       <Image 
-        url={ api.getImage(id, 'right') } 
+        url={ api.getImage(id, 'right', downsample) } 
+        aspectRatio={ aspectRatio }
         loading={ loading }
         present={ present ? present.right : null }
-        autoAdjust={ autoAdjust }
+        autoAdjust={ autoAdjust }       
+        downsample={ downsample }
         onLoad={ onLoad }
         onClick={ onClick ? () => onClick(id, 'right') : null }
         onKeyPress={ onKeyPress }
@@ -89,7 +98,9 @@ export const Scene = ({ id, present, autoAdjust, onClick, onKeyPress }) => {
 
 Scene.propTypes = {
   id: PropTypes.string.isRequired,
-  present: PropTypes.object,
+  aspectRatio: PropTypes.number,
+  downsample: PropTypes.bool,
   autoAdjust: PropTypes.bool,
+  present: PropTypes.object,
   onClick: PropTypes.func
 }
