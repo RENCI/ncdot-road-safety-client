@@ -25,3 +25,10 @@ tr.ant-table-expanded-row > td.ant-table-cell {
   padding: 0 !important;
 }
 
+.route-table-map {
+  background-color: #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-left: 1px solid #f0f0f0;
+}

@@ -44,7 +44,6 @@ export const Map = ({ height, markers, basemapSelection = true }) => {
           </Select>
         )
       }
-
     </div>
   )
 }
