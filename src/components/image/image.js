@@ -20,14 +20,31 @@ export const Image = ({
 
   const imageRef = useRef()
   const canvasRef = useRef()
+  const resize = useRef()
 
   const canvasWidth = 100
   const canvasHeight = 100
 
-  const movementScale = 0.01;
+  const movementScale = 0.01
 
   useEffect(() => {
     setHeight(imageRef.current.clientWidth / aspectRatio)
+
+    if (window.ResizeObserver) {
+      resize.current = new ResizeObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.contentRect) {
+            setHeight(entry.contentRect.width / aspectRatio)
+          }
+        })
+      })
+
+      resize.current.observe(imageRef.current);
+    }
+
+    return () => {
+      if (resize.current) resize.current.disconnect()
+    }
   }, []);
 
   useEffect(() => {
