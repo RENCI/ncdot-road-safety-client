@@ -1,0 +1,17 @@
+.map {
+  position: relative;
+  overflow: hidden;
+}
+
+.basemap-selector {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 200px;
+  filter: opacity(0.5);
+  transition: filter 250ms;
+}
+
+.map:hover .basemap-selector {
+  filter: opacity(1.0);
+}

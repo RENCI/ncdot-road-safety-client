@@ -71,7 +71,7 @@ export const ExpansionPanel = ({ data: route }) => {
           </div>
         </Col>
         <Col xs={{ span: 0 }} lg={{ span: 12 }}>
-          <Map markers={ [startingCoordinates, endingCoordinates] } />
+          <Map markers={ [startingCoordinates, endingCoordinates] } basemapSelection={ false } />
         </Col>
       </Row>
     </article>

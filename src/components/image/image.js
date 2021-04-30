@@ -48,10 +48,6 @@ export const Image = ({
   }, []);
 
   useEffect(() => {
-    setHeight(imageRef.current.clientWidth / aspectRatio)
-  }, []);
-
-  useEffect(() => {
     if (autoAdjust) {
       setBrightness(autoBrightness)
       setContrast(autoContrast)
