@@ -1,0 +1,34 @@
+@keyframes fadein {
+  0%   { filter: opacity(0.0); }
+  100% { filter: opacity(2.0); }
+}
+
+.expansion-panel {
+  animation: fadein 250ms linear 1 normal;
+  border-left: 1px solid #f0f0f0;
+  border-right: 1px solid #f0f0f0;
+}
+
+.route-details {
+  padding: 2rem;
+}
+
+/*
+* this styles the icon inside the copyable route ID inside the Text component.
+* this line causes the copy icon to be vertically aligned with the text to its left.
+*/
+.ant-typography-copy {
+  display: inline-flex !important;
+}
+
+tr.ant-table-expanded-row > td.ant-table-cell {
+  padding: 0 !important;
+}
+
+.route-table-map {
+  background-color: #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-left: 1px solid #f0f0f0;
+}

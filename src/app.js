@@ -1,8 +1,8 @@
 import React from "react"
 import { Layout, Menu } from "antd"
 import { LogoutOutlined, ProfileOutlined, UserOutlined } from "@ant-design/icons"
-import { BrowserRouter as Router, Switch, Route, NavLink } from "react-router-dom"
-import { BrowseAnnotationView } from "./views"
+import { BrowserRouter as Router, Switch, Route, NavLink, useLocation } from "react-router-dom"
+import { BrowseAnnotationView, BrowseRoutesView, BrowseRouteView } from "./views"
 import { AccountProvider, useAccount, RoutesProvider, AnnotationsProvider, AnnotationBrowserProvider } from "./contexts"
 import { api } from "./api"
 const { Header, Content, Footer } = Layout
@@ -24,13 +24,17 @@ const ContextProviders = ({ children }) => {
   )
 }
 
-const MenuBar = () => {
+const MenuBar = ({ activePath }) => {
   const { account } = useAccount()
+  const { pathname } = useLocation()
+
+  console.log(pathname)
 
   return (
     <Header className="site-header">
-      <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["annotate"]}>
-        <Menu.Item key="annotate"><NavLink to="/">Annotate</NavLink></Menu.Item>
+      <Menu theme="dark" mode="horizontal" selectedKeys={ [pathname] }>
+        <Menu.Item key="/"><NavLink to="/">Annotate</NavLink></Menu.Item>
+        <Menu.Item key="/routes"><NavLink to="/routes">Routes</NavLink></Menu.Item>
         <SubMenu key="profile" style={{float: "right"}} icon={<span>{ account.username }&nbsp;&nbsp;<UserOutlined /></span>}>
           <Menu.Item icon={<ProfileOutlined />}> 
             <a href={ api.updateAccount(document.getElementById('user_id').value) }>View Profile</a>  
@@ -53,6 +57,8 @@ export const App = () => {
           <div className="site-content">
             <Switch>
               <Route exact path="/"><BrowseAnnotationView /></Route>
+              <Route exact path="/routes"><BrowseRoutesView /></Route>
+              <Route exact path="/routes/:routeID/:imageIndex?"><BrowseRouteView /></Route>
             </Switch>
           </div>
         </Content>

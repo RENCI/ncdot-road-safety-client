@@ -51,6 +51,10 @@ export const Scene = ({
     hasAnnotation === 'irrelevant' ? '#ebc815' : // XXX: Magic number matching value in image.css
     blue.primary
 
+  if (!id) {
+    return '...'
+  }
+
   return (
     <div 
       className='scene' 
