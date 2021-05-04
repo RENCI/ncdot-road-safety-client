@@ -100,6 +100,11 @@ export const Scene = ({
   )
 }
 
+Scene.defaultProps = {
+  downsample: false,
+  autoAdjust: true
+}
+
 Scene.propTypes = {
   id: PropTypes.string.isRequired,
   aspectRatio: PropTypes.number,
