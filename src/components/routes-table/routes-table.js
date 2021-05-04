@@ -8,8 +8,7 @@ export const RoutesTable = ({ routes }) => {
   return (
     <Table
       pagination={{
-        position: 'bottomCenter',
-        pageSize: 20,
+        position: ['topRight', 'bottomRight'],
       }}
       dataSource={ routes.map(id => ({
         key: id,
