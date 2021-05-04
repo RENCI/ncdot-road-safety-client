@@ -184,6 +184,12 @@ export const Image = ({
   )
 }
 
+Image.defaultProps = {
+  present: "",
+  autoAdjust: true,
+  downsample: false
+}
+
 Image.propTypes = {
   url: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,

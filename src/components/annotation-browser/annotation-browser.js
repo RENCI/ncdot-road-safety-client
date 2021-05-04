@@ -25,7 +25,6 @@ export const AnnotationBrowser = () => {
     numLoad, 
     annotation, 
     autoAdjust, 
-    downsample,
     userFlags, 
     flagShortcuts 
   } = {...state}
@@ -92,10 +91,6 @@ export const AnnotationBrowser = () => {
 
   const onAutoAdjustChange = checked => {
     dispatch({ type: 'setAutoAdjust', autoAdjust: checked })
-  }
-
-  const onDownsampleChange = checked => {
-    dispatch({ type: 'setDownsample', downsample: checked })
   }
 
   const onBackClick = async () => {
@@ -237,14 +232,6 @@ export const AnnotationBrowser = () => {
                 />
               </Form.Item>
             </Col>
-            <Col>
-              <Form.Item label='Downsample images'>
-                <Switch 
-                  checked={ downsample }
-                  onChange={ onDownsampleChange }
-                />
-              </Form.Item>
-            </Col>
           </Row>
         </Form.Item>
         { done ? 
@@ -292,7 +279,6 @@ export const AnnotationBrowser = () => {
                         key={ i } 
                         image={ image } 
                         autoAdjust={ autoAdjust }
-                        downsample={ downsample }
                         flagOptions={ annotation.flags }
                         userFlagOptions={ userFlags }
                         flagShortcuts={ flagShortcuts } />
@@ -311,9 +297,9 @@ export const AnnotationBrowser = () => {
       </Form> 
       { imageCache.map((id, i) => (
         <Fragment key={ i }>
-          <link rel='prefetch' href={ api.getImage(id, 'left', downsample) } />
-          <link rel='prefetch' href={ api.getImage(id, 'front', downsample) } />
-          <link rel='prefetch' href={ api.getImage(id, 'right', downsample) } />
+          <link rel='prefetch' href={ api.getImage(id, 'left') } />
+          <link rel='prefetch' href={ api.getImage(id, 'front') } />
+          <link rel='prefetch' href={ api.getImage(id, 'right') } />
         </Fragment>
       ))}
     </>

@@ -8,7 +8,6 @@ const initialState = {
   numLoad: 5,
   annotation: null,
   autoAdjust: true,
-  downsample: true,
   userFlags: [],
   flagShortcuts: {},
   annotatedImagesCount: 0,
@@ -164,12 +163,6 @@ const reducer = (state, action) => {
       return {
         ...state,
         autoAdjust: action.autoAdjust
-      }
-
-    case 'setDownsample':
-      return {
-        ...state,
-        downsample: action.downsample
       }
 
     default: 
