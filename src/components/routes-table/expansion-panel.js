@@ -20,6 +20,7 @@ export const ExpansionPanel = ({ data: route }) => {
   const [endingCoordinates, setEndingCoordinates] = useState({ lat: 0, long: 0 })
   const [markers, setMarkers] = useState([])
   const [loadingMap, setLoadingMap] = useState(true)
+  const [mapZoom, setMapZoom] = useState()
 
   useEffect(() => {
     const fetchRouteImageBaseNames = async () => await api.getRouteInfo(route.id)
@@ -49,6 +50,10 @@ export const ExpansionPanel = ({ data: route }) => {
     }
     constructMapMarkers()
   }, [imageIDs])
+
+  useEffect(() => {
+    console.log()
+  }, [startingCoordinates, endingCoordinates])
 
   return (
     <article className="expansion-panel">
