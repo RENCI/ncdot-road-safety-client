@@ -1,7 +1,9 @@
-import React, { useContext, useState, useRef } from 'react'
+import React, { useContext, useEffect, useState, useRef } from 'react'
 import { AnnotationBrowserContext, useAccount } from '../../contexts'
 import { Scene } from '../scene'
-import { FlagControl } from '../flag-control'
+import { FlagControl } from './flag-control'
+import { BrowseRouteButton } from './browse-route-button'
+import { api } from '../../api'
 import './annotation-panel.css'
 
 export const AnnotationPanel = ({ image, autoAdjust, downsample, flagOptions, userFlagOptions, flagShortcuts }) => {
@@ -10,6 +12,8 @@ export const AnnotationPanel = ({ image, autoAdjust, downsample, flagOptions, us
   const [popoverVisible, setPopoverVisible] = useState(false)
   const [tooltip, setTooltip] = useState(null)
   const [, dispatch] = useContext(AnnotationBrowserContext)
+  const [route, setRoute] = useState()
+  const [imageIndex, setImageIndex] = useState()
 
   const { id, aspectRatio, present, flags } = image;
 
@@ -75,18 +79,54 @@ export const AnnotationPanel = ({ image, autoAdjust, downsample, flagOptions, us
     }
   }
 
+  useEffect(() => {
+    const fetchImageMetadata = async () => {
+      try {
+        const { data } = await api.getImageMetadata(image.id)
+        if (!data) {
+          throw new Error('error fetching image metadata')
+        }
+        setRoute(data.metadata.route_id)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    fetchImageMetadata()
+  }, [image])
+
+  useEffect(() => {
+    const fetchImageIndex = async () => {
+      try {
+        const { data } = await api.getRouteInfo(route)
+        if (!data) {
+          throw new Error('error fetching route info')
+        }
+        console.log(data)
+        const index = data.route_image_base_names.findIndex(id => id === image.id)
+        if (index > -1) {
+          setImageIndex(index)
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    if (route) {
+      fetchImageIndex()
+    }
+  }, [route])
+
   return (    
     <div className='annotationPanel'>
-      <FlagControl        
+      <FlagControl
         flags={ flags }
         options={ flagOptions }
         userOptions={ userFlagOptions }
         shortcuts={ flagShortcuts }
         tooltip={ tooltip }
-        onFlagChange={ onFlagChange }        
+        onFlagChange={ onFlagChange }
         onPopoverVisibleChange={ onPopoverVisibleChange }
         onRemoveUserFlagOption={ onRemoveUserFlagOption }
-        onKeyPress= { onKeyPress }
+        onKeyPress={ onKeyPress }
       />
 
       <Scene 
@@ -98,6 +138,9 @@ export const AnnotationPanel = ({ image, autoAdjust, downsample, flagOptions, us
         onClick={ onImageClick } 
         onKeyPress={ onKeyPress }
       />      
+
+      { route && imageIndex && <BrowseRouteButton routeID={ route } imageIndex={ imageIndex } /> }
+
       { popoverVisible && <div className='overlay' /> }
     </div>
   )
