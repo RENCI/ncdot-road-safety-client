@@ -9,6 +9,12 @@ import { Map } from '../../components/map'
 
 const { Title } = Typography
 
+// todo: fetch the feature ids for this object's keys
+const initialPredictions = {
+  guardrail: {},
+  pole: {},
+}
+
 export const BrowseRouteView = () => {
   // grab parameters passed in from the route /routes/:routeID/:imageIndex
   // note that imageIndex is shifted by one for human readability
@@ -16,6 +22,7 @@ export const BrowseRouteView = () => {
   const [imageIDs, setImageIDs] = useState([])
   const [currentLocation, setCurrentLocation] = useState({})
   const [index, setIndex] = useState(0)
+  const [predictions, setPredictions] = useState(initialPredictions)
 
   useEffect(() => {
     // use index 0...
@@ -58,6 +65,17 @@ export const BrowseRouteView = () => {
     }
   }, [imageIDs, routeID, index])
 
+  // when scene/location changes,
+  // fetch image prediction
+  useEffect(() => {
+    const fetchImagePrediction = async () => await api.getImagePrediction('32301101528', 'guardrail')
+      .then(({ data }) => {
+        setPredictions(predictions => ({ ...predictions, guardrail: data.prediction }))
+      })
+      .catch(error => console.error(error))
+    fetchImagePrediction()
+  }, [imageIDs, routeID, index])
+
   return (
     <RouteBrowser value={{ routeID, imageIDs, index, imageIndex, currentLocation }}>
       <Title level={ 1 }>Route { routeID }</Title>
@@ -79,9 +97,11 @@ export const BrowseRouteView = () => {
 
       <br /><hr /><br />
 
-      <Map markers={ [currentLocation] } height="400px" />
+      <pre>{ JSON.stringify(predictions, null, 2) }</pre>
 
       <br /><hr /><br />
+
+      <Map markers={ [currentLocation] } height="400px" />
 
       { // prev scene
         imageIDs.length > 0 && 0 <= index - 1 && <ScenePrefetch id={ imageIDs[index - 1] } /> }
