@@ -82,7 +82,7 @@ export const BrowseRouteView = () => {
       
       <Scene id={ imageIDs[index] } />
 
-      <br />
+      <br /><br />
 
       <Title level={ 2 }>Feature Predictions</Title>
 
