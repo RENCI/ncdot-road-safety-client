@@ -84,13 +84,13 @@ export const BrowseRouteView = () => {
 
       <br /><br />
 
-      <Title level={ 2 }>Feature Predictions</Title>
-
-      <Prediction key={ currentLocation.id } />
+      <Map markers={ [currentLocation] } height="400px" zoom={ 13 } />
 
       <br /><Divider /><br />
 
-      <Map markers={ [currentLocation] } height="400px" zoom={ 13 } />
+      <Title level={ 2 }>Feature Predictions</Title>
+
+      <Prediction key={ currentLocation.id } />
 
       { // scene back ten steps 
         0 < imageIDs.length && 0 < index - 9 && <ScenePrefetch id={ imageIDs[index - 10] } /> }
