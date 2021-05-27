@@ -10,7 +10,10 @@ import './prediction.css'
 
 const { Text } = Typography
 
-// todo: fetch the feature ids for this object's keys
+/**
+  TODO:
+  - fetch the feature ids for the keys in the `features` object below
+  */
 const features = ['guardrail', 'pole']
 // from the above array, construct this object: { guardrail: {}, pole: {}, ... }
 const initialPredictions = features.reduce((obj, key) => ({ ...obj, [key]: {} }), {})
@@ -24,7 +27,7 @@ export const Prediction = () => {
     { title: 'Feature',     dataIndex: 'feature',     key: 'feature' },
     { title: 'Probability', dataIndex: 'probability', key: 'probability' },
     { title: 'Presence',    dataIndex: 'presence',    key: 'presence',
-      render: presence => presence === true ? <TrueIcon style={{ color: 'green' }} /> : <FalseIcon style={{ color: 'red' }} />
+      render: presence => presence === true ? <TrueIcon style={{ color: '#5c9' }} /> : <FalseIcon style={{ color: '#c55' }} />
     },
   ]
 

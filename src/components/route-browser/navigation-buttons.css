@@ -1,0 +1,11 @@
+.route-navigation-button-container {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.route-navigation-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
