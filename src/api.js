@@ -24,4 +24,11 @@ export const api = {
   getImageAnnotations: id => `/get_image_annotations/${ id }/`,
   getAccountDetails: id => axios.get(`get_user_info/${ id }`),
   getUserAnnotations: id => axios.get(`/get_user_annotation_info/${ id }/`),
+  getImagePrediction: (id, feature) => axios.get(`/get_image_prediction/${ id }/${ feature }`),
+  getHoldoutTestInfo: {
+    tp: (feature, round) => axios.get(`/get_holdout_test_info/${ feature }/${ round }/tp`),
+    tn: (feature, round) => axios.get(`/get_holdout_test_info/${ feature }/${ round }/tn`),
+    fp: (feature, round) => axios.get(`/get_holdout_test_info/${ feature }/${ round }/fp`),
+    fn: (feature, round) => axios.get(`/get_holdout_test_info/${ feature }/${ round }/fn`),
+  },
 }
