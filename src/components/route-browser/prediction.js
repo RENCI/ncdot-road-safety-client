@@ -6,6 +6,7 @@ import {
   CheckOutlined as TrueIcon,
   CloseOutlined as FalseIcon,
 } from '@ant-design/icons'
+import './prediction.css'
 
 const { Text } = Typography
 
