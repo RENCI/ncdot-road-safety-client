@@ -2,18 +2,19 @@ import React, { Fragment, useContext, useEffect, useMemo, useState } from 'react
 import { useParams } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { api } from '../../api'
-import { Typography } from 'antd'
+import { Divider, Typography } from 'antd'
 import { Scene } from '../../components/scene'
-import { Breadcrumbs,NavigationButtons, NavigationSlider, RouteBrowser, SceneMetadata, ScenePrefetch } from '../../components/route-browser'
+import {
+  Breadcrumbs,
+  NavigationButtons,
+  NavigationSlider,
+  Prediction,
+  RouteBrowser,
+  SceneMetadata,
+  ScenePrefetch,
+} from '../../components/route-browser'
 import { Map } from '../../components/map'
-
 const { Title } = Typography
-
-// todo: fetch the feature ids for this object's keys
-const initialPredictions = {
-  guardrail: {},
-  pole: {},
-}
 
 export const BrowseRouteView = () => {
   // grab parameters passed in from the route /routes/:routeID/:imageIndex
@@ -22,7 +23,6 @@ export const BrowseRouteView = () => {
   const [imageIDs, setImageIDs] = useState([])
   const [currentLocation, setCurrentLocation] = useState({})
   const [index, setIndex] = useState(0)
-  const [predictions, setPredictions] = useState(initialPredictions)
 
   useEffect(() => {
     // use index 0...
@@ -65,24 +65,13 @@ export const BrowseRouteView = () => {
     }
   }, [imageIDs, routeID, index])
 
-  // when scene/location changes,
-  // fetch image prediction
-  useEffect(() => {
-    const fetchImagePrediction = async () => await api.getImagePrediction('32301101528', 'guardrail')
-      .then(({ data }) => {
-        setPredictions(predictions => ({ ...predictions, guardrail: data.prediction }))
-      })
-      .catch(error => console.error(error))
-    fetchImagePrediction()
-  }, [imageIDs, routeID, index])
-
   return (
     <RouteBrowser value={{ routeID, imageIDs, index, imageIndex, currentLocation }}>
       <Title level={ 1 }>Route { routeID }</Title>
 
       <Breadcrumbs />
 
-      <br /><hr /><br />
+      <Divider />
 
       <NavigationButtons />
       
@@ -95,11 +84,11 @@ export const BrowseRouteView = () => {
       <SceneMetadata />
       <Scene id={ imageIDs[index] } />
 
-      <br /><hr /><br />
+      <br />
 
-      <pre>{ JSON.stringify(predictions, null, 2) }</pre>
+      <Prediction />
 
-      <br /><hr /><br />
+      <br />
 
       <Map markers={ [currentLocation] } height="400px" />
 
