@@ -1,0 +1,20 @@
+.route-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items:  center;
+  gap: 1rem;
+}
+
+.route-navigation .ant-space-item:last-child {
+  flex: 1;
+}
+
+.navigation-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.navigation-slider {
+  flex: 1;
+}

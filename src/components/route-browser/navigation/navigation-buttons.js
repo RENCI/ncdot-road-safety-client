@@ -1,24 +1,22 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, Tooltip } from 'antd'
+import { useHistory } from 'react-router-dom'
+import { Button, Space, Tooltip } from 'antd'
 import {
   CaretLeftOutlined as PrevIcon,
   CaretRightOutlined as NextIcon,
   BackwardOutlined as FastBackIcon,
   ForwardOutlined as FastForwardIcon,
 } from '@ant-design/icons'
-import { useHistory } from 'react-router-dom'
-import { useRouteBrowseContext } from './context'
-import './navigation-buttons.css'
+import { useRouteBrowseContext } from '../context'
 
 const BrowseButton = ({ path, tooltip, ...props }) => {
   const history = useHistory()
   return (
     <Tooltip placement="top" title={ tooltip }>
       <Button
-        className="route-navigation-button"
+        className="navigation-button"
         type="primary"
-        size="large"
         onClick={ () => history.push(path) }
         { ...props }
       />
@@ -39,7 +37,7 @@ export const NavigationButtons = () => {
   if (!(index + 1) || !imageIDs.length) return '...'
 
   return (
-    <div className="route-navigation-button-container">
+    <Space>
       <BrowseButton
         path={ `/routes/${ routeID }/${ index - 9 }` }
         disabled={ index - 9 <= 0 }
@@ -64,6 +62,6 @@ export const NavigationButtons = () => {
         tooltip="Skip forward ten images"
         icon={ <FastForwardIcon /> }
       />
-    </div>
+    </Space>
   )
 }

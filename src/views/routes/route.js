@@ -2,7 +2,7 @@ import React, { Fragment, useContext, useEffect, useMemo, useState } from 'react
 import { useParams } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { api } from '../../api'
-import { Divider, Typography } from 'antd'
+import { Divider, Space, Typography } from 'antd'
 import { Scene } from '../../components/scene'
 import {
   Breadcrumbs,
@@ -10,6 +10,7 @@ import {
   NavigationSlider,
   Prediction,
   RouteBrowser,
+  RouteNavigation,
   SceneMetadata,
   ScenePrefetch,
 } from '../../components/route-browser'
@@ -73,11 +74,7 @@ export const BrowseRouteView = () => {
 
       <Divider />
 
-      <NavigationButtons />
-      
-      <br />
-
-      <NavigationSlider />
+      <RouteNavigation />
 
       <br />
 

@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Slider, Tooltip } from 'antd'
 import { useHistory } from 'react-router-dom'
-import { useRouteBrowseContext } from './context'
+import { Slider, Tooltip } from 'antd'
+import { useRouteBrowseContext } from '../context'
 
 export const NavigationSlider = () => {
   const history = useHistory()
@@ -14,6 +14,7 @@ export const NavigationSlider = () => {
 
   return (
     <Slider
+      className="navigation-slider"
       defaultValue={ 1 }
       value={ index + 1 }
       min={ 1 }
