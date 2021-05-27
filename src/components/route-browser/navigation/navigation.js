@@ -7,8 +7,8 @@ import './navigation.css'
 export const RouteNavigation = () => {
   return (
       <Space className="route-navigation">
-        <NavigationButtons />
         <NavigationSlider />
+        <NavigationButtons />
       </Space>
   )
 }

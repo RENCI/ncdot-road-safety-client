@@ -79,20 +79,27 @@ export const BrowseRouteView = () => {
       <br />
 
       <SceneMetadata />
+      
       <Scene id={ imageIDs[index] } />
 
       <br />
 
-      <Prediction />
+      <Title level={ 2 }>Feature Predictions</Title>
+
+      <Prediction key={ currentLocation.id } />
 
       <br />
 
       <Map markers={ [currentLocation] } height="400px" zoom={ 13 } />
 
+      { // scene back ten steps 
+        0 < imageIDs.length && 0 < index - 9 && <ScenePrefetch id={ imageIDs[index - 10] } /> }
       { // prev scene
-        imageIDs.length > 0 && 0 <= index - 1 && <ScenePrefetch id={ imageIDs[index - 1] } /> }
+        0 < imageIDs.length && 0 <= index - 1 && <ScenePrefetch id={ imageIDs[index - 1] } /> }
       { // next scene
-        imageIDs.length > 0 && index + 1 < imageIDs.length && <ScenePrefetch id={ imageIDs[index + 1] } /> }
+        0 < imageIDs.length && index + 1 < imageIDs.length && <ScenePrefetch id={ imageIDs[index + 1] } /> }
+      { // scene forward ten steps 
+        0 < imageIDs.length && index + 10 < imageIDs.length && <ScenePrefetch id={ imageIDs[index + 10] } /> }
 
     </RouteBrowser>
   )

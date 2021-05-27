@@ -5,7 +5,7 @@
   gap: 1rem;
 }
 
-.route-navigation .ant-space-item:last-child {
+.route-navigation .ant-space-item:first-child {
   flex: 1;
 }
 
