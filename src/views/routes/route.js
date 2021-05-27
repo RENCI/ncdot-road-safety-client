@@ -88,7 +88,7 @@ export const BrowseRouteView = () => {
 
       <Prediction key={ currentLocation.id } />
 
-      <br />
+      <br /><Divider /><br />
 
       <Map markers={ [currentLocation] } height="400px" zoom={ 13 } />
 
