@@ -87,7 +87,7 @@ export const BrowseRouteView = () => {
 
       <br />
 
-      <Map markers={ [currentLocation] } height="400px" />
+      <Map markers={ [currentLocation] } height="400px" zoom={ 13 } />
 
       { // prev scene
         imageIDs.length > 0 && 0 <= index - 1 && <ScenePrefetch id={ imageIDs[index - 1] } /> }
