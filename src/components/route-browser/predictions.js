@@ -15,7 +15,9 @@ const { Meta, Text } = Typography
   - fetch the feature ids for the keys in the `features` object below
   */
 const features = ['guardrail', 'pole']
-// from the above array, construct this object: { guardrail: {}, pole: {}, ... }
+
+// from the above array, construct an empty predictions object
+// that looks like this { guardrail: {}, pole: {}, ... }
 const initialPredictions = features.reduce((obj, key) => ({ ...obj, [key]: {} }), {})
 
 export const Predictions = ({ key }) => {
