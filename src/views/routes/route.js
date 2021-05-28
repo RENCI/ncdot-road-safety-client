@@ -8,7 +8,7 @@ import {
   Breadcrumbs,
   NavigationButtons,
   NavigationSlider,
-  Predictions,
+  PredictionsList,
   RouteBrowser,
   RouteNavigation,
   SceneMetadata,
@@ -91,7 +91,7 @@ export const BrowseRouteView = () => {
         </Col>
         <Col md={ 24 } lg={ 6 }>
           <Title level={ 2 }>Feature Predictions</Title>
-          <Predictions key={ currentLocation.id } />
+          <PredictionsList key={ currentLocation.id } />
         </Col>
       </Row>
 

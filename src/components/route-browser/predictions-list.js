@@ -6,7 +6,7 @@ import {
   CheckOutlined as TrueIcon,
   CloseOutlined as FalseIcon,
 } from '@ant-design/icons'
-import './predictions.css'
+import './predictions-list.css'
 
 const { Meta, Text } = Typography
 
@@ -20,7 +20,7 @@ const features = ['guardrail', 'pole']
 // that looks like this { guardrail: {}, pole: {}, ... }
 const initialPredictions = features.reduce((obj, key) => ({ ...obj, [key]: {} }), {})
 
-export const Predictions = ({ key }) => {
+export const PredictionsList = ({ key }) => {
   const { currentLocation } = useRouteBrowseContext()
   const [predictions, setPredictions] = useState()
   const [loading, setLoading] = useState(true)
@@ -55,7 +55,6 @@ export const Predictions = ({ key }) => {
       bordered
       dataSource={ predictions }
       renderItem={ item => {
-        console.log(item)
         const { key, feature, presence, probability } = item
         const description = presence === true
           ? <Text><TrueIcon style={{ color: '#5c9', margin: 'auto' }} /> &nbsp; { probability }</Text>
