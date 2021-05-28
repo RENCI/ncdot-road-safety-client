@@ -84,9 +84,10 @@ export const BrowseRouteView = () => {
 
       <br /><br />
 
-      <Row gutter={ 16 }>
+      <Row gutter={ 32 }>
         <Col md={ 24 } lg={ 18 }>
           <Map markers={ [currentLocation] } height="400px" zoom={ 13 } />
+          <br />
         </Col>
         <Col md={ 24 } lg={ 6 }>
           <Title level={ 2 }>Feature Predictions</Title>
