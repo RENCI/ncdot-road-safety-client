@@ -2,7 +2,7 @@ import React, { Fragment, useContext, useEffect, useMemo, useState } from 'react
 import { useParams } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { api } from '../../api'
-import { Divider, Space, Typography } from 'antd'
+import { Col, Divider, Row, Space, Typography } from 'antd'
 import { Scene } from '../../components/scene'
 import {
   Breadcrumbs,
@@ -84,13 +84,14 @@ export const BrowseRouteView = () => {
 
       <br /><br />
 
-      <Map markers={ [currentLocation] } height="400px" zoom={ 13 } />
-
-      <br /><Divider /><br />
-
-      <Title level={ 2 }>Feature Predictions</Title>
-
-      <Prediction key={ currentLocation.id } />
+      <Row gutter={ 16 }>
+        <Col md={ 24 } lg={ 16 }>
+          <Map markers={ [currentLocation] } height="400px" zoom={ 13 } />
+        </Col>
+        <Col md={ 24 } lg={ 8 }>
+          <Prediction key={ currentLocation.id } />
+        </Col>
+      </Row>
 
       { // scene back ten steps 
         0 < imageIDs.length && 0 < index - 9 && <ScenePrefetch id={ imageIDs[index - 10] } /> }

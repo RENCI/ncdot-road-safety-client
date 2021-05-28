@@ -1,3 +1,8 @@
 .ant-card-body {
   padding:  0;
 }
+
+.ant-table-cell {
+  text-overflow: ellipsis; 
+  overflow:  hidden;
+}

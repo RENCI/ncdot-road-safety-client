@@ -28,16 +28,9 @@ export const Prediction = ({ key }) => {
       title: 'Prediction',
       dataIndex: 'presence',
       key: 'presence',
-      width: '80px',
-      render: presence => presence === true
-        ? <TrueIcon style={{ color: '#5c9', margin: 'auto' }} />
-        : <FalseIcon style={{ color: '#c55', margin: 'auto' }} />,
-    },
-    {
-      title: 'Feature',
-      dataIndex: 'feature',
-      key: 'feature',
-      width: '80px',
+      render: (text, record) => record.presence === true
+        ? <Text><TrueIcon style={{ color: '#5c9', margin: 'auto' }} /> &nbsp;&nbsp; { record.feature }</Text>
+        : <Text><FalseIcon style={{ color: '#c55', margin: 'auto' }} /> &nbsp;&nbsp; { record.feature }</Text>,
     },
     {
       title: 'Probability',
