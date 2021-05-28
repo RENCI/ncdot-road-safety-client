@@ -1,6 +1,7 @@
 export * from './breadcrumbs'
 export * from './context'
 export * from './navigation'
+export * from './predictions-graph'
 export * from './predictions-list'
 export * from './scene-metadata'
 export * from './scene-prefetch'

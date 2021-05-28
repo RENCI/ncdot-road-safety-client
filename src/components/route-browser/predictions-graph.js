@@ -1,0 +1,50 @@
+import React, { useEffect, useState } from 'react'
+import { useRouteBrowseContext } from './context'
+import { api } from '../../api'
+
+/**
+  TODO:
+  - fetch the feature ids for the keys in the `features` object below
+  */
+const features = ['guardrail', 'pole']
+
+// from the above array, construct an empty predictions object
+// that looks like this { guardrail: {}, pole: {}, ... }
+const initialPredictions = features.reduce((obj, key) => ({ ...obj, [key]: {} }), {})
+
+export const PredictionsGraph = ({ key }) => {
+  const { currentLocation } = useRouteBrowseContext()
+  const [predictions, setPredictions] = useState()
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const promises = features.map(feature => api.getImagePrediction(currentLocation.id, feature))
+    Promise.allSettled(promises)
+      .then(responses => {
+        const data = responses
+          .filter(response => response.status === 'fulfilled')
+          .map(response => {
+            const { prediction } = response.value.data
+            return {
+              key: prediction.feature_name,
+              feature: prediction.feature_name[0].toUpperCase() + prediction.feature_name.slice(1),
+              probability: prediction.probability,
+              presence: prediction.presence,
+            }
+          })
+        setPredictions(data)
+        setLoading(false)
+      })
+      .catch(error => console.error(error))
+  }, [currentLocation, key])
+
+  if (loading || !predictions) {
+    return 'Loading predictions...'
+  }
+
+  return predictions && (
+    <div>
+      GRAPH
+    </div>
+  )
+}

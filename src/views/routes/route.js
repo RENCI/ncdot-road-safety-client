@@ -8,6 +8,7 @@ import {
   Breadcrumbs,
   NavigationButtons,
   NavigationSlider,
+  PredictionsGraph,
   PredictionsList,
   RouteBrowser,
   RouteNavigation,
@@ -74,7 +75,10 @@ export const BrowseRouteView = () => {
 
       <Divider />
 
-      <RouteNavigation />
+      <div>
+        <PredictionsGraph />
+        <RouteNavigation />
+      </div>
 
       <br />
 
