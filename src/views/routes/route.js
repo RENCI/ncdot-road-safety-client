@@ -8,7 +8,7 @@ import {
   Breadcrumbs,
   NavigationButtons,
   NavigationSlider,
-  Prediction,
+  Predictions,
   RouteBrowser,
   RouteNavigation,
   SceneMetadata,
@@ -85,11 +85,12 @@ export const BrowseRouteView = () => {
       <br /><br />
 
       <Row gutter={ 16 }>
-        <Col md={ 24 } lg={ 16 }>
+        <Col md={ 24 } lg={ 18 }>
           <Map markers={ [currentLocation] } height="400px" zoom={ 13 } />
         </Col>
-        <Col md={ 24 } lg={ 8 }>
-          <Prediction key={ currentLocation.id } />
+        <Col md={ 24 } lg={ 6 }>
+          <Title level={ 2 }>Feature Predictions</Title>
+          <Predictions key={ currentLocation.id } />
         </Col>
       </Row>
 
