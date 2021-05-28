@@ -52,6 +52,7 @@ export const Predictions = ({ key }) => {
 
   return predictions && (
     <List
+      bordered
       dataSource={ predictions }
       renderItem={ item => {
         console.log(item)
