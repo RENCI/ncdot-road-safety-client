@@ -43,8 +43,8 @@ export const PredictionsGraph = ({ key }) => {
   }
 
   return predictions && (
-    <div>
-      GRAPH
+    <div style={{ opacity: 0.5, border: '1px solid #ccc', height: '100px' }}>
+      Predictions Graph
     </div>
   )
 }

@@ -6,15 +6,16 @@ import { Col, Divider, Row, Space, Typography } from 'antd'
 import { Scene } from '../../components/scene'
 import {
   Breadcrumbs,
-  NavigationButtons,
-  NavigationSlider,
   PredictionsGraph,
   PredictionsList,
   RouteBrowser,
-  RouteNavigation,
   SceneMetadata,
   ScenePrefetch,
 } from '../../components/route-browser'
+import {
+  NavigationButtons,
+  NavigationSlider,
+} from '../../components/route-browser/navigation'
 import { Map } from '../../components/map'
 const { Title } = Typography
 
@@ -75,10 +76,15 @@ export const BrowseRouteView = () => {
 
       <Divider />
 
-      <div>
-        <PredictionsGraph />
-        <RouteNavigation />
-      </div>
+      <Row gutter={ 32 }>
+        <Col xs={ 24 } lg={ 18 }>
+          <PredictionsGraph />
+          <NavigationSlider />
+        </Col>
+        <Col xs={ 24 } lg={ 6 } className="navigation-buttons-container">
+          <NavigationButtons />
+        </Col>
+      </Row>
 
       <br />
 

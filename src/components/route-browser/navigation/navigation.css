@@ -1,12 +1,7 @@
-.route-navigation {
-  display: flex;
-  justify-content: space-between;
-  align-items:  center;
-  gap: 1rem;
-}
-
-.route-navigation .ant-space-item:first-child {
-  flex: 1;
+.navigation-buttons-container {
+  display:  flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .navigation-button {
