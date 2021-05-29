@@ -78,11 +78,10 @@ export const BrowseRouteView = () => {
 
       <br />
 
-      <SceneMetadata />
-      
       <Scene id={ imageIDs[index] } />
+      <SceneMetadata />
 
-      <br /><br />
+      <Divider />
 
       <Row gutter={ 32 }>
         <Col md={ 24 } lg={ 18 }>
