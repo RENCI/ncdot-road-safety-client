@@ -20,11 +20,12 @@
   align-items: center;
 }
 
-.navigation-buttons-container .ant-space-item .ant-btn.navigation-button {
+.navigation-buttons-container .ant-space-item .navigation-button,
+.navigation-buttons-container .ant-space-item .navigation-button button {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: 100% !important;
 }
 
 .navigation-slider {
