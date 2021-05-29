@@ -1,14 +1,18 @@
 import React from 'react'
-import { Space } from 'antd'
+import { Row, Col } from 'antd'
 import { NavigationButtons } from './navigation-buttons'
 import { NavigationSlider } from './navigation-slider'
 import './navigation.css'
 
 export const RouteNavigation = () => {
   return (
-      <Space className="route-navigation">
+    <Row className="route-controls" gutter={ 32 }>
+      <Col xs={ 24 } lg={ 18 }>
         <NavigationSlider />
+      </Col>
+      <Col xs={ 24 } lg={ 6 }>
         <NavigationButtons />
-      </Space>
+      </Col>
+    </Row>
   )
 }

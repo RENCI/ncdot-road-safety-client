@@ -37,7 +37,7 @@ export const NavigationButtons = () => {
   if (!(index + 1) || !imageIDs.length) return '...'
 
   return (
-    <Space>
+    <Space className="navigation-buttons-container">
       <BrowseButton
         path={ `/routes/${ routeID }/${ index - 9 }` }
         disabled={ index - 9 <= 0 }

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Col, Row } from 'antd'
 import { useRouteBrowseContext } from './context'
 import { api } from '../../api'
 
@@ -12,7 +13,15 @@ const features = ['guardrail', 'pole']
 // that looks like this { guardrail: {}, pole: {}, ... }
 const initialPredictions = features.reduce((obj, key) => ({ ...obj, [key]: {} }), {})
 
-export const PredictionsGraph = ({ key }) => {
+const Summary = () => {
+  return (
+    <div className="predictions-summary placeholder">
+      Summary
+    </div>
+  )
+}
+
+const Graph = () => {
   const { currentLocation } = useRouteBrowseContext()
   const [predictions, setPredictions] = useState()
   const [loading, setLoading] = useState(true)
@@ -36,15 +45,28 @@ export const PredictionsGraph = ({ key }) => {
         setLoading(false)
       })
       .catch(error => console.error(error))
-  }, [currentLocation, key])
+  }, [currentLocation])
 
   if (loading || !predictions) {
     return 'Loading predictions...'
   }
 
   return predictions && (
-    <div style={{ opacity: 0.5, border: '1px solid #ccc', height: '100px' }}>
+    <div>
       Predictions Graph
     </div>
+  )
+}
+
+export const PredictionsGraph = ({ key }) => {
+  return (
+    <Row gutter={ 32 }>
+      <Col xs={ 24 } lg={ 18 }>
+        <Graph />
+      </Col>
+      <Col xs={ 24 } lg={ 6 }>
+        <Summary />
+      </Col>
+    </Row>
   )
 }
