@@ -52,7 +52,7 @@ const Graph = () => {
   }
 
   return predictions && (
-    <div>
+    <div className="predictions-graph placeholder">
       Predictions Graph
     </div>
   )
