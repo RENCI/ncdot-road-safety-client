@@ -20,7 +20,7 @@ const features = ['guardrail', 'pole']
 // that looks like this { guardrail: {}, pole: {}, ... }
 const initialPredictions = features.reduce((obj, key) => ({ ...obj, [key]: {} }), {})
 
-export const PredictionsList = ({ key }) => {
+export const PredictionsList = () => {
   const { currentLocation } = useRouteBrowseContext()
   const [predictions, setPredictions] = useState()
   const [loading, setLoading] = useState(true)
@@ -44,7 +44,7 @@ export const PredictionsList = ({ key }) => {
         setLoading(false)
       })
       .catch(error => console.error(error))
-  }, [currentLocation, key])
+  }, [currentLocation])
 
   if (loading || !predictions) {
     return 'Loading predictions...'
