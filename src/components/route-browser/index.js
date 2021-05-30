@@ -1,4 +1,3 @@
-export * from './breadcrumbs'
 export * from './context'
 export * from './navigation'
 export * from './predictions-graph'

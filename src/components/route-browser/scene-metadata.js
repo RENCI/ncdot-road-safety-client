@@ -16,7 +16,8 @@ export const SceneMetadata = () => {
       </Paragraph>
       <Paragraph style={{ textAlign: 'right' }}>
         Latitude: { currentLocation.lat || '...' }<br />
-        Longitude: { currentLocation.long || '...' }
+        Longitude: { currentLocation.long || '...' }<br />
+        Distance along route: { currentLocation.distance || '...' }
       </Paragraph>
     </div>
   )

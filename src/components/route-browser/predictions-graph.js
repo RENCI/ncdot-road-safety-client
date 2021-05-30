@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Col, Row } from 'antd'
 import { useRouteBrowseContext } from './context'
 import { api } from '../../api'
+import { ResponseiveLine } from '@nivo/line'
 
 /**
   TODO:

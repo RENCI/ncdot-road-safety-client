@@ -4,8 +4,8 @@ import PropTypes from 'prop-types'
 import { api } from '../../api'
 import { Col, Divider, Row, Space, Typography } from 'antd'
 import { Scene } from '../../components/scene'
+import { Breadcrumbs } from '../../components/breadcrumbs'
 import {
-  Breadcrumbs,
   RouteNavigation,
   PredictionsGraph,
   PredictionsList,
@@ -69,7 +69,11 @@ export const BrowseRouteView = () => {
     <RouteBrowser value={{ routeID, imageIDs, index, imageIndex, currentLocation }}>
       <Title level={ 1 }>Route { routeID }</Title>
 
-      <Breadcrumbs />
+      <Breadcrumbs crumbs={[
+        { text: 'Home', path: '/' },
+        { text: routeID, path: `/routes/${ routeID }` },
+        { text: index + 1, path: `/routes/${ routeID }/${ imageIndex }` },
+      ]} />
 
       <Divider />
 
