@@ -13,7 +13,7 @@ export const AnnotationPanel = ({ image, autoAdjust, downsample, flagOptions, us
   const [tooltip, setTooltip] = useState(null)
   const [, dispatch] = useContext(AnnotationBrowserContext)
   const [route, setRoute] = useState()
-  const [imageIndex, setImageIndex] = useState()
+  const [imageIndex, setImageIndex] = useState(-1) // later, when image is found, this will become non-negative
 
   const { id, aspectRatio, present, flags } = image;
 
@@ -102,7 +102,7 @@ export const AnnotationPanel = ({ image, autoAdjust, downsample, flagOptions, us
           throw new Error('error fetching route info')
         }
         console.log(data)
-        const index = data.route_image_base_names.findIndex(id => id === image.id)
+        const index = data.route_image_info.findIndex(({ image_base_name }) => image_base_name === image.id)
         if (index > -1) {
           setImageIndex(index)
         }
@@ -139,7 +139,7 @@ export const AnnotationPanel = ({ image, autoAdjust, downsample, flagOptions, us
         onKeyPress={ onKeyPress }
       />      
 
-      { route && imageIndex && <BrowseRouteButton routeID={ route } imageIndex={ imageIndex } /> }
+      { route && imageIndex > -1 && <BrowseRouteButton routeID={ route } imageIndex={ imageIndex } /> }
 
       { popoverVisible && <div className='overlay' /> }
     </div>

@@ -41,7 +41,7 @@ export const BrowseRouteView = () => {
   useEffect(() => {
     const fetchRouteImageBaseNames = async () => await api.getRouteInfo(routeID)
       .then(response => {
-        setImageIDs(response?.data?.route_image_base_names)
+        setImageIDs(response.data.route_image_info.map(item => item.image_base_name))
       })
       .catch(error => console.error(error))
     fetchRouteImageBaseNames()
