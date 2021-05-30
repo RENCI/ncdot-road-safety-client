@@ -1,8 +1,14 @@
-.ant-card-body {
-  padding:  0;
+.ant-list.predictions-list {
 }
 
-.ant-table-cell {
-  text-overflow: ellipsis; 
-  overflow:  hidden;
+.ant-list.predictions-list .ant-list-item.predictions-list-item {
+  animation: fadein 250ms ease-out;
+  animation-fill-mode: forwards;
+  filter:  opacity(0);
 }
+
+.ant-list.predictions-list .ant-list-item.predictions-list-item:nth-child(1) { animation-delay: 200ms; }
+.ant-list.predictions-list .ant-list-item.predictions-list-item:nth-child(2) { animation-delay: 400ms; }
+.ant-list.predictions-list .ant-list-item.predictions-list-item:nth-child(3) { animation-delay: 600ms; }
+.ant-list.predictions-list .ant-list-item.predictions-list-item:nth-child(4) { animation-delay: 800ms; }
+.ant-list.predictions-list .ant-list-item.predictions-list-item:nth-child(5) { animation-delay: 1000ms; }

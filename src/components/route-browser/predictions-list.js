@@ -52,6 +52,7 @@ export const PredictionsList = () => {
 
   return predictions && (
     <List
+      className="predictions-list"
       bordered
       dataSource={ predictions }
       renderItem={ item => {
@@ -60,7 +61,7 @@ export const PredictionsList = () => {
           ? <Text><TrueIcon style={{ color: '#5c9', margin: 'auto' }} /> &nbsp; { probability }</Text>
           : <Text><FalseIcon style={{ color: '#c55', margin: 'auto' }} /> &nbsp; { probability }</Text>
         return (
-          <List.Item key={ `prediction-${ currentLocation.id }-${ key }` }>
+          <List.Item key={ `prediction-${ currentLocation.id }-${ key }` } className="predictions-list-item">
             <List.Item.Meta title={ feature } description={ description } />
           </List.Item>
         )
