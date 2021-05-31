@@ -101,7 +101,6 @@ export const AnnotationPanel = ({ image, autoAdjust, downsample, flagOptions, us
         if (!data) {
           throw new Error('error fetching route info')
         }
-        console.log(data)
         const index = data.route_image_info.findIndex(({ image_base_name }) => image_base_name === image.id)
         if (index > -1) {
           setImageIndex(index)

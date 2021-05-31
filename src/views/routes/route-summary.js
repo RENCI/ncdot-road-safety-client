@@ -65,7 +65,7 @@ export const RouteSummaryView = () => {
       <Divider />
 
       <Button type="primary" ghost onClick={ () => history.push(`/routes/${ routeID }/1`) } className="browse-route-button">
-        Drive this Route <CarIcon />
+        <CarIcon /> Drive Route
       </Button>
 
     </Fragment>

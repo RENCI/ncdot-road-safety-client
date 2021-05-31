@@ -12,7 +12,7 @@ const { Meta, Text } = Typography
 
 /**
   TODO:
-  - fetch the feature ids for the keys in the `features` object below
+  - fetch the feature ids.
   */
 const features = ['guardrail', 'pole']
 
@@ -26,15 +26,15 @@ export const PredictionsList = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // create promises for fetching predictions for all annotation features
+    // when they all complete (resolved or rejected), we set the predictions variable,
     const promises = features.map(feature => api.getImagePrediction(currentLocation.id, feature))
     Promise.allSettled(promises)
       .then(responses => {
         const data = responses
           .filter(response => response.status === 'fulfilled')
           .map(response => {
-            console.log(response)
             const { prediction } = response.value.data
-            console.log(prediction)
             return {
               key: prediction.feature_name,
               feature: prediction.feature_name[0].toUpperCase() + prediction.feature_name.slice(1),

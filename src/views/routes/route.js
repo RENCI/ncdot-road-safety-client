@@ -12,13 +12,17 @@ const { Title } = Typography
  * Think of this view as a Router in the sense that it handles
  * getting users to one of the following Route child views:
  * 
- *   - ROUTE SUMMARY
- *   - ROUTE BROWSER
+ *   - ROUTE SUMMARY ( /routes/<routeID> )
+ *   - ROUTE BROWSER ( /routes/<routeID>/<imageIndex> )
  * 
  * This is accomplished solely based on the imageIndex variable
  * extracted from the URL params. Note that component is wrapped
  * with the Route Context Provider so that both child views
- * have access to the route details..
+ * have access to the route details.
+ * Also note that `index` is the zero-based index,
+ * while imageIndex is the one-based index. Because it is a more
+ * user-friendly way to index, we use `iamgeIndex` when rendering the
+ * index to the user, inluding in the URL.
 */
 
 export const RouteView = () => {
