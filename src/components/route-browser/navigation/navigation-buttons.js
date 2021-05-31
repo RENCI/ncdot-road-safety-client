@@ -8,7 +8,7 @@ import {
   BackwardOutlined as FastBackIcon,
   ForwardOutlined as FastForwardIcon,
 } from '@ant-design/icons'
-import { useRouteBrowseContext } from '../context'
+import { useRouteContext } from '../context'
 
 const BrowseButton = ({ path, tooltip, ...props }) => {
   const history = useHistory()
@@ -32,7 +32,7 @@ BrowseButton.propTypes = {
 //
 
 export const NavigationButtons = () => {
-  const { imageIDs, index, routeID } = useRouteBrowseContext()
+  const { imageIDs, index, routeID } = useRouteContext()
 
   if (!(index + 1) || !imageIDs.length) return '...'
 

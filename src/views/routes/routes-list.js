@@ -6,7 +6,7 @@ import { Breadcrumbs } from '../../components/breadcrumbs'
 
 const { Title } = Typography
 
-export const BrowseRoutesView = () => {
+export const RoutesListView = () => {
   const { routes } = useRoutes()
 
   if (!routes.length) {

@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react'
-import { useRouteBrowseContext } from './context'
 import { api } from '../../api'
 
 export const ScenePrefetch = ({ id }) => {

@@ -2,11 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { useHistory } from 'react-router-dom'
 import { Slider, Tooltip } from 'antd'
-import { useRouteBrowseContext } from '../context'
+import { useRouteContext } from '../context'
 
 export const NavigationSlider = () => {
   const history = useHistory()
-  const { imageIDs, index, routeID } = useRouteBrowseContext()
+  const { imageIDs, index, routeID } = useRouteContext()
 
   const handleSliderChange = newIndex => {
     history.push(`/routes/${ routeID }/${ newIndex }`)

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { useRouteBrowseContext } from './context'
+import { useRouteContext } from './context'
 import { api } from '../../api'
-import { Card, List, Table, Typography } from 'antd'
+import { Card, List, Table, Tooltip, Typography } from 'antd'
 import {
   CheckOutlined as TrueIcon,
   CloseOutlined as FalseIcon,
@@ -21,7 +21,7 @@ const features = ['guardrail', 'pole']
 const initialPredictions = features.reduce((obj, key) => ({ ...obj, [key]: {} }), {})
 
 export const PredictionsList = () => {
-  const { currentLocation } = useRouteBrowseContext()
+  const { currentLocation } = useRouteContext()
   const [predictions, setPredictions] = useState()
   const [loading, setLoading] = useState(true)
 
@@ -32,7 +32,9 @@ export const PredictionsList = () => {
         const data = responses
           .filter(response => response.status === 'fulfilled')
           .map(response => {
+            console.log(response)
             const { prediction } = response.value.data
+            console.log(prediction)
             return {
               key: prediction.feature_name,
               feature: prediction.feature_name[0].toUpperCase() + prediction.feature_name.slice(1),
@@ -52,14 +54,22 @@ export const PredictionsList = () => {
 
   return predictions && (
     <List
-      className="predictions-list"
       bordered
+      className="predictions-list"
       dataSource={ predictions }
       renderItem={ item => {
         const { key, feature, presence, probability } = item
         const description = presence === true
-          ? <Text><TrueIcon style={{ color: '#5c9', margin: 'auto' }} /> &nbsp; { probability }</Text>
-          : <Text><FalseIcon style={{ color: '#c55', margin: 'auto' }} /> &nbsp; { probability }</Text>
+          ? <Text>
+              <Tooltip title="Prediction: Positive">
+                <TrueIcon style={{ color: 'teal', margin: 'auto' }} />
+              </Tooltip> &nbsp; { probability }
+            </Text>
+          : <Text>
+              <Tooltip title={ `Prediction: Negative` }>
+                <FalseIcon style={{ color: 'tomato', margin: 'auto' }} />
+              </Tooltip> &nbsp; { probability }
+            </Text>
         return (
           <List.Item key={ `prediction-${ currentLocation.id }-${ key }` } className="predictions-list-item">
             <List.Item.Meta title={ feature } description={ description } />

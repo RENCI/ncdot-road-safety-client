@@ -2,7 +2,7 @@ import React from "react"
 import { Layout, Menu } from "antd"
 import { LogoutOutlined, ProfileOutlined, UserOutlined } from "@ant-design/icons"
 import { BrowserRouter as Router, Switch, Route, NavLink, useLocation } from "react-router-dom"
-import { BrowseAnnotationView, BrowseRoutesView, BrowseRouteView } from "./views"
+import { BrowseAnnotationView, RouteView, RoutesListView } from "./views"
 import { AccountProvider, useAccount, RoutesProvider, AnnotationsProvider, AnnotationBrowserProvider } from "./contexts"
 import { api } from "./api"
 const { Header, Content, Footer } = Layout
@@ -27,8 +27,6 @@ const ContextProviders = ({ children }) => {
 const MenuBar = ({ activePath }) => {
   const { account } = useAccount()
   const { pathname } = useLocation()
-
-  console.log(pathname)
 
   return (
     <Header className="site-header">
@@ -57,8 +55,8 @@ export const App = () => {
           <div className="site-content">
             <Switch>
               <Route exact path="/"><BrowseAnnotationView /></Route>
-              <Route exact path="/routes"><BrowseRoutesView /></Route>
-              <Route exact path="/routes/:routeID/:imageIndex?"><BrowseRouteView /></Route>
+              <Route exact path="/routes"><RoutesListView /></Route>
+              <Route exact path="/routes/:routeID/:imageIndex?"><RouteView /></Route>
             </Switch>
           </div>
         </Content>

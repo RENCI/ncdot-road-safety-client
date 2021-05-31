@@ -1,12 +1,12 @@
 import React from 'react'
 import { Typography } from 'antd'
-import { useRouteBrowseContext } from './context'
+import { useRouteContext } from './context'
 import './scene-metadata.css'
 
 const { Paragraph, Text } = Typography
 
 export const SceneMetadata = () => {
-  const { currentLocation, imageIDs, index, routeID } = useRouteBrowseContext()
+  const { currentLocation, imageIDs, index, routeID } = useRouteContext()
   return (
     <div className="scene-metadata">
       <Paragraph style={{ textAlign: 'left' }}>
