@@ -26,7 +26,7 @@ export const RouteBrowserView = () => {
     const fetchSceneMetadata = async () => await api.getImageMetadata(images[index].image_base_name)
       .then(response => {
         const coordinates = { lat: response.data.metadata.lat, long: response.data.metadata.long }
-        setCurrentLocation({ id: images[index].image_base_name, ...coordinates })
+        setCurrentLocation({ id: images[index].image_base_name, distance: images[index].mile_post, ...coordinates })
       })
       .catch(error => console.error(error))
     if (images.length && index + 1) {

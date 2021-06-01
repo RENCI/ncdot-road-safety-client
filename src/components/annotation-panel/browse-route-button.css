@@ -1,4 +1,11 @@
-.button-container .browse-route-button {
-  height: 100% !important;
+.route-action-buttons-container {
   display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
+
+.route-action-buttons-container .route-action-button {
+  flex: 1 !important;
+}
+
