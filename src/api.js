@@ -19,6 +19,7 @@ export const api = {
   getNextImageNamesForAnnotation: (label, count) => `/get_next_images_for_annot/${ label }/${ count }/`,
   getAllRoutes: () => axios.get(`/get_all_routes/`),
   getRouteInfo: id => axios.get(`/get_route_info/${ id }/`),
+  getRoutePredictionInfo: (id, feature) => axios.get(`/get_route_info/${ id }/?feature_name=${ feature }`),
   getAnnotationSet: '/get_annotation_set/',
   saveAnnotations: '/save_annotations/',
   getImageAnnotations: id => `/get_image_annotations/${ id }/`,

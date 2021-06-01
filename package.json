@@ -11,6 +11,8 @@
     "dependencies": {
         "@ant-design/icons": "^4.2.2",
         "@esri/react-arcgis": "^5.1.0",
+        "@nivo/core": "^0.70.1",
+        "@nivo/line": "^0.70.1",
         "antd": "~4.10",
         "axios": "^0.21.1",
         "esri-loader": "^2.15.0",

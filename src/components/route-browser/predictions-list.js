@@ -5,6 +5,7 @@ import { Card, List, Table, Tooltip, Typography } from 'antd'
 import {
   CheckOutlined as TrueIcon,
   CloseOutlined as FalseIcon,
+  QuestionOutlined as UndeterminedIcon,
 } from '@ant-design/icons'
 import './predictions-list.css'
 
@@ -32,8 +33,16 @@ export const PredictionsList = () => {
     Promise.allSettled(promises)
       .then(responses => {
         const data = responses
-          .filter(response => response.status === 'fulfilled')
-          .map(response => {
+          .map((response, i) => {
+            console.log(response)
+            if (response.status !== 'fulfilled') {
+              return {
+                key: features[i],
+                feature: features[i][0].toUpperCase() + features[i].slice(1),
+                probability: null,
+                presence: null,
+              }
+            }
             const { prediction } = response.value.data
             return {
               key: prediction.feature_name,
@@ -59,17 +68,17 @@ export const PredictionsList = () => {
       dataSource={ predictions }
       renderItem={ item => {
         const { key, feature, presence, probability } = item
-        const description = presence === true
+        const description = (presence === true)
           ? <Text>
-              <Tooltip title="Prediction: Positive">
-                <TrueIcon style={{ color: 'teal', margin: 'auto' }} />
-              </Tooltip> &nbsp; { probability }
+              <Tooltip title="Annotation: Positive"><TrueIcon style={{ color: 'teal', margin: 'auto' }} /></Tooltip> &nbsp; { probability }
             </Text>
-          : <Text>
-              <Tooltip title={ `Prediction: Negative` }>
-                <FalseIcon style={{ color: 'tomato', margin: 'auto' }} />
-              </Tooltip> &nbsp; { probability }
-            </Text>
+          : (presence === false)
+            ? <Text>
+                <Tooltip title={ `Annotation: Negative` }><FalseIcon style={{ color: 'tomato', margin: 'auto' }} /></Tooltip> &nbsp; { probability }
+              </Text>
+            : <Text>
+                <Tooltip title={ `Annotation: None` }><UndeterminedIcon style={{ color: '#bbb', margin: 'auto' }} /></Tooltip> &nbsp; { probability }
+              </Text>
         return (
           <List.Item key={ `prediction-${ currentLocation.id }-${ key }` } className="predictions-list-item">
             <List.Item.Meta title={ feature } description={ description } />
