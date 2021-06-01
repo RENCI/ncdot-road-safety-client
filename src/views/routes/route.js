@@ -30,6 +30,7 @@ export const RouteView = () => {
   // note that imageIndex is shifted by one for human readability
   const { routeID, imageIndex } = useParams()
   const [images, setImages] = useState([])
+  const [routeLength, setRouteLength] = useState(0)
   const [currentLocation, setCurrentLocation] = useState({})
   const [index, setIndex] = useState(0)
 
@@ -56,11 +57,18 @@ export const RouteView = () => {
     fetchRouteImages()
   }, [routeID])
 
+  useEffect(() => {
+    if (images.length) {
+      const lastImage = images.slice(-1)
+      setRouteLength(lastImage[0].mile_post)
+    }
+  }, [images.length])
+
   // when route changes, update the document title with route & image info
   useEffect(() => { document.title = `Route ${ routeID } | RHF` }, [routeID])
 
   return (
-    <RouteContextProvider value={{ routeID, images, index, imageIndex, currentLocation, setCurrentLocation }}>
+    <RouteContextProvider value={{ routeID, routeLength, images, index, imageIndex, currentLocation, setCurrentLocation }}>
 
       <Title level={ 1 }>Route { routeID }</Title>
 

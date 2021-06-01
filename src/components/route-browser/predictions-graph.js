@@ -53,12 +53,10 @@ const Graph = () => {
       try {
         const { data: { route_image_info } } = await api.getRoutePredictionInfo(routeID, 'guardrail')
         if (!route_image_info) { return }
-        console.log(route_image_info)
         const preds = await route_image_info.map(info => ({
           x: info.mile_post,
           y: info.aiimageannotation__certainty,
         }))
-        console.log(preds)
         setPredictions(preds)
       } catch (error) {
         console.log(error)
@@ -75,7 +73,7 @@ const Graph = () => {
   return predictions && (
     <div className="predictions-graph placeholder">
       <ResponsiveLine
-        data={tester}
+        data={tester} // this is test data from above
         margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
         xScale={{ type: 'point' }}
         yScale={{ type: 'linear', min: 0, max: 1, stacked: false, reverse: false }}

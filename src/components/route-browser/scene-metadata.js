@@ -6,7 +6,7 @@ import './scene-metadata.css'
 const { Paragraph, Text } = Typography
 
 export const SceneMetadata = () => {
-  const { currentLocation, images, index, routeID } = useRouteContext()
+  const { currentLocation, routeLength, images, index, routeID } = useRouteContext()
   return (
     <div className="scene-metadata">
       <Paragraph style={{ textAlign: 'left' }}>
@@ -17,7 +17,9 @@ export const SceneMetadata = () => {
       <Paragraph style={{ textAlign: 'right' }}>
         Latitude: { currentLocation.lat || '...' }<br />
         Longitude: { currentLocation.long || '...' }<br />
-        Distance along route: { currentLocation.distance || '...' }
+        Distance along route:
+          &asymp; { currentLocation.distance ? currentLocation.distance.toFixed(3) : '...' } mi
+          &nbsp;/&nbsp;{ routeLength.toFixed(3) } mi
       </Paragraph>
     </div>
   )

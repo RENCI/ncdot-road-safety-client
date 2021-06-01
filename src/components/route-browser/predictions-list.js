@@ -34,7 +34,6 @@ export const PredictionsList = () => {
       .then(responses => {
         const data = responses
           .map((response, i) => {
-            console.log(response)
             if (response.status !== 'fulfilled') {
               return {
                 key: features[i],

@@ -19,7 +19,7 @@ const markerStyles = {
 
 export const RouteSummaryView = () => {
   const history = useHistory()
-  const { routeID, images } = useRouteContext()
+  const { routeID, routeLength, images } = useRouteContext()
   const [startingCoordinates, setStartingCoordinates] = useState({ lat: 0, long: 0 })
   const [endingCoordinates, setEndingCoordinates] = useState({ lat: 0, long: 0 })
 
@@ -60,7 +60,11 @@ export const RouteSummaryView = () => {
 
       <Divider />
 
-      <Text>{ images.length } images</Text>
+      <Text>Image count: { images.length }</Text>
+
+      <Divider />
+
+      <Text>Route length: { routeLength } miles</Text>
 
       <Divider />
 
