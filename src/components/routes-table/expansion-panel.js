@@ -6,7 +6,7 @@ import { Map } from '../map'
 import { Spin } from 'antd'
 import {
   CarOutlined as DriveIcon,
-  UnorderedListOutlined as SummaryIcon,
+  InfoCircleOutlined as SummaryIcon,
 } from '@ant-design/icons'
 
 import './expansion-panel.css'
