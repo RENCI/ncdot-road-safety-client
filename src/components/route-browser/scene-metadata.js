@@ -6,13 +6,13 @@ import './scene-metadata.css'
 const { Paragraph, Text } = Typography
 
 export const SceneMetadata = () => {
-  const { currentLocation, imageIDs, index, routeID } = useRouteContext()
+  const { currentLocation, images, index, routeID } = useRouteContext()
   return (
     <div className="scene-metadata">
       <Paragraph style={{ textAlign: 'left' }}>
-        Image ID: <Text copyable>{ imageIDs[index] || '...' }</Text> <br />
+        Image ID: <Text copyable>{ images[index]?.image_base_name || '...' }</Text> <br />
         Route ID: <Text copyable>{ routeID || '...' }</Text> <br />
-        { index + 1 } of { imageIDs.length }
+        { index + 1 } of { images.length }
       </Paragraph>
       <Paragraph style={{ textAlign: 'right' }}>
         Latitude: { currentLocation.lat || '...' }<br />

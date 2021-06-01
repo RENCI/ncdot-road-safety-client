@@ -19,18 +19,18 @@ const markerStyles = {
 
 export const RouteSummaryView = () => {
   const history = useHistory()
-  const { routeID, imageIDs } = useRouteContext()
+  const { routeID, images } = useRouteContext()
   const [startingCoordinates, setStartingCoordinates] = useState({ lat: 0, long: 0 })
   const [endingCoordinates, setEndingCoordinates] = useState({ lat: 0, long: 0 })
 
   useEffect(() => {
-    if (!imageIDs.length) { return }
+    if (!images.length) { return }
 
     const constructMapMarkers = async () => {
       try {
         const response = await Promise.all([
-          api.getImageMetadata(imageIDs[0]), // first route image
-          api.getImageMetadata(imageIDs.slice(-1)) // last route image
+          api.getImageMetadata(images[0].image_base_name), // first route image
+          api.getImageMetadata(images.slice(-1)[0].image_base_name) // last route image
         ])
         const [start, end] = response.map(res => res.data.metadata)
         setStartingCoordinates({ long: start.long, lat: start.lat, ...markerStyles.start })
@@ -40,7 +40,7 @@ export const RouteSummaryView = () => {
       }
     }
     constructMapMarkers()
-  }, [imageIDs])
+  }, [images])
 
   return (
     <Fragment>
@@ -60,7 +60,7 @@ export const RouteSummaryView = () => {
 
       <Divider />
 
-      <Text>{ imageIDs.length } images</Text>
+      <Text>{ images.length } images</Text>
 
       <Divider />
 

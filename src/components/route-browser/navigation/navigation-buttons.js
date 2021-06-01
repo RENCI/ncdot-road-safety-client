@@ -32,9 +32,9 @@ BrowseButton.propTypes = {
 //
 
 export const NavigationButtons = () => {
-  const { imageIDs, index, routeID } = useRouteContext()
+  const { images, index, routeID } = useRouteContext()
 
-  if (!(index + 1) || !imageIDs.length) return '...'
+  if (!(index + 1) || !images.length) return '...'
 
   return (
     <Space className="navigation-buttons-container">
@@ -52,13 +52,13 @@ export const NavigationButtons = () => {
       />
       <BrowseButton
         path={ `/routes/${ routeID }/${ index + 2 }` }
-        disabled={ imageIDs.length <= index + 1 }
+        disabled={ images.length <= index + 1 }
         tooltip="Step forward one image"
         icon={ <NextIcon /> }
       />
       <BrowseButton
         path={ `/routes/${ routeID }/${ index + 11 }` }
-        disabled={ imageIDs.length <= index + 10 }
+        disabled={ images.length <= index + 10 }
         tooltip="Skip forward ten images"
         icon={ <FastForwardIcon /> }
       />

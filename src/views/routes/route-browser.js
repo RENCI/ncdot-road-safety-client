@@ -18,21 +18,21 @@ import { Map } from '../../components/map'
 const { Text, Title } = Typography
 
 export const RouteBrowserView = () => {
-  const { currentLocation, setCurrentLocation, imageIDs, imageIndex, index, routeID } = useRouteContext()
+  const { currentLocation, setCurrentLocation, images, imageIndex, index, routeID } = useRouteContext()
 
   // when scene/location changes,
   // fetch metadata for the current location's scene
   useEffect(() => {
-    const fetchSceneMetadata = async () => await api.getImageMetadata(imageIDs[index])
+    const fetchSceneMetadata = async () => await api.getImageMetadata(images[index].image_base_name)
       .then(response => {
         const coordinates = { lat: response.data.metadata.lat, long: response.data.metadata.long }
-        setCurrentLocation({ id: imageIDs[index], ...coordinates })
+        setCurrentLocation({ id: images[index].image_base_name, ...coordinates })
       })
       .catch(error => console.error(error))
-    if (imageIDs.length && index + 1) {
+    if (images.length && index + 1) {
       fetchSceneMetadata()
     }
-  }, [imageIDs, routeID, index])
+  }, [images, routeID, index])
 
   return (
     <Fragment>
@@ -50,7 +50,7 @@ export const RouteBrowserView = () => {
 
       <br />
 
-      <Scene id={ imageIDs[index] } />
+      <Scene id={ images[index]?.image_base_name } />
       <SceneMetadata />
 
       <Divider />
@@ -67,13 +67,13 @@ export const RouteBrowserView = () => {
       </Row>
 
       { // scene back ten steps 
-        0 < imageIDs.length && 0 < index - 9 && <ScenePrefetch id={ imageIDs[index - 10] } /> }
+        0 < images.length && 0 < index - 9 && <ScenePrefetch id={ images[index - 10].image_base_name } /> }
       { // prev scene
-        0 < imageIDs.length && 0 <= index - 1 && <ScenePrefetch id={ imageIDs[index - 1] } /> }
+        0 < images.length && 0 <= index - 1 && <ScenePrefetch id={ images[index - 1].image_base_name } /> }
       { // next scene
-        0 < imageIDs.length && index + 1 < imageIDs.length && <ScenePrefetch id={ imageIDs[index + 1] } /> }
+        0 < images.length && index + 1 < images.length && <ScenePrefetch id={ images[index + 1].image_base_name } /> }
       { // scene forward ten steps 
-        0 < imageIDs.length && index + 10 < imageIDs.length && <ScenePrefetch id={ imageIDs[index + 10] } /> }
+        0 < images.length && index + 10 < images.length && <ScenePrefetch id={ images[index + 10].image_base_name } /> }
     </Fragment>
   )
 }

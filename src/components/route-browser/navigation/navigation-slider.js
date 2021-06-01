@@ -6,7 +6,7 @@ import { useRouteContext } from '../context'
 
 export const NavigationSlider = () => {
   const history = useHistory()
-  const { imageIDs, index, routeID } = useRouteContext()
+  const { images, index, routeID } = useRouteContext()
 
   const handleSliderChange = newIndex => {
     history.push(`/routes/${ routeID }/${ newIndex }`)
@@ -18,9 +18,9 @@ export const NavigationSlider = () => {
       defaultValue={ 1 }
       value={ index + 1 }
       min={ 1 }
-      max={ imageIDs.length }
+      max={ images.length }
       onChange={ handleSliderChange }
-      tipFormatter={ value => `${ value } of ${ imageIDs.length }`}
+      tipFormatter={ value => `${ value } of ${ images.length }`}
       tooltipPlacement="bottom"
     />
   )
