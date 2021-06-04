@@ -8,6 +8,16 @@ import { RouteBrowserView, RouteSummaryView } from './'
 
 const { Title } = Typography
 
+/**
+  TODO:
+  - fetch the feature ids.
+  */
+const features = ['guardrail', 'pole']
+
+// from the above array, construct an empty predictions object
+// that looks like this { guardrail: {}, pole: {}, ... }
+const initialPredictions = features.reduce((obj, key) => ({ ...obj, [key]: {} }), {})
+
 /*
  * Think of this view as a Router in the sense that it handles
  * getting users to one of the following Route child views:
@@ -45,16 +55,44 @@ export const RouteView = () => {
     if (i < 0 || images.length < i + 1) { setIndex(-1); return; }
     // ok, let's go to image i along the route
     setIndex(i)
-  }, [imageIndex, images.length])
+  }, [imageIndex])
+
+
+  // useEffect(() => {
+  //   const fetchRouteImages = async () => await api.getRouteInfo(routeID, { feature_name: 'guardrail' })
+  //     .then(response => {
+  //       console.log(response)
+  //       setImages(response.data.route_image_info)
+  //     })
+  //     .catch(error => console.error(error))
+  //   fetchRouteImages()
+  // }, [routeID])
 
   // grab the image base names for all scenes along this route
   useEffect(() => {
-    const fetchRouteImages = async () => await api.getRouteInfo(routeID)
-      .then(response => {
-        setImages(response.data.route_image_info)
-      })
-      .catch(error => console.error(error))
-    fetchRouteImages()
+    const fetchRouteInfo = async () => {
+      const { data } = await api.getRoutePredictionInfo(routeID, 'guardrail')
+      // escape hatch
+      if (!data) {
+        return
+      }
+      // first, set the array of route images, with empty prediction info
+      setImages(data.route_image_info)
+
+      // // now, we fetch the predictions for each feature...
+      // const predictionRequests = features.map(feature => api.getRoutePredictionInfo(routeID, feature))
+      // // ...and wait until they all complete (resolve or reject) before proceeding
+      // Promise.allSettled(predictionRequests)
+      //   .then(responses => responses.filter(response => response.status === 'fulfilled').map(response => response.value.data.route_image_info))
+      //   .then(predictionResponses => {
+      //     console.log(predictionResponses)
+      //     predictionResponses.forEach(responses => {
+      //       responses.forEach(response => console.log(response))
+      //     })
+      //   })
+      //   .catch(error => console.error(error))
+    }
+    fetchRouteInfo()
   }, [routeID])
 
   useEffect(() => {
@@ -62,7 +100,7 @@ export const RouteView = () => {
       const lastImage = images.slice(-1)
       setRouteLength(lastImage[0].mile_post)
     }
-  }, [images.length])
+  }, [])
 
   // when route changes, update the document title with route & image info
   useEffect(() => { document.title = `Route ${ routeID } | RHF` }, [routeID])
@@ -77,6 +115,10 @@ export const RouteView = () => {
           ? <RouteSummaryView />
           : <RouteBrowserView />
       }
+
+      <pre>
+        { JSON.stringify(images, null, 2 ) }
+      </pre>
 
     </RouteContextProvider>
   )
