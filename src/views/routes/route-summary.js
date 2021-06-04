@@ -52,7 +52,7 @@ export const RouteSummaryView = () => {
 
       <Divider />
 
-      <Map markers={ [startingCoordinates, endingCoordinates] } zoom={ 13 }/>
+      <Map markers={ [startingCoordinates, endingCoordinates] } height="600px" zoom={ 13 }/>
 
       <Divider />
 
