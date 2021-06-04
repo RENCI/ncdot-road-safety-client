@@ -20,7 +20,7 @@ const markerStyles = {
 
 export const ExpansionPanel = ({ data: route }) => {
   const history = useHistory()
-  const [imageIDs, setImageIDs] = useState([])
+  const [images, setImages] = useState([])
   const [startingCoordinates, setStartingCoordinates] = useState({ lat: 0, long: 0 })
   const [endingCoordinates, setEndingCoordinates] = useState({ lat: 0, long: 0 })
   const [markers, setMarkers] = useState([])
@@ -28,33 +28,35 @@ export const ExpansionPanel = ({ data: route }) => {
   const [mapZoom, setMapZoom] = useState()
 
   useEffect(() => {
-    const fetchRouteImageBaseNames = async () => await api.getRouteInfo(route.id)
+    const fetchRouteImageBaseNames = async () => await api.getRoutePredictionInfo(route.id, 'guardrail')
       .then(response => {
-        setImageIDs(response.data.route_image_info.map(item => item.image_base_name))
+        setImages(response.data.route_image_info)
       })
       .catch(error => console.error(error))
     fetchRouteImageBaseNames()
   }, [])
 
   useEffect(() => {
-    if (!imageIDs.length) { return }
+    if (!images.length) { return }
 
     const constructMapMarkers = async () => {
       try {
+        const firstImageBaseName = images[0].image_base_name
+        const lastImageBaseName = images.slice(-1)[0].image_base_name
         const response = await Promise.all([
-          api.getImageMetadata(imageIDs[0]), // first route image
-          api.getImageMetadata(imageIDs.slice(-1)) // last route image
+          api.getImageMetadata(firstImageBaseName),
+          api.getImageMetadata(lastImageBaseName),
         ])
         const [start, end] = response.map(res => res.data.metadata)
-        setStartingCoordinates({ long: start.long, lat: start.lat, ...markerStyles.start })
-        setEndingCoordinates({ long: end.long, lat: end.lat, ...markerStyles.end })
+        setStartingCoordinates({ long: start.long.toFixed(6), lat: start.lat.toFixed(6), ...markerStyles.start })
+        setEndingCoordinates({ long: end.long.toFixed(6), lat: end.lat.toFixed(6), ...markerStyles.end })
         setLoadingMap(false)
       } catch (error) {
         console.log(error)
       }
     }
     constructMapMarkers()
-  }, [imageIDs])
+  }, [images])
 
   return (
     <article className="expansion-panel">
@@ -66,7 +68,7 @@ export const ExpansionPanel = ({ data: route }) => {
             </Paragraph>
 
             <Paragraph>
-              { imageIDs.length } image{ imageIDs.length !== 1 ? 's' : '' } along this route
+              { images.length } image{ images.length !== 1 ? 's' : '' } along this route
             </Paragraph>
 
             <Paragraph>
