@@ -39,8 +39,8 @@ export const RouteBrowserView = () => {
       <Breadcrumbs crumbs={[
         { text: 'Home', path: '/' },
         { text: 'Routes', path: `/routes` },
-        { text: routeID, path: `/routes/${ routeID }` },
-        { text: index + 1, path: `/routes/${ routeID }/${ imageIndex }` },
+        { text: `${ routeID }`, path: `/routes/${ routeID }` },
+        { text: `${ index + 1 }`, path: `/routes/${ routeID }/${ imageIndex }` },
       ]} />
 
       <Divider />
