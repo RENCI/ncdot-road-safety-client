@@ -68,7 +68,7 @@ export const RouteView = () => {
       const lastImage = images.slice(-1)
       setRouteLength(lastImage[0].mile_post)
     }
-  }, [])
+  }, [images])
 
   // when route changes, update the document title with route & image info
   useEffect(() => { document.title = `Route ${ routeID } | RHF` }, [routeID])
