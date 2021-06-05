@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Route, BrowserRouter as Router, useParams } from 'react-router-dom'
 import { api } from '../../api'
 import { Typography } from 'antd'
@@ -16,7 +16,7 @@ const features = ['guardrail', 'pole']
 
 // from the above array, construct an empty predictions object
 // that looks like this { guardrail: {}, pole: {}, ... }
-const initialPredictions = features.reduce((obj, key) => ({ ...obj, [key]: { annotation: null, probability: null } }), {})
+const initialPredictions = features.reduce((obj, key) => ({ ...obj, [key]: { name: key, annotation: null, probability: null } }), {})
 
 /*
  * Think of this view as a Router in the sense that it handles
@@ -38,8 +38,13 @@ export const RouteView = () => {
   const { routeID, imageIndex } = useParams()
   const [images, setImages] = useState([])
   const [routeLength, setRouteLength] = useState(0)
-  const [currentLocation, setCurrentLocation] = useState({})
   const [index, setIndex] = useState(-1)
+
+  const currentLocation = useMemo(() => {
+    if (images && imageIndex) {
+      return images[index]
+    }
+  }, [index])
 
   useEffect(() => {
     const i = +imageIndex - 1
@@ -93,14 +98,13 @@ export const RouteView = () => {
       const lastImage = images.slice(-1)
       setRouteLength(lastImage[0].mile_post)
     }
-    console.log(images)
   })
 
   // when route changes, update the document title with route & image info
   useEffect(() => { document.title = `Route ${ routeID } | RHF` }, [routeID])
 
   return (
-    <RouteContextProvider value={{ routeID, routeLength, images, index, imageIndex, currentLocation, setCurrentLocation }}>
+    <RouteContextProvider value={{ routeID, routeLength, images, index, imageIndex, currentLocation }}>
 
       <Title level={ 1 }>Route { routeID }</Title>
 

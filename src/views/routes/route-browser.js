@@ -18,21 +18,11 @@ import { Map } from '../../components/map'
 const { Text, Title } = Typography
 
 export const RouteBrowserView = () => {
-  const { currentLocation, setCurrentLocation, images, imageIndex, index, routeID } = useRouteContext()
+  const { currentLocation, images, imageIndex, index, routeID } = useRouteContext()
 
-  // when scene/location changes,
-  // fetch metadata for the current location's scene
-  useEffect(() => {
-    const fetchSceneMetadata = async () => await api.getImageMetadata(images[index].image_base_name)
-      .then(response => {
-        const coordinates = { lat: response.data.metadata.lat, long: response.data.metadata.long }
-        setCurrentLocation({ id: images[index].image_base_name, distance: images[index].mile_post, ...coordinates })
-      })
-      .catch(error => console.error(error))
-    if (images.length && index + 1) {
-      fetchSceneMetadata()
-    }
-  }, [images, routeID, index])
+  if (!currentLocation) {
+    return 'Loading...'
+  }
 
   return (
     <Fragment>
@@ -57,12 +47,12 @@ export const RouteBrowserView = () => {
 
       <Row gutter={ 32 }>
         <Col md={ 24 } lg={ 18 }>
-          <Map markers={ [currentLocation] } height="400px" zoom={ 13 } />
+          <Map markers={ currentLocation.location ? [currentLocation.location] : [] } height="400px" zoom={ 13 } />
           <br />
         </Col>
         <Col md={ 24 } lg={ 6 }>
           <Title level={ 3 }>Feature Predictions</Title>
-          <PredictionsList key={ currentLocation.id } />
+          <PredictionsList />
         </Col>
       </Row>
 

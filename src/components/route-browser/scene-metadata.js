@@ -15,10 +15,10 @@ export const SceneMetadata = () => {
         { index + 1 } of { images.length }
       </Paragraph>
       <Paragraph style={{ textAlign: 'right' }}>
-        Latitude: { currentLocation.lat || '...' }<br />
-        Longitude: { currentLocation.long || '...' }<br />
+        Latitude: { currentLocation.location ? currentLocation.location.lat : '...' }<br />
+        Longitude: { currentLocation.location ? currentLocation.location.long : '...' }<br />
         Distance along route:
-          &asymp; { currentLocation.distance ? currentLocation.distance.toFixed(3) : '...' } mi
+          &asymp; { currentLocation.mile_post ? currentLocation.mile_post.toFixed(3) : '...' } mi
           &nbsp;/&nbsp;{ routeLength.toFixed(3) } mi
       </Paragraph>
     </div>
