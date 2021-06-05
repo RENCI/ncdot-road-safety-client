@@ -16,7 +16,7 @@ const features = ['guardrail', 'pole']
 
 // from the above array, construct an empty predictions object
 // that looks like this { guardrail: {}, pole: {}, ... }
-const initialPredictions = features.reduce((obj, key) => ({ ...obj, [key]: {} }), {})
+const initialPredictions = features.reduce((obj, key) => ({ ...obj, [key]: { annotation: null, probability: null } }), {})
 
 /*
  * Think of this view as a Router in the sense that it handles
@@ -51,15 +51,40 @@ export const RouteView = () => {
 
   // grab the image base names for all scenes along this route
   useEffect(() => {
+    let scenes = {}
+    
     const fetchRouteInfo = async () => {
-      const { data } = await api.getRoutePredictionInfo(routeID, 'guardrail')
-      // escape hatch
-      if (!data) {
-        return
-      }
-      // first, set the array of route images, with empty prediction info
-      setImages(data.route_image_info)
+
+      const promises = [
+        api.getRouteInfo(routeID),
+        ...features.map(feature => api.getRoutePredictionInfo(routeID, feature))
+      ]
+
+      const responses = await Promise.all(promises)
+
+      const [routeResponse, ...predictionsResponse] = responses
+      
+      routeResponse.data.route_image_info.forEach(item => {
+        scenes[item.image_base_name] = {
+          image_base_name: item.image_base_name,
+          mile_post: item.mile_post,
+          location: item.location,
+          features: initialPredictions,
+        }
+      })
+
+      predictionsResponse.forEach(response => {
+        response.data.route_image_info.forEach((item, i) => {
+          if (scenes[item.image_base_name].features[features[i]]) {
+            scenes[item.image_base_name].features[features[i]].annotation = item.presence
+            scenes[item.image_base_name].features[features[i]].probability = item.probability
+          }
+        })
+      })
+
+      setImages(Object.values(scenes))
     }
+
     fetchRouteInfo()
   }, [routeID])
 
@@ -68,7 +93,8 @@ export const RouteView = () => {
       const lastImage = images.slice(-1)
       setRouteLength(lastImage[0].mile_post)
     }
-  }, [images])
+    console.log(images)
+  })
 
   // when route changes, update the document title with route & image info
   useEffect(() => { document.title = `Route ${ routeID } | RHF` }, [routeID])
