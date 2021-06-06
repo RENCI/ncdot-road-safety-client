@@ -30,7 +30,7 @@ export const RouteBrowserView = () => {
         { text: 'Home', path: '/' },
         { text: 'Routes', path: `/routes` },
         { text: `${ routeID }`, path: `/routes/${ routeID }` },
-        { text: `${ index + 1 }`, path: `/routes/${ routeID }/${ imageIndex }` },
+        { text: imageIndex, path: `/routes/${ routeID }/${ imageIndex }` },
       ]} />
 
       <Divider />

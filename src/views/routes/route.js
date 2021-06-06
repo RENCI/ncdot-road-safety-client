@@ -14,22 +14,19 @@ const { Title } = Typography
   */
 const features = ['guardrail', 'pole']
 
-// from the above array, construct an empty predictions object
-// that looks like this { guardrail: {}, pole: {}, ... }
-const initialPredictions = features.reduce((obj, key) => ({ ...obj, [key]: { name: key, annotation: null, probability: null } }), {})
-
 /*
- * Think of this view as a Router in the sense that it handles
- * getting users to one of the following Route child views:
+ * Think of this view as a Router for the Route View
+ * in the sense that it handles getting users to one
+ * of the following Route child views:
  * 
  *   - ROUTE SUMMARY ( /routes/<routeID> )
  *   - ROUTE BROWSER ( /routes/<routeID>/<imageIndex> )
  * 
  * This is accomplished solely based on the imageIndex variable extracted
- * from the URL params. Note that component is wrapped with the Route
- * Context Provider so that both child views have access to the route details.
- * Also note that `index` is the zero-based index, while imageIndex is the
- * one-based index. Because it is a more user-friendly way to index, we use
+ * from the URL. Note that component is wrapped with the Route Context Provider
+ * so that both child views have access to the route details. Also note that `index`
+ * is the zero-based index, while `imageIndex` is the one-based index. Because
+ *  it is a more intuitive way for users to think about indexing, we use
  * `iamgeIndex` when rendering the index to the user, inluding in the URL.
 */
 
@@ -54,35 +51,43 @@ export const RouteView = () => {
     setIndex(i)
   }, [imageIndex, images.length])
 
-  // grab the image base names for all scenes along this route
+  // when the routeID changes (from the URL),
+  // grab the image base names for all scenes along this route,
+  // along with the annotation & prediction info
   useEffect(() => {
     let scenes = {}
     
     const fetchRouteInfo = async () => {
 
       const promises = [
-        api.getRouteInfo(routeID),
-        ...features.map(feature => api.getRoutePredictionInfo(routeID, feature))
+        api.getRouteInfo(routeID), // route info
+        ...features.map(feature => api.getRoutePredictionInfo(routeID, feature)) // predictions
       ]
 
       const responses = await Promise.all(promises)
 
-      const [routeResponse, ...predictionsResponse] = responses
-      
+      const [routeResponse, ...predictionsResponses] = responses
+
       routeResponse.data.route_image_info.forEach(item => {
         scenes[item.image_base_name] = {
           image_base_name: item.image_base_name,
           mile_post: item.mile_post,
           location: item.location,
-          features: initialPredictions,
+          features: {},
         }
       })
 
-      predictionsResponse.forEach(response => {
-        response.data.route_image_info.forEach((item, i) => {
-          if (scenes[item.image_base_name].features[features[i]]) {
-            scenes[item.image_base_name].features[features[i]].annotation = item.presence
-            scenes[item.image_base_name].features[features[i]].probability = item.probability
+      // ^ Note that the order-preservation of resolved values in Promise.all()
+      // guarantees the order of responses matches the order of the feature names in the
+      // `features` array, which we use to construct the array of promises. This means
+      // indexing `features` matches the indexing of the predictions promises' responses.
+
+      predictionsResponses.forEach((response, i) => {
+        response.data.route_image_info.forEach(item => {
+          scenes[item.image_base_name].features[features[i]] = {
+            name: features[i],
+            annotation: item.presence,
+            probability: item.probability,
           }
         })
       })

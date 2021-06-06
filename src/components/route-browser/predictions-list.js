@@ -13,27 +13,16 @@ const { Meta, Text } = Typography
 
 export const PredictionsList = () => {
   const { currentLocation } = useRouteContext()
-  const [predictions, setPredictions] = useState()
 
-  useEffect(() => {
-    if (currentLocation.features) {
-      setPredictions(Object.values(currentLocation.features))
-    }
-  }, [currentLocation.features])
-
-  if (!predictions) {
-    return 'Loading predictions...'
-  }
-
-  return predictions && (
+  return (
     <List
       bordered
       className="predictions-list"
-      dataSource={ predictions }
-      renderItem={ item => {
+      dataSource={ Object.values(currentLocation.features) }
+      renderItem={ feature => {
         return (
-          <pre key={ item.key } style={{ fontSize: '75%' }}>
-            { JSON.stringify(item, null, 2) }
+          <pre key={ feature.key } style={{ fontSize: '75%' }}>
+            { JSON.stringify(feature, null, 2) }
           </pre>
         )
       }}
