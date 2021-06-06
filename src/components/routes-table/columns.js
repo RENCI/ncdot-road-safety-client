@@ -2,8 +2,6 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Space } from 'antd'
 
-const BrowseRouteButton = ({ routeID }) => <Link to={ `/routes/${ routeID }/1` }>Browse</Link>
-
 export const columns = [
   {
     title: 'ID',
@@ -18,7 +16,12 @@ export const columns = [
   {
     title: 'Actions',
     key: 'actions',
-    render: (text, record) => <BrowseRouteButton routeID={ record.id }  />,
+    render: (text, record) => (
+      <Fragment>
+        <Link to={ `/routes/${ record.id }` }>Summary</Link>
+        <Link to={ `/routes/${ record.id }/1` }>Browse</Link>
+      </Fragment>
+    ),
   },
 ]
 
