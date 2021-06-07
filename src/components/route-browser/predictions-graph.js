@@ -1,12 +1,18 @@
 import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { Card, Col, Row, Switch, Typography } from 'antd'
+import { Card, Col, Row, Select, Typography } from 'antd'
 import { useRouteContext } from './context'
 import { api } from '../../api'
 import { ResponsiveScatterPlot } from '@nivo/scatterplot'
 import './predictions-graph.css'
 
 const { Text } = Typography
+
+const colors = {
+  positive: '#7fbf7b',
+  neutral: '#f7f7f7',
+  negative: '#af8dc3',
+}
 
 const features = ['guardrail', 'pole']
 
@@ -111,54 +117,40 @@ const Graph = ({ data }) => {
 
 export const PredictionsGraph = ({ key }) => {
   const { images } = useRouteContext()
-  const [data, setData] = useState([])
-  const [selectedFeatures, setSelectedFeatures] = useState([])
+  const [predictions, setPredictions] = useState([])
+  const [selectedFeature, setSelectedFeature] = useState('guardrail')
 
   // massage prediction data into a format usable by this Nivo graph component.
   useEffect(() => {
-    const predictions = { ...initialData }
+    const data = { ...initialData }
     images.forEach((image, i) => {
       features.forEach(feature => {
         if (image.features[feature]) {
-          predictions[feature].data.push({ x: i + 1, y: image.features[feature].probability, image })
+          data[feature].data.push({ x: i + 1, y: image.features[feature].probability, image })
         } //else {
-        //   predictions[feature].data.push({ x: i, y: -1 })
+        //   data[feature].data.push({ x: i, y: -1 })
         // }
       })
     })
-    setData(Object.values(predictions))
+    console.log(data)
+    console.log(data[selectedFeature])
+    setPredictions(data)
   }, [images])
 
-  const handleToggleFeatureSelection = feature => event => {
-    let newSelection = new Set(selectedFeatures)
-    if (newSelection.has(feature)) {
-      newSelection.delete(feature)
-    } else {
-      newSelection.add(feature)
-    }
-    setSelectedFeatures([...newSelection])
+  const handleFeatureSelect = value => {
+    console.log(value)
+    setSelectedFeature(value)
   }
-
-  const selectedData = useMemo(() => {
-    if (data) {
-      return data.filter(datum => selectedFeatures.includes(datum.id))
-    }
-  }, [data, selectedFeatures])
 
   return (
     <Row gutter={ 32 }>
       <Col xs={ 24 } lg={ 18 }>
-        <Graph data={ selectedData } />
+        <Graph data={ [predictions[selectedFeature]] } />
       </Col>
       <Col xs={ 24 } lg={ 6 }>
-        {
-          features.map(feature => (
-            <div>
-              <Switch checked={ selectedFeatures.includes(feature) } onChange={ handleToggleFeatureSelection(feature) } />
-              &nbsp;{ feature }
-            </div>
-          ))
-        }
+        <Select value={ selectedFeature } onChange={ handleFeatureSelect } style={{ width: '100%' }}>
+          { features.map(feature => <Select.Option key={ `feature-option-${ feature }` } value={ feature }>{ feature }</Select.Option>) }
+        </Select>
       </Col>
     </Row>
   )
