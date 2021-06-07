@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { Col, Row, Switch, Typography } from 'antd'
+import { Card, Col, Row, Switch, Typography } from 'antd'
 import {
   LikeOutlined as ThumbsUpIcon,
   DislikeOutlined as ThumbsDownIcon,
@@ -20,13 +20,12 @@ export const GraphTooltip = ({ node }) => {
   const { images } = useRouteContext()
 
   return (
-    <div className="predictions-graph__tooltip">
-      <Text>image { node.data.x }</Text><br/>
-      <Text>{ node.data.y >= 0.5 ? <ThumbsUpIcon /> : <ThumbsDownIcon /> } { node.data.y }</Text><br/>
+    <Card title={ node.data.image.image_base_name } className="predictions-graph__tooltip">
+      <Text>image #{ node.data.image.index }</Text><br/>
       <pre style={{ fontSize: '50%' }}>
-        { JSON.stringify(node, null, 2) }
+        { JSON.stringify(node.data.image, null, 2) }
       </pre>
-    </div>
+    </Card>
   )
 }
 
@@ -35,7 +34,7 @@ const CustomNode = ({ node, x, y, size, color, blendMode, onMouseEnter, onMouseM
   const [active, setActive] = useState(false)
 
   useEffect(() => {
-    setActive(+imageIndex - 1 === node.data.x)
+    setActive(+imageIndex === node.data.image.index)
   }, [imageIndex])
 
   return (
@@ -59,8 +58,8 @@ const CustomNode = ({ node, x, y, size, color, blendMode, onMouseEnter, onMouseM
           onClick={ onClick }
         />
       </g>
-      { active && <path d={ `M${ x } 0,${ x } 200` } stroke="#00000099" strokeWidth="0.25" strokeDasharray="5,5" /> }
-      { active && <path d={ `M0 ${ y },1000 ${ y }` } stroke="#00000099" strokeWidth="0.25" strokeDasharray="5,5" /> }
+      { active && <path d={ `M${ x } 0,${ x } 200` } strokeWidth="0.5" stroke="#000000" strokeDasharray="5,5" /> }
+      { active && <path d={ `M0 ${ y },1000 ${ y }` } strokeWidth="0.5" stroke="#000000" strokeDasharray="5,5" /> }
     </Fragment>
   )
 }
@@ -71,7 +70,7 @@ const Graph = ({ data }) => {
   
   const handlePointClick = (node, event) => {
     if (node) {
-      history.push(`/routes/${ routeID }/${ +node.data.x + 1 }`)
+      history.push(`/routes/${ routeID }/${ +node.data.image.index }`)
     }
   }
 

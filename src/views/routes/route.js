@@ -68,8 +68,9 @@ export const RouteView = () => {
 
       const [routeResponse, ...predictionsResponses] = responses
 
-      routeResponse.data.route_image_info.forEach(item => {
+      routeResponse.data.route_image_info.forEach((item, i) => {
         scenes[item.image_base_name] = {
+          index: i + 1,
           image_base_name: item.image_base_name,
           mile_post: item.mile_post,
           location: item.location,
