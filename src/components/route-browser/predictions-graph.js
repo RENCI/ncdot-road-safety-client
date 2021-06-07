@@ -1,10 +1,6 @@
 import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Card, Col, Row, Switch, Typography } from 'antd'
-import {
-  LikeOutlined as ThumbsUpIcon,
-  DislikeOutlined as ThumbsDownIcon,
-} from '@ant-design/icons'
 import { useRouteContext } from './context'
 import { api } from '../../api'
 import { ResponsiveScatterPlot } from '@nivo/scatterplot'
@@ -42,8 +38,8 @@ const CustomNode = ({ node, x, y, size, color, blendMode, onMouseEnter, onMouseM
       <g transform={`translate(${ x },${ y })`}>
         {
           active && (
-            <circle className="active-pulse" r={ size } fill={ 'teal' } style={{ mixBlendMode: blendMode }}>
-              <animate attributeName="r" begin="0s" dur="1s" repeatCount="indefinite" from="0" to="10"/>
+            <circle className="active-pulse" r={ size } fill={ color } style={{ mixBlendMode: blendMode }}>
+              <animate attributeName="r" begin="0s" dur="1s" repeatCount="indefinite" from="3" to="12"/>
               <animate attributeName="opacity" begin="0s" dur="1s" repeatCount="indefinite" from="1" to="0"/>
             </circle>
           )
