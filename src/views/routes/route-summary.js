@@ -13,8 +13,8 @@ import { Map } from '../../components/map'
 const { Text, } = Typography
 
 const markerStyles = {
-  start: { color: 'teal', style: 'cross' },
-  end: { color: 'tomato', style: 'x' },
+  start: { color: 'var(--color-positive)', style: 'cross' },
+  end: { color: 'var(--color-negative)', style: 'x' },
 }
 
 export const RouteSummaryView = () => {

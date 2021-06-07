@@ -14,8 +14,8 @@ import './expansion-panel.css'
 const { Paragraph, Text, Title } = Typography
 
 const markerStyles = {
-  start: { color: 'teal', style: 'cross' },
-  end: { color: 'tomato', style: 'x' },
+  start: { color: 'var(--color-positive)', style: 'cross' },
+  end: { color: 'var(--color-negative)', style: 'x' },
 }
 
 export const ExpansionPanel = ({ data: route }) => {
@@ -72,8 +72,8 @@ export const ExpansionPanel = ({ data: route }) => {
             </Paragraph>
 
             <Paragraph>
-              <Text style={{ color: 'teal' }}>&nbsp;<strong>&#x2b;</strong>&nbsp; Start</Text>: { startingCoordinates.long } longitude, { startingCoordinates.lat } latitude<br />
-              <Text style={{ color: 'tomato' }}>&nbsp;<strong>&times;</strong>&nbsp; End</Text>: { endingCoordinates.long } longitude, { endingCoordinates.lat } latitude
+              <Text style={{ color: 'var(--color-positive)' }}>&nbsp;<strong>&#x2b;</strong>&nbsp; Start</Text>: { startingCoordinates.long } longitude, { startingCoordinates.lat } latitude<br />
+              <Text style={{ color: 'var(--color-negative)' }}>&nbsp;<strong>&times;</strong>&nbsp; End</Text>: { endingCoordinates.long } longitude, { endingCoordinates.lat } latitude
             </Paragraph>
 
             <Space direction="vertical" size="large">

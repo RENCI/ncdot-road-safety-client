@@ -94,14 +94,22 @@ const Graph = ({ data }) => {
       <ResponsiveScatterPlot
         data={ data }
         height={ 200 }
-        margin={{ top: 0, right: 8, bottom: 0, left: 8 }}
+        margin={{ top: 0, right: 8, bottom: 0, left: 40 }}
         xScale={{ type: 'linear', min: 1, max: images.length }}
-        yScale={{ type: 'linear', min: 0, max: 1, stacked: false, reverse: false }}
+        yScale={{ type: 'linear', min: -0.05, max: 1.05, stacked: false, reverse: false }}
         yFormat=" >-.2f"
-        enableGridX={ false }
-        enableGridY={ false }
+        enableGridX={ true }
+        enableGridY={ true }
         axisTop={ null }
-        axisLeft={ null }
+        axisLeft={{
+          orient: 'left',
+          tickSize: 3,
+          tickPadding: 5,
+          tickRotation: 0,
+          legend: 'Probability',
+          legendPosition: 'middle',
+          legendOffset: -35
+        }}
         axisRight={ null }
         axisBottom={ null }
         nodeSize={ 4 }
@@ -110,6 +118,9 @@ const Graph = ({ data }) => {
         onClick={ handlePointClick }
         onMouseMove={ handleMouseMove }
         renderNode={ CustomNode }
+        theme={{
+          axis: { textColor: '#00000066', fontSize: '8px', tickColor: '#00000099', },
+        }}
       />
     </div>
   )
@@ -120,27 +131,22 @@ export const PredictionsGraph = ({ key }) => {
   const [predictions, setPredictions] = useState([])
   const [selectedFeature, setSelectedFeature] = useState('guardrail')
 
-  // massage prediction data into a format usable by this Nivo graph component.
+  const handleFeatureSelect = value => setSelectedFeature(value)
+
+  // massage the prediction data into a format usable by this Nivo graph component.
   useEffect(() => {
     const data = { ...initialData }
     images.forEach((image, i) => {
       features.forEach(feature => {
         if (image.features[feature]) {
           data[feature].data.push({ x: i + 1, y: image.features[feature].probability, image })
-        } //else {
-        //   data[feature].data.push({ x: i, y: -1 })
-        // }
+        }
+        // create dummy nodes?
+        // else { data[feature].data.push({ x: i, y: -1 }) }
       })
     })
-    console.log(data)
-    console.log(data[selectedFeature])
     setPredictions(data)
   }, [images])
-
-  const handleFeatureSelect = value => {
-    console.log(value)
-    setSelectedFeature(value)
-  }
 
   return (
     <Row gutter={ 32 }>
