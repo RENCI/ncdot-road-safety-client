@@ -8,12 +8,6 @@ import './predictions-graph.css'
 
 const { Text } = Typography
 
-const colors = {
-  positive: '#7fbf7b',
-  neutral: '#f7f7f7',
-  negative: '#af8dc3',
-}
-
 const features = ['guardrail', 'pole']
 
 const initialData = features.reduce((obj, feature) => ({ ...obj, [feature]: { id: feature, data: [] } }), {})
@@ -25,7 +19,7 @@ export const GraphTooltip = ({ node }) => {
     <Card title={ node.data.image.image_base_name } className="predictions-graph__tooltip">
       <Text>image #{ node.data.image.index }</Text><br/>
       <pre style={{ fontSize: '50%' }}>
-        { JSON.stringify(node.data.image, null, 2) }
+        { JSON.stringify(node.data, null, 2) }
       </pre>
     </Card>
   )
@@ -34,6 +28,12 @@ export const GraphTooltip = ({ node }) => {
 const CustomNode = ({ node, x, y, size, color, blendMode, onMouseEnter, onMouseMove, onMouseLeave, onClick }) => {
   const { imageIndex, images } = useRouteContext()
   const [active, setActive] = useState(false)
+
+  const fillColor = node.data.image.features[node.data.serieId].annotation === true
+    ? 'var(--color-positive)'
+    : node.data.image.features[node.data.serieId].annotation === false
+      ? 'var(--color-negative)'
+      : '#ccc'
 
   useEffect(() => {
     setActive(+imageIndex === node.data.image.index)
@@ -52,16 +52,15 @@ const CustomNode = ({ node, x, y, size, color, blendMode, onMouseEnter, onMouseM
         }
         <circle
           r={ size / 2 }
-          fill={ color }
+          fill={ fillColor }
           style={{ mixBlendMode: blendMode }}
           onMouseEnter={ onMouseEnter }
-          onMouseMove={ onMouseMove }
           onMouseLeave={ onMouseLeave }
           onClick={ onClick }
         />
       </g>
-      { active && <path d={ `M${ x } 0,${ x } 200` } strokeWidth="0.5" stroke="#000000" strokeDasharray="5,5" /> }
-      { active && <path d={ `M0 ${ y },1000 ${ y }` } strokeWidth="0.5" stroke="#000000" strokeDasharray="5,5" /> }
+      { active && <path d={ `M${ x } ${ y },${ x } 200` } strokeWidth="0.5" stroke="#000000" strokeDasharray="5,5" /> }
+      { active && <path d={ `M0 ${ y },${ x } ${ y }` } strokeWidth="0.5" stroke="#000000" strokeDasharray="5,5" /> }
     </Fragment>
   )
 }
@@ -75,19 +74,6 @@ const Graph = ({ data }) => {
       history.push(`/routes/${ routeID }/${ +node.data.image.index }`)
     }
   }
-
-  const handleMouseMove = (node, event) => {
-    // const highlightedNode = console.log(node)
-  }
-
-  // highlight current location's data points in graph
-  useEffect(() => {
-    console.log('start looking for point')
-
-    
-
-    console.log('finish looking for point')
-  }, [currentLocation])
 
   return (
     <div className="predictions-graph">
@@ -116,7 +102,6 @@ const Graph = ({ data }) => {
         pointLabelYOffset={ -12 }
         tooltip={ ({ node }) => <GraphTooltip node={ node } /> }
         onClick={ handlePointClick }
-        onMouseMove={ handleMouseMove }
         renderNode={ CustomNode }
         theme={{
           axis: { textColor: '#00000066', fontSize: '8px', tickColor: '#00000099', },
