@@ -31,14 +31,3 @@
 .navigation-slider {
   flex: 1;
 }
-
-/* temp */
-
-.placeholder {
-  opacity:  0.5;
-  border:  1px solid #666;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 150px;
-}

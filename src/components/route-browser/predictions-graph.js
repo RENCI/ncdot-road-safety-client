@@ -1,46 +1,114 @@
-import React, { useEffect, useState } from 'react'
-import { Col, Row } from 'antd'
+import React, { Fragment, useEffect, useMemo, useState } from 'react'
+import { useHistory } from 'react-router-dom'
+import { Col, Row, Switch, Typography } from 'antd'
+import {
+  LikeOutlined as ThumbsUpIcon,
+  DislikeOutlined as ThumbsDownIcon,
+} from '@ant-design/icons'
 import { useRouteContext } from './context'
 import { api } from '../../api'
-import { ResponsiveLine } from '@nivo/line'
+import { ResponsiveScatterPlot } from '@nivo/scatterplot'
+import './predictions-graph.css'
 
-const tester = [
-  {
-    "id": "guardrail",
-    "data":  [{ x: 1, y: 0.141 }, { x: 2, y: 0.207 }, { x: 3, y: 0.241 }, { x: 4, y: 0.176 }, { x: 5, y: 0.194 }, { x: 6, y: 0.216 }, { x: 7, y: 0.92 }, { x: 8, y: 0.133 }, { x: 9, y: 0.278 }, { x: 10, y: 0.197 }, { x: 11, y: 0.51 }, { x: 12, y: 0.26 }]
-  },
-  {
-    "id": "pole",
-    "data":  [{ x: 1, y: 0.278 }, { x: 2, y: 0.194 }, { x: 3, y: 0.241 }, { x: 4, y: 0.26 }, { x: 5, y: 0.51 }, { x: 6, y: 0.92 }, { x: 7, y: 0.216 }, { x: 8, y: 0.133 }, { x: 9, y: 0.197 }, { x: 10, y: 0.176 }, { x: 11, y: 0.207 }, { x: 12, y: 0.141 }]
-  }
-]
+const { Text } = Typography
 
 const features = ['guardrail', 'pole']
 
 const initialData = features.reduce((obj, feature) => ({ ...obj, [feature]: { id: feature, data: [] } }), {})
 
-const Summary = () => {
+export const GraphTooltip = ({ node }) => {
+  const { images } = useRouteContext()
+
   return (
-    <div className="predictions-summary placeholder">
-      Summary
+    <div className="predictions-graph__tooltip">
+      <Text>image { node.data.x }</Text><br/>
+      <Text>{ node.data.y >= 0.5 ? <ThumbsUpIcon /> : <ThumbsDownIcon /> } { node.data.y }</Text><br/>
+      <pre style={{ fontSize: '50%' }}>
+        { JSON.stringify(node, null, 2) }
+      </pre>
     </div>
   )
 }
 
-const Graph = ({ data }) => {
+const CustomNode = ({ node, x, y, size, color, blendMode, onMouseEnter, onMouseMove, onMouseLeave, onClick }) => {
+  const { imageIndex, images } = useRouteContext()
+  const [active, setActive] = useState(false)
+
+  useEffect(() => {
+    setActive(+imageIndex - 1 === node.data.x)
+  }, [imageIndex])
+
   return (
-    <div className="predictions-graph placeholder">
-      <ResponsiveLine
+    <Fragment>
+      <g transform={`translate(${ x },${ y })`}>
+        {
+          active && (
+            <circle className="active-pulse" r={ size } fill={ 'teal' } style={{ mixBlendMode: blendMode }}>
+              <animate attributeName="r" begin="0s" dur="1s" repeatCount="indefinite" from="0" to="10"/>
+              <animate attributeName="opacity" begin="0s" dur="1s" repeatCount="indefinite" from="1" to="0"/>
+            </circle>
+          )
+        }
+        <circle
+          r={ size / 2 }
+          fill={ color }
+          style={{ mixBlendMode: blendMode }}
+          onMouseEnter={ onMouseEnter }
+          onMouseMove={ onMouseMove }
+          onMouseLeave={ onMouseLeave }
+          onClick={ onClick }
+        />
+      </g>
+      { active && <path d={ `M${ x } 0,${ x } 200` } stroke="#00000099" strokeWidth="0.25" strokeDasharray="5,5" /> }
+      { active && <path d={ `M0 ${ y },1000 ${ y }` } stroke="#00000099" strokeWidth="0.25" strokeDasharray="5,5" /> }
+    </Fragment>
+  )
+}
+
+const Graph = ({ data }) => {
+  const history = useHistory()
+  const { currentLocation, images, routeID } = useRouteContext()
+  
+  const handlePointClick = (node, event) => {
+    if (node) {
+      history.push(`/routes/${ routeID }/${ +node.data.x + 1 }`)
+    }
+  }
+
+  const handleMouseMove = (node, event) => {
+    // const highlightedNode = console.log(node)
+  }
+
+  // highlight current location's data points in graph
+  useEffect(() => {
+    console.log('start looking for point')
+
+    
+
+    console.log('finish looking for point')
+  }, [currentLocation])
+
+  return (
+    <div className="predictions-graph">
+      <ResponsiveScatterPlot
         data={ data }
+        height={ 200 }
         margin={{ top: 0, right: 8, bottom: 0, left: 8 }}
-        xScale={{ type: 'point' }}
+        xScale={{ type: 'linear', min: 1, max: images.length }}
         yScale={{ type: 'linear', min: 0, max: 1, stacked: false, reverse: false }}
         yFormat=" >-.2f"
-        axisTop={null}
-        axisRight={null}
-        pointSize={2}
-        pointBorderWidth={1}
-        pointLabelYOffset={-12}
+        enableGridX={ false }
+        enableGridY={ false }
+        axisTop={ null }
+        axisLeft={ null }
+        axisRight={ null }
+        axisBottom={ null }
+        nodeSize={ 4 }
+        pointLabelYOffset={ -12 }
+        tooltip={ ({ node }) => <GraphTooltip node={ node } /> }
+        onClick={ handlePointClick }
+        onMouseMove={ handleMouseMove }
+        renderNode={ CustomNode }
       />
     </div>
   )
@@ -49,32 +117,53 @@ const Graph = ({ data }) => {
 export const PredictionsGraph = ({ key }) => {
   const { images } = useRouteContext()
   const [data, setData] = useState([])
+  const [selectedFeatures, setSelectedFeatures] = useState([])
 
   // massage prediction data into a format usable by this Nivo graph component.
   useEffect(() => {
-    console.log('generating route predition data')
     const predictions = { ...initialData }
     images.forEach((image, i) => {
       features.forEach(feature => {
         if (image.features[feature]) {
-          predictions[feature].data.push({ x: i, y: image.features[feature].probability})
-        }
+          predictions[feature].data.push({ x: i + 1, y: image.features[feature].probability, image })
+        } //else {
+        //   predictions[feature].data.push({ x: i, y: -1 })
+        // }
       })
     })
     setData(Object.values(predictions))
   }, [images])
 
-  useEffect(() => {
-    console.log(data)
-  }, [data])
+  const handleToggleFeatureSelection = feature => event => {
+    let newSelection = new Set(selectedFeatures)
+    if (newSelection.has(feature)) {
+      newSelection.delete(feature)
+    } else {
+      newSelection.add(feature)
+    }
+    setSelectedFeatures([...newSelection])
+  }
+
+  const selectedData = useMemo(() => {
+    if (data) {
+      return data.filter(datum => selectedFeatures.includes(datum.id))
+    }
+  }, [data, selectedFeatures])
 
   return (
     <Row gutter={ 32 }>
       <Col xs={ 24 } lg={ 18 }>
-        <Graph data={ data } />
+        <Graph data={ selectedData } />
       </Col>
       <Col xs={ 24 } lg={ 6 }>
-        <Summary />
+        {
+          features.map(feature => (
+            <div>
+              <Switch checked={ selectedFeatures.includes(feature) } onChange={ handleToggleFeatureSelection(feature) } />
+              &nbsp;{ feature }
+            </div>
+          ))
+        }
       </Col>
     </Row>
   )
