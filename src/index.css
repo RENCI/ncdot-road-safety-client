@@ -8,6 +8,7 @@
 :root {
   --color-primary: #1890ff;;
   --color-positive: #7fbf7b;
+  --color-neutral: #ccc;
   --color-negative: #af8dc3;
 }
 

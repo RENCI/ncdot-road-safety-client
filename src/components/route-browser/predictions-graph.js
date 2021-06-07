@@ -25,6 +25,21 @@ export const GraphTooltip = ({ node }) => {
   )
 }
 
+const Legend = () => {
+  const colors = [
+    { color: `var(--color-positive)`, description: `Positive Annotation` },
+    { color: `var(--color-neutral)`,  description: `No Annotation` },
+    { color: `var(--color-negative)`, description: `Negative Annotation` },
+  ]
+  return (
+    <div className="legend">
+      {
+        colors.map(item => <div><Text key={ `legend-item_${ item.color }` } style={{ color: item.color, fontSize: '150%' }}>●</Text> { item.description }</div>)
+      }
+    </div>
+  )
+}
+
 const CustomNode = ({ node, x, y, size, color, blendMode, onMouseEnter, onMouseMove, onMouseLeave, onClick }) => {
   const { imageIndex, images } = useRouteContext()
   const [active, setActive] = useState(false)
@@ -142,6 +157,7 @@ export const PredictionsGraph = ({ key }) => {
         <Select value={ selectedFeature } onChange={ handleFeatureSelect } style={{ width: '100%' }}>
           { features.map(feature => <Select.Option key={ `feature-option-${ feature }` } value={ feature }>{ feature }</Select.Option>) }
         </Select>
+        <Legend />
       </Col>
     </Row>
   )
