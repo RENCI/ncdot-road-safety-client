@@ -24,8 +24,6 @@ export const RouteBrowserView = () => {
     return 'Loading...'
   }
 
-  const MemoizedPredictionsGraph = useMemo(() => <PredictionsGraph />, [images])
-
   return (
     <Fragment>
       <Breadcrumbs crumbs={[
@@ -37,7 +35,7 @@ export const RouteBrowserView = () => {
 
       <Divider />
 
-      { MemoizedPredictionsGraph }
+      <PredictionsGraph />
       <RouteNavigation />
 
       <br />
