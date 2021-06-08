@@ -6,13 +6,10 @@
 }
 
 :root {
-  --color-primary: #f99;
-  --color-secondary: #9f9;
-  --color-black: #10191f;
-  --color-dark: #333;
-  --color-grey: #a0b0c9;
-  --color-light: #e0e0e9;
-  --color-white: #f9fffc;
+  --color-primary: #1890ff;;
+  --color-positive: #7fbf7b;
+  --color-neutral: #ccc;
+  --color-negative: #af8dc3;
 }
 
 body {
@@ -59,4 +56,11 @@ code {
 }
 .site-footer {
   text-align: center;
+}
+
+/* Animations */
+
+@keyframes fadein {
+  from { filter: opacity(0.0); }
+  to { filter: opacity(1.0); }
 }

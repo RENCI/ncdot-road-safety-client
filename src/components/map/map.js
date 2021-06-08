@@ -9,7 +9,7 @@ const { Option } = Select
 
 const ncCenter = { lat: 35.393809, long: -79.8431 }
 
-export const Map = ({ height, markers, basemapSelection = true }) => {
+export const Map = ({ height, markers, zoom, basemapSelection = true }) => {
   const [basemap, setBasemap] = useState('gray-vector')
 
   const handleChangeBasemap = value => {
@@ -25,7 +25,7 @@ export const Map = ({ height, markers, basemapSelection = true }) => {
         mapProperties={{ basemap: basemap }}
         viewProperties={{
           center: [ncCenter.long, ncCenter.lat],
-          zoom: 7
+          zoom: zoom,
       }}>
         { markers.length > 0 && markers.map(({ key, ...props }, i) => <Marker key={ `marker-${ i }_-${ props.long },${ props.lat }` } { ...props } />) }
       </EsriMap>
@@ -55,9 +55,11 @@ Map.propTypes = {
       long: PropTypes.number.isRequired,
       lat: PropTypes.number.isRequired,
     })
-  )
+  ),
+  zoom: PropTypes.number.isRequired,
 }
 
 Map.defaultProps = {
   height: '300px',
+  zoom: 7,
 }

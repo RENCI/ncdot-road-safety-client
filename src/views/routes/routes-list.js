@@ -2,10 +2,11 @@ import React, { Fragment } from 'react'
 import { Typography } from 'antd'
 import { useRoutes } from '../../contexts'
 import { RoutesTable } from '../../components/routes-table'
+import { Breadcrumbs } from '../../components/breadcrumbs'
 
 const { Title } = Typography
 
-export const BrowseRoutesView = () => {
+export const RoutesListView = () => {
   const { routes } = useRoutes()
 
   if (!routes.length) {
@@ -16,6 +17,11 @@ export const BrowseRoutesView = () => {
     <Fragment>
       
       <Title level={ 1 }>Routes</Title>
+
+      <Breadcrumbs crumbs={[
+        { text: 'Home', path: '/' },
+        { text: 'Routes', path: `/routes` },
+      ]} />
 
       <RoutesTable routes={ routes } />
 

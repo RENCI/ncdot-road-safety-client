@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Slider, Tooltip } from 'antd'
 import { useHistory } from 'react-router-dom'
-import { useRouteBrowseContext } from './context'
+import { Slider, Tooltip } from 'antd'
+import { useRouteContext } from '../context'
 
 export const NavigationSlider = () => {
   const history = useHistory()
-  const { imageIDs, index, routeID } = useRouteBrowseContext()
+  const { images, index, routeID } = useRouteContext()
 
   const handleSliderChange = newIndex => {
     history.push(`/routes/${ routeID }/${ newIndex }`)
@@ -14,12 +14,13 @@ export const NavigationSlider = () => {
 
   return (
     <Slider
+      className="navigation-slider"
       defaultValue={ 1 }
       value={ index + 1 }
       min={ 1 }
-      max={ imageIDs.length }
+      max={ images.length }
       onChange={ handleSliderChange }
-      tipFormatter={ value => `${ value } of ${ imageIDs.length }`}
+      tipFormatter={ value => `${ value } of ${ images.length }`}
       tooltipPlacement="bottom"
     />
   )

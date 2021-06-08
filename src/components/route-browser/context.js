@@ -1,7 +1,7 @@
 import React, { createContext, useContext } from 'react'
 
-export const RouteBrowseContext = createContext({ })
+export const RouteContext = createContext({ })
 
-export const useRouteBrowseContext = () => useContext(RouteBrowseContext)
+export const useRouteContext = () => useContext(RouteContext)
 
-export const RouteBrowser = RouteBrowseContext.Provider
+export const RouteContextProvider = RouteContext.Provider

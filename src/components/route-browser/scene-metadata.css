@@ -1,0 +1,10 @@
+.scene-metadata {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-size: 80%;
+  opacity: 0.75;
+  margin:  0.25rem 0;
+}

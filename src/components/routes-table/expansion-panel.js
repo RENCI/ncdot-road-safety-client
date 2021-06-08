@@ -1,54 +1,62 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Row, Col, Typography } from 'antd'
+import { useHistory } from 'react-router-dom'
+import { Button, Col, Row, Space, Typography } from 'antd'
 import { api } from '../../api'
 import { Map } from '../map'
 import { Spin } from 'antd'
+import {
+  CarOutlined as DriveIcon,
+  InfoCircleOutlined as SummaryIcon,
+} from '@ant-design/icons'
 
 import './expansion-panel.css'
 
 const { Paragraph, Text, Title } = Typography
 
 const markerStyles = {
-  start: { color: 'teal', style: 'cross' },
-  end: { color: 'tomato', style: 'x' },
+  start: { color: 'var(--color-positive)', style: 'cross' },
+  end: { color: 'var(--color-negative)', style: 'x' },
 }
 
 export const ExpansionPanel = ({ data: route }) => {
-  const [imageIDs, setImageIDs] = useState([])
+  const history = useHistory()
+  const [images, setImages] = useState([])
   const [startingCoordinates, setStartingCoordinates] = useState({ lat: 0, long: 0 })
   const [endingCoordinates, setEndingCoordinates] = useState({ lat: 0, long: 0 })
   const [markers, setMarkers] = useState([])
   const [loadingMap, setLoadingMap] = useState(true)
+  const [mapZoom, setMapZoom] = useState()
 
   useEffect(() => {
-    const fetchRouteImageBaseNames = async () => await api.getRouteInfo(route.id)
+    const fetchRouteImageBaseNames = async () => await api.getRoutePredictionInfo(route.id, 'guardrail')
       .then(response => {
-        setImageIDs(response.data.route_image_base_names)
+        setImages(response.data.route_image_info)
       })
       .catch(error => console.error(error))
     fetchRouteImageBaseNames()
   }, [])
 
   useEffect(() => {
-    if (!imageIDs.length) { return }
+    if (!images.length) { return }
 
     const constructMapMarkers = async () => {
       try {
+        const firstImageBaseName = images[0].image_base_name
+        const lastImageBaseName = images.slice(-1)[0].image_base_name
         const response = await Promise.all([
-          api.getImageMetadata(imageIDs[0]), // first route image
-          api.getImageMetadata(imageIDs.slice(-1)) // last route image
+          api.getImageMetadata(firstImageBaseName),
+          api.getImageMetadata(lastImageBaseName),
         ])
         const [start, end] = response.map(res => res.data.metadata)
-        setStartingCoordinates({ long: start.long, lat: start.lat, ...markerStyles.start })
-        setEndingCoordinates({ long: end.long, lat: end.lat, ...markerStyles.end })
+        setStartingCoordinates({ long: start.long.toFixed(6), lat: start.lat.toFixed(6), ...markerStyles.start })
+        setEndingCoordinates({ long: end.long.toFixed(6), lat: end.lat.toFixed(6), ...markerStyles.end })
         setLoadingMap(false)
       } catch (error) {
         console.log(error)
       }
     }
     constructMapMarkers()
-  }, [imageIDs])
+  }, [images])
 
   return (
     <article className="expansion-panel">
@@ -58,16 +66,21 @@ export const ExpansionPanel = ({ data: route }) => {
             <Paragraph strong copyable>
               { route.id }
             </Paragraph>
+
             <Paragraph>
-              { imageIDs.length } image{ imageIDs.length !== 1 ? 's' : '' } along this route
+              { images.length } image{ images.length !== 1 ? 's' : '' } along this route
             </Paragraph>
+
             <Paragraph>
-              <Text style={{ color: 'teal' }}>&nbsp;<strong>&#x2b;</strong>&nbsp; Start</Text>: { startingCoordinates.long } longitude, { startingCoordinates.lat } latitude<br />
-              <Text style={{ color: 'tomato' }}>&nbsp;<strong>&times;</strong>&nbsp; End</Text>: { endingCoordinates.long } longitude, { endingCoordinates.lat } latitude
+              <Text style={{ color: 'var(--color-positive)' }}>&nbsp;<strong>&#x2b;</strong>&nbsp; Start</Text>: { startingCoordinates.long } longitude, { startingCoordinates.lat } latitude<br />
+              <Text style={{ color: 'var(--color-negative)' }}>&nbsp;<strong>&times;</strong>&nbsp; End</Text>: { endingCoordinates.long } longitude, { endingCoordinates.lat } latitude
             </Paragraph>
-            <Paragraph>
-              <Link to={ `/routes/${ route.id }/1` }>Browse this route</Link>
-            </Paragraph>
+
+            <Space direction="vertical" size="large">
+              <Button type="default" onClick={ () => history.push(`/routes/${ route.id }`) } className="route-action-button"><SummaryIcon /> Route Summary</Button>
+              <Button type="default" onClick={ () => history.push(`/routes/${ route.id }/1`) } className="route-action-button"><DriveIcon /> Drive Route</Button>
+            </Space>
+
           </div>
         </Col>
         <Col xs={{ span: 0 }} lg={{ span: 12 }}>

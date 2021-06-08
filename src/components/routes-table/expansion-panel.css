@@ -13,6 +13,8 @@
   padding: 2rem;
 }
 
+.route-aciton-buton {}
+
 /*
 * this styles the icon inside the copyable route ID inside the Text component.
 * this line causes the copy icon to be vertically aligned with the text to its left.
