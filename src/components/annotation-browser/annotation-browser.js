@@ -9,6 +9,11 @@ import { api } from '../../api'
 import './annotation-browser.css'
 const { Option } = Select
 
+const helpUrls = {
+  guardrail: 'https://docs.google.com/document/d/1-CeqPD1b1cFyMjwYivoBlRXfQp-IuHPBP_sWTLoHHXg/edit?usp=sharing',
+  pole: 'https://docs.google.com/document/d/1xI4JSE2ztOi-6vFBawKGWir6M4KambK5BaQY5iKXDu0/edit?usp=sharing'
+}
+
 export const AnnotationBrowser = () => {
   const user = useAccount()
   const [gotImages, setGotImages] = useState(false)
@@ -29,7 +34,7 @@ export const AnnotationBrowser = () => {
     flagShortcuts 
   } = {...state}
 
-  const cacheSize = numLoad * 4;
+  const cacheSize = numLoad * 4
 
   const done = gotImages && images.length === 0
 
@@ -255,7 +260,7 @@ export const AnnotationBrowser = () => {
                         <Button
                           className='iconButton'
                           type='link'
-                          href='https://docs.google.com/document/d/1-CeqPD1b1cFyMjwYivoBlRXfQp-IuHPBP_sWTLoHHXg/edit?usp=sharing'
+                          href={ helpUrls[annotation.name] }
                           icon={ <QuestionCircleOutlined style={{ fontSize: 'large' }} /> }
                         />
                       </div>
