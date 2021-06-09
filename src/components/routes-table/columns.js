@@ -1,6 +1,25 @@
 import React, { Fragment } from 'react'
-import { Link } from 'react-router-dom'
-import { Space } from 'antd'
+import { Link, useHistory } from 'react-router-dom'
+import { Button, Space, Tooltip } from 'antd'
+import {
+  CarOutlined as CarIcon,
+  AreaChartOutlined as SummaryIcon,
+} from '@ant-design/icons'
+
+/* This component is only so history.push can be used. */
+const TableActionButton = ({ icon, url, tip }) => {
+  const history = useHistory()
+  return (
+    <Tooltip title={ tip }>
+      <Button
+        type="default"
+        size="small"
+        icon={ icon }
+        onClick={ () => history.push(url) }
+      />
+    </Tooltip>
+  )
+}
 
 export const columns = [
   {
@@ -17,10 +36,10 @@ export const columns = [
     title: 'Actions',
     key: 'actions',
     render: (text, record) => (
-      <Fragment>
-        <Link to={ `/routes/${ record.id }` }>Summary</Link>
-        <Link to={ `/routes/${ record.id }/1` }>Browse</Link>
-      </Fragment>
+      <Space direction="horizontal" size={ 16 }>
+        <TableActionButton tip="View Route Summary" icon={ <SummaryIcon /> } url={ `/routes/${ record.id }` } />
+        <TableActionButton tip="Drive this Route" icon={ <CarIcon /> } url={ `/routes/${ record.id }/1` } />
+      </Space>
     ),
   },
 ]
