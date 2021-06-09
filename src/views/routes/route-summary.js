@@ -1,6 +1,6 @@
 import React, { Fragment, useContext, useEffect, useMemo, useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
-import { Button, Divider, Statistic, Typography } from 'antd'
+import { Button, Divider, Space, Statistic, Typography } from 'antd'
 import {
   CameraOutlined as ImageIcon,
   CarOutlined as CarIcon,
@@ -74,10 +74,12 @@ export const RouteSummaryView = () => {
 
       <Divider orientation="left">At a Glance</Divider>
 
-      <Statistic title="Image Count" value={ images.length } prefix={ <ImageIcon /> } />
-      <Statistic title="Route Length" value={ routeLength.toFixed(4) } prefix={ <CarIcon /> } suffix="miles" />
+      <Space direction="horizontal" size="large" split={ <Divider type="vertical" /> }>
+        <Statistic title={ <Space direction="horizontal" align="baseline" size="small"><ImageIcon /><Text>Image Count</Text></Space>} value={ images.length } />
+        <Statistic title={ <Space direction="horizontal" align="baseline" size="small"><CarIcon /><Text>Route Length</Text></Space>} value={ routeLength.toFixed(4) } suffix="miles" />
+      </Space>
+
       <pre>
-        sdsd
         { JSON.stringify(annotationCounts, null, 2) }
       </pre>
 

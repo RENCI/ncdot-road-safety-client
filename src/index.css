@@ -58,6 +58,11 @@ code {
   text-align: center;
 }
 
+.ant-divider-horizontal {
+  margin: 2rem 0 !important;
+  color: var(--bs-gray) !important;
+}
+
 /* Animations */
 
 @keyframes fadein {
