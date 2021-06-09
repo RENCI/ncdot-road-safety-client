@@ -4,6 +4,7 @@ import { Button, Divider, Space, Statistic, Typography } from 'antd'
 import {
   CameraOutlined as ImageIcon,
   CarOutlined as CarIcon,
+  CheckCircleOutlined as AnnotationIcon,
 } from '@ant-design/icons'
 import { Breadcrumbs } from '../../components/breadcrumbs'
 import { api } from '../../api'
@@ -33,18 +34,18 @@ export const RouteSummaryView = () => {
     if (!images.length) { return }
     let counts = {}
     images.forEach(image => {
-      console.log(image.image_base_name)
       Object.keys(image.features).forEach(feature => {
-        console.log(feature.name)
-        if (feature.name in counts) {
-          counts[feature.name] += 1
+        console.log(feature)
+        if (feature in counts) {
+          counts[feature] += 1
         } else {
-          counts[feature.name] = 1
+          counts[feature] = 1
         }
       })
     })
+    console.log(counts)
     setAnnotationCounts(counts)
-  }, [routeID])
+  }, [images])
 
   useEffect(() => {
     if (!images.length) { return }
@@ -74,14 +75,36 @@ export const RouteSummaryView = () => {
 
       <Divider orientation="left">At a Glance</Divider>
 
-      <Space direction="horizontal" size="large" split={ <Divider type="vertical" /> }>
-        <Statistic title={ <Space direction="horizontal" align="baseline" size="small"><ImageIcon /><Text>Image Count</Text></Space>} value={ images.length } />
-        <Statistic title={ <Space direction="horizontal" align="baseline" size="small"><CarIcon /><Text>Route Length</Text></Space>} value={ routeLength.toFixed(4) } suffix="miles" />
+      <Space direction="horizontal" size="large">
+        <Statistic
+          title={ <Space direction="horizontal" align="center" size="small"><ImageIcon /><Text>Image Count</Text></Space>}
+          value={ images.length }
+        />
+        <Statistic
+          title={ <Space direction="horizontal" align="center" size="small"><CarIcon /><Text>Route Length</Text></Space>}
+          value={ routeLength.toFixed(4) }
+          suffix="miles"
+        />
       </Space>
 
-      <pre>
-        { JSON.stringify(annotationCounts, null, 2) }
-      </pre>
+      <Divider />
+
+      <Space direction="horizontal" size="large">
+        {
+          annotationCounts ? Object.keys(annotationCounts).map(feature => (
+            <Statistic
+              title={
+                <Space direction="horizontal" align="center" size="small">
+                  <AnnotationIcon style={{ color: annotationCounts[feature] === images.length ? 'var(--color-positive)' : 'inherit' }} />
+                  <Text>{ feature }</Text>
+                </Space>
+              }
+              value={ annotationCounts[feature] }
+              suffix={ ` / ${ images.length }` }
+            />
+          )) : 'Totaling annotations...'
+        }
+      </Space>
 
       <Divider orientation="left">Annotations & Predictions</Divider>
 
