@@ -16,11 +16,6 @@ import { Map } from '../../components/map'
 
 const { Text, Title } = Typography
 
-const markerStyles = {
-  start: { color: 'var(--color-positive)', style: 'cross' },
-  end: { color: 'var(--color-negative)', style: 'x' },
-}
-
 const initialAnnotationCounts = ['guardrail', 'pole'].reduce((obj, feature) => ({ ...obj, [feature]: {} }), {})
 
 export const RouteSummaryView = () => {
@@ -28,6 +23,7 @@ export const RouteSummaryView = () => {
   const { routeID, routeLength, images } = useRouteContext()
   const [startingCoordinates, setStartingCoordinates] = useState({ lat: 0, long: 0 })
   const [endingCoordinates, setEndingCoordinates] = useState({ lat: 0, long: 0 })
+  const [pathCoordinates, setPathCoordinates] = useState([])
   const [annotationCounts, setAnnotationCounts] = useState()
 
   useEffect(() => {
@@ -35,7 +31,6 @@ export const RouteSummaryView = () => {
     let counts = {}
     images.forEach(image => {
       Object.keys(image.features).forEach(feature => {
-        console.log(feature)
         if (feature in counts) {
           counts[feature] += 1
         } else {
@@ -43,26 +38,11 @@ export const RouteSummaryView = () => {
         }
       })
     })
-    console.log(counts)
     setAnnotationCounts(counts)
-  }, [images])
-
-  useEffect(() => {
-    if (!images.length) { return }
-    const constructMapMarkers = async () => {
-      try {
-        const response = await Promise.all([
-          api.getImageMetadata(images[0].image_base_name), // first route image
-          api.getImageMetadata(images.slice(-1)[0].image_base_name) // last route image
-        ])
-        const [start, end] = response.map(res => res.data.metadata)
-        setStartingCoordinates({ long: start.long, lat: start.lat, ...markerStyles.start })
-        setEndingCoordinates({ long: end.long, lat: end.lat, ...markerStyles.end })
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    constructMapMarkers()
+    const path = images.map(({ location }) => location)
+    setPathCoordinates(path)
+    setStartingCoordinates(path[0])
+    setEndingCoordinates(path.slice(-1)[0])
   }, [images])
 
   return (
@@ -86,7 +66,7 @@ export const RouteSummaryView = () => {
               <Statistic
                 title={
                   <Space direction="horizontal" align="center" size="small">
-                    <AnnotationIcon style={{ color: annotationCounts[feature] === images.length ? 'var(--color-positive)' : 'inherit' }} />
+                    <AnnotationIcon style={{ color: annotationCounts[feature] === images.length ? 'var(--color-positive)' : 'var(--color-negative)' }} />
                     <Text>{ feature }</Text>
                   </Space>
                 }
@@ -115,7 +95,12 @@ export const RouteSummaryView = () => {
 
       <Divider orientation="left">Map</Divider>
 
-      <Map markers={ [startingCoordinates, endingCoordinates] } height="600px" zoom={ 13 }/>
+      <Map
+        markers={ [startingCoordinates, endingCoordinates] }
+        path={ pathCoordinates }
+        height="600px"
+        zoom={ 13 }
+      />
 
     </Fragment>
   )

@@ -15,7 +15,7 @@ export const Marker = ({ view, lat, long, color, size, style }) => {
       style: style,
       outline: {
         color: ['x', 'cross'].includes(style) ? color :'black',
-        width: '2px',
+        width: '1px',
       }
     }
     return ({

@@ -24,6 +24,18 @@ const { Text, Title } = Typography
 export const RouteBrowserView = () => {
   const history = useHistory()
   const { currentLocation, images, imageIndex, index, routeID } = useRouteContext()
+  const [startingCoordinates, setStartingCoordinates] = useState()
+  const [endingCoordinates, setEndingCoordinates] = useState()
+  const [pathCoordinates, setPathCoordinates] = useState([])
+
+  useEffect(() => {
+    if (!routeID || !images.length) {
+      return
+    }
+    setPathCoordinates(images.map(({ location }) => location))
+    setStartingCoordinates({ ...images[0].location })
+    setEndingCoordinates({ ...images.slice(-1)[0].location })
+  }, [images, routeID])
 
   if (!currentLocation) {
     return 'Loading...'
@@ -56,7 +68,12 @@ export const RouteBrowserView = () => {
 
       <Row gutter={ 32 }>
         <Col md={ 24 } lg={ 18 }>
-          <Map markers={ currentLocation.location ? [currentLocation.location] : [] } height="400px" zoom={ 13 } />
+          <Map
+            height="400px"
+            zoom={ 13 }
+            markers={ [currentLocation.location, startingCoordinates, endingCoordinates] }
+            path={ pathCoordinates }
+          />
           <br />
         </Col>
         <Col md={ 24 } lg={ 6 }>
