@@ -10,6 +10,10 @@
   --color-positive: #7fbf7b;
   --color-neutral: #ccc;
   --color-negative: #af8dc3;
+  --color-present: #7fbf7b;
+  --color-irrelevant: gold;
+  --color-absent: #af8dc3;
+  --color-not-annotated: #333;
 }
 
 body {
@@ -53,6 +57,7 @@ code {
   background: #fff;
   padding: 2rem;
   flex: 1;
+  position: relative;
 }
 .site-footer {
   text-align: center;
@@ -61,6 +66,12 @@ code {
 .ant-divider-horizontal {
   margin: 2rem 0 !important;
   color: var(--bs-gray) !important;
+}
+
+.route-views-actions {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
 }
 
 /* Animations */

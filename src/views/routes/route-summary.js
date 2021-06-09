@@ -75,46 +75,43 @@ export const RouteSummaryView = () => {
 
       <Divider orientation="left">At a Glance</Divider>
 
-      <Space direction="horizontal" size="large">
-        <Statistic
-          title={ <Space direction="horizontal" align="center" size="small"><ImageIcon /><Text>Image Count</Text></Space>}
-          value={ images.length }
-        />
-        <Statistic
-          title={ <Space direction="horizontal" align="center" size="small"><CarIcon /><Text>Route Length</Text></Space>}
-          value={ routeLength.toFixed(4) }
-          suffix="miles"
-        />
-      </Space>
+      <div className="route-views-actions">
+        <Button type="primary" ghost onClick={ () => history.push(`/routes/${ routeID }/1`) } className="route-action-button" icon={ <CarIcon /> }>Drive Route</Button>
+      </div>
 
-      <Divider />
-
-      <Space direction="horizontal" size="large">
-        {
-          annotationCounts ? Object.keys(annotationCounts).map(feature => (
-            <Statistic
-              title={
-                <Space direction="horizontal" align="center" size="small">
-                  <AnnotationIcon style={{ color: annotationCounts[feature] === images.length ? 'var(--color-positive)' : 'inherit' }} />
-                  <Text>{ feature }</Text>
-                </Space>
-              }
-              value={ annotationCounts[feature] }
-              suffix={ ` / ${ images.length }` }
-            />
-          )) : 'Totaling annotations...'
-        }
-      </Space>
+      <div className="stats" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <Space direction="horizontal" size="large">
+          {
+            annotationCounts ? Object.keys(annotationCounts).map(feature => (
+              <Statistic
+                title={
+                  <Space direction="horizontal" align="center" size="small">
+                    <AnnotationIcon style={{ color: annotationCounts[feature] === images.length ? 'var(--color-positive)' : 'inherit' }} />
+                    <Text>{ feature }</Text>
+                  </Space>
+                }
+                value={ annotationCounts[feature] }
+                suffix={ ` / ${ images.length }` }
+              />
+            )) : 'Totaling annotations...'
+          }
+        </Space>
+        <Space direction="vertical" split={ <Divider /> }>
+          <Statistic
+            title={ <Space direction="horizontal" align="center" size="small"><ImageIcon /><Text>Image Count</Text></Space>}
+            value={ images.length }
+          />
+          <Statistic
+            title={ <Space direction="horizontal" align="center" size="small"><CarIcon /><Text>Route Length</Text></Space>}
+            value={ routeLength.toFixed(4) }
+            suffix="miles"
+          />
+        </Space>
+      </div>
 
       <Divider orientation="left">Annotations & Predictions</Divider>
 
       <PredictionsGraph />
-
-      <Divider orientation="left">Route Actions</Divider>
-
-      <Button type="primary" ghost onClick={ () => history.push(`/routes/${ routeID }/1`) } className="browse-route-button">
-        <CarIcon /> Drive Route
-      </Button>
 
       <Divider orientation="left">Map</Divider>
 

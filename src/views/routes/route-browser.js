@@ -1,8 +1,12 @@
 import React, { Fragment, useContext, useEffect, useMemo, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useHistory, useParams } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { api } from '../../api'
-import { Col, Divider, Row, Typography } from 'antd'
+import { Button, Col, Divider, Row, Typography } from 'antd'
+import {
+  AreaChartOutlined as SummaryIcon,
+  CarOutlined as CarIcon,
+} from '@ant-design/icons'
 import { Scene } from '../../components/scene'
 import { Breadcrumbs } from '../../components/breadcrumbs'
 import {
@@ -18,6 +22,7 @@ import { Map } from '../../components/map'
 const { Text, Title } = Typography
 
 export const RouteBrowserView = () => {
+  const history = useHistory()
   const { currentLocation, images, imageIndex, index, routeID } = useRouteContext()
 
   if (!currentLocation) {
@@ -34,6 +39,10 @@ export const RouteBrowserView = () => {
       ]} />
 
       <Divider />
+
+      <div className="route-views-actions">
+        <Button type="primary" ghost onClick={ () => history.push(`/routes/${ routeID }/`) } className="route-action-button" icon={ <SummaryIcon /> }>View Route Summary</Button>
+      </div>
 
       <PredictionsGraph />
       <RouteNavigation />

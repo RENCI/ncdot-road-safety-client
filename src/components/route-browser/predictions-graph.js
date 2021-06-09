@@ -27,14 +27,15 @@ export const GraphTooltip = ({ node }) => {
 
 const Legend = () => {
   const colors = [
-    { color: `var(--color-positive)`, description: `Positive Annotation` },
-    { color: `var(--color-neutral)`,  description: `No Annotation` },
-    { color: `var(--color-negative)`, description: `Negative Annotation` },
+    { color: `var(--color-present)`, description: `Present` },
+    { color: `var(--color-irrelevant)`, description: `Irrelevant` },
+    { color: `var(--color-absent)`, description: `Absent` },
+    { color: `var(--color-not-annotated)`, description: `Not Annotated` },
   ]
   return (
     <div className="legend">
       {
-        colors.map(item => <div><Text key={ `legend-item_${ item.color }` } style={{ color: item.color, fontSize: '150%' }}>●</Text> { item.description }</div>)
+        colors.map(item => <div><Text key={ `legend-item_${ item.color }` } style={{ color: item.color, fontSize: '125%' }}>●</Text> { item.description }</div>)
       }
     </div>
   )
@@ -94,7 +95,7 @@ const Graph = ({ data }) => {
     <div className="predictions-graph">
       <ResponsiveScatterPlot
         data={ data }
-        height={ 200 }
+        height={ 175 }
         margin={{ top: 0, right: 8, bottom: 0, left: 40 }}
         xScale={{ type: 'linear', min: 1, max: images.length }}
         yScale={{ type: 'linear', min: -0.05, max: 1.05, stacked: false, reverse: false }}
