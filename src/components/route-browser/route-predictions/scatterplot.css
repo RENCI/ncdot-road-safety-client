@@ -1,9 +1,9 @@
-.predictions-graph {
+.predictions-scatterplot {
   height: 175px;
   cursor:  pointer;
 }
 
-.predictions-graph__tooltip {
+.predictions-scatterplot__tooltip {
 }
 
 circle.active-pulse {
@@ -16,7 +16,7 @@ circle.active-pulse {
 }
 
 .legend {
-  height:  125px;
+  height:  120px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;

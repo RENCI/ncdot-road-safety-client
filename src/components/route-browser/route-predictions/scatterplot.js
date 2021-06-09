@@ -1,45 +1,17 @@
 import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { Card, Col, Row, Select, Typography } from 'antd'
-import { useRouteContext } from './context'
-import { api } from '../../api'
+import { Card, Col, Row, Select, Space, Typography } from 'antd'
+import { useRouteContext } from '../context'
+import { api } from '../../../api'
 import { ResponsiveScatterPlot } from '@nivo/scatterplot'
-import './predictions-graph.css'
+import { GraphTooltip, Legend } from './'
+import './scatterplot.css'
 
 const { Text } = Typography
 
 const features = ['guardrail', 'pole']
 
 const initialData = features.reduce((obj, feature) => ({ ...obj, [feature]: { id: feature, data: [] } }), {})
-
-export const GraphTooltip = ({ node }) => {
-  const { images } = useRouteContext()
-
-  return (
-    <Card title={ node.data.image.image_base_name } className="predictions-graph__tooltip">
-      <Text>image #{ node.data.image.index }</Text><br/>
-      <pre style={{ fontSize: '50%' }}>
-        { JSON.stringify(node.data, null, 2) }
-      </pre>
-    </Card>
-  )
-}
-
-const Legend = () => {
-  const colors = [
-    { color: `var(--color-present)`, description: `Present` },
-    { color: `var(--color-irrelevant)`, description: `Irrelevant` },
-    { color: `var(--color-absent)`, description: `Absent` },
-    { color: `var(--color-not-annotated)`, description: `Not Annotated` },
-  ]
-  return (
-    <div className="legend">
-      {
-        colors.map(item => <div><Text key={ `legend-item_${ item.color }` } style={{ color: item.color, fontSize: '125%' }}>●</Text> { item.description }</div>)
-      }
-    </div>
-  )
-}
 
 const CustomNode = ({ node, x, y, size, color, blendMode, onMouseEnter, onMouseMove, onMouseLeave, onClick }) => {
   const { imageIndex, images } = useRouteContext()
@@ -92,7 +64,7 @@ const Graph = ({ data }) => {
   }
 
   return (
-    <div className="predictions-graph">
+    <div className="predictions-scatterplot">
       <ResponsiveScatterPlot
         data={ data }
         height={ 175 }
