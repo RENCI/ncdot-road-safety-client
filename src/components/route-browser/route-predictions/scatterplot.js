@@ -99,7 +99,7 @@ const Graph = ({ data }) => {
   )
 }
 
-export const PredictionsGraph = ({ key }) => {
+export const PredictionsScatterplot = ({ key }) => {
   const { images } = useRouteContext()
   const [predictions, setPredictions] = useState([])
   const [selectedFeature, setSelectedFeature] = useState('guardrail')

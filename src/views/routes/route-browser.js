@@ -10,9 +10,9 @@ import {
 import { Scene } from '../../components/scene'
 import { Breadcrumbs } from '../../components/breadcrumbs'
 import {
-  RouteNavigation,
-  PredictionsGraph,
+  PredictionsScatterplot,
   PredictionsList,
+  RouteNavigation,
   SceneMetadata,
   ScenePrefetch,
   useRouteContext,
@@ -56,7 +56,7 @@ export const RouteBrowserView = () => {
         <Button type="primary" ghost onClick={ () => history.push(`/routes/${ routeID }/`) } className="route-action-button" icon={ <SummaryIcon /> }>View Route Summary</Button>
       </div>
 
-      <PredictionsGraph />
+      <PredictionsScatterplot />
       <RouteNavigation />
 
       <br />
@@ -71,7 +71,7 @@ export const RouteBrowserView = () => {
           <Map
             height="400px"
             zoom={ 13 }
-            markers={ [currentLocation.location, startingCoordinates, endingCoordinates] }
+            markers={ [currentLocation.location] }
             path={ pathCoordinates }
           />
           <br />

@@ -9,7 +9,7 @@ import {
 import { Breadcrumbs } from '../../components/breadcrumbs'
 import { api } from '../../api'
 import {
-  PredictionsGraph,
+  PredictionsScatterplot,
   useRouteContext,
 } from '../../components/route-browser'
 import { Map } from '../../components/map'
@@ -91,7 +91,7 @@ export const RouteSummaryView = () => {
 
       <Divider orientation="left">Annotations & Predictions</Divider>
 
-      <PredictionsGraph />
+      <PredictionsScatterplot />
 
       <Divider orientation="left">Map</Divider>
 

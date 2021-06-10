@@ -27,7 +27,7 @@ export const Map = ({ height, markers, path, zoom, basemapSelection = true }) =>
       >
         {
           // draw a path if there is one
-          <Path coordinates={ path } key={ `path-${ Math.random() }` } />
+          path.length && <Path coordinates={ path } />
         }
         {
           // draw any markers
@@ -70,4 +70,6 @@ Map.propTypes = {
 Map.defaultProps = {
   height: '300px',
   zoom: 7,
+  markers: [],
+  path: [],
 }

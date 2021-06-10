@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { loadModules } from 'esri-loader'
+import { Marker } from './'
 
 // custom component for map path
 export const Path = ({ view, coordinates, color, width, style }) => {
@@ -24,16 +25,10 @@ export const Path = ({ view, coordinates, color, width, style }) => {
   }
 
   useEffect(() => {
-    // view.graphics.remove(graphic)
-    view.graphics.removeAll()
-  }, [coordinates, color, width, style])
-
-  useEffect(() => {
     loadModules(['esri/Graphic']).then(([Graphic]) => {
       let routePath = new Graphic(mapPath(coordinates))
       view.graphics.add(routePath)
       setGraphic(graphic)
-      view.center = coordinates[0]
     }).catch(error => console.error(error))
 
     return function cleanup() {
@@ -57,7 +52,7 @@ Path.propTypes = {
 }
 
 Path.defaultProps = {
-  color: '#1890ff',
+  color: '#0066cc',
   width: 1,
   style: 'short-dash',
 }
