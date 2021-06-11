@@ -10,10 +10,6 @@
   --color-positive: #7fbf7b;
   --color-neutral: #ccc;
   --color-negative: #af8dc3;
-  --color-present: #7fbf7b;
-  --color-irrelevant: gold;
-  --color-absent: #af8dc3;
-  --color-not-annotated: #333;
 }
 
 body {

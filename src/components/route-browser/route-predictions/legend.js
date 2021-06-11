@@ -7,10 +7,9 @@ const features = ['guardrail', 'pole']
 
 export const Legend = () => {
   const colors = [
-    { color: `var(--color-present)`, description: `Present` },
-    { color: `var(--color-irrelevant)`, description: `Irrelevant` },
-    { color: `var(--color-absent)`, description: `Absent` },
-    { color: `var(--color-not-annotated)`, description: `Not Annotated` },
+    { color: `var(--color-positive)`, description: `Present` },
+    { color: `var(--color-neutral)`, description: `No Annotation` },
+    { color: `var(--color-negative)`, description: `Absent` },
   ]
   return (
     <div className="legend">
