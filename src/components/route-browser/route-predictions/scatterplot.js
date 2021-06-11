@@ -25,7 +25,7 @@ const Graph = ({ data }) => {
   }
 
   return (
-    <div className="predictions-scatterplot">
+    <div className="predictions-scatterplot__container">
       <ResponsiveScatterPlot
         data={ data }
         height={ 175 }
