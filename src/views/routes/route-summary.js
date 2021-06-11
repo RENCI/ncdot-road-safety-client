@@ -31,11 +31,18 @@ export const RouteSummaryView = () => {
     let counts = {}
     images.forEach(image => {
       Object.keys(image.features).forEach(feature => {
-        if (feature in counts) {
-          counts[feature] += 1
-        } else {
-          counts[feature] = 1
+        let annotations = (feature in counts)
+          ? image.features[feature] // will be true, false, or 'N/A'
+          : ({ absent: 0, none: 0, present: 0 })
+        let key = image.features[feature].annotation === true
+          ? 'present'
+          : image.features[feature].annotation === false
+            ? 'absent'
+            : 'none'
+        if (image.features[feature].annotation === true) {
+          annotations = { ...annotations, [key]: annotations[key] += 1 }
         }
+        counts[feature] = { ...counts[feature], annotations }
       })
     })
     setAnnotationCounts(counts)
