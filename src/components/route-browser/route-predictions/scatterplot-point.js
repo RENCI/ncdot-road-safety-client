@@ -35,7 +35,7 @@ export const ScatterplotPoint = ({
         }
         {/* the actual node */}
         <circle
-          r={ size / 2 }
+          r={ active ? size : size / 2 }
           fill={ fillColor }
           style={{ mixBlendMode: blendMode }}
           onMouseEnter={ onMouseEnter }
