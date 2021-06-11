@@ -27,7 +27,7 @@ export const ScatterplotPoint = ({
         {
           /* active node indicator */
           active && (
-            <circle className="active-pulse" r={ size } fill={ fillColor } style={{ mixBlendMode: blendMode }}>
+            <circle className="active-indicator" r={ size } fill={ fillColor } style={{ mixBlendMode: blendMode }}>
               <animate attributeName="r" begin="0s" dur="1s" repeatCount="indefinite" from="3" to="12"/>
               <animate attributeName="opacity" begin="0s" dur="1s" repeatCount="indefinite" from="1" to="0"/>
             </circle>
