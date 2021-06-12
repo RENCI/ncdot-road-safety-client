@@ -16,7 +16,7 @@ export const GraphTooltip = ({ node }) => {
     >
       {
         features.map(feature => (
-          <pre style={{ fontSize: '75%' }}>
+          <pre style={{ fontSize: '75%' }} key={ feature }>
             { JSON.stringify(node.data.image.features[feature], null, 2) }
           </pre>
         ))
