@@ -16,7 +16,16 @@ import { Map } from '../../components/map'
 
 const { Text, Title } = Typography
 
-const initialAnnotationCounts = ['guardrail', 'pole'].reduce((obj, feature) => ({ ...obj, [feature]: {} }), {})
+/* we use the above object as a(n inital) container for feature annotation counts,
+ * and we contribute to the counts in the `useEffect` below, leaving it
+ * looking something like the following:
+ * {
+ *   guardrail: { absent: 50, none: 50, present: 100 },
+ *   pole: { absent: 20, none: 200, present: 10 },
+ *   ...
+ * }
+ */
+const initialAnnotationCounts = ['guardrail', 'pole'].reduce((obj, feature) => ({ ...obj, [feature]: { present: 0, absent: 0, none: 0 } }), {})
 
 export const RouteSummaryView = () => {
   const history = useHistory()
@@ -28,26 +37,37 @@ export const RouteSummaryView = () => {
 
   useEffect(() => {
     if (!images.length) { return }
-    let counts = {}
+    // start counts with empty buckets for each feature (see initialAnnotationCounts def):
+    // feature:
+    //    absent: 0
+    //    none: 0
+    //    present: 0
+    let counts = initialAnnotationCounts
+    // loop over the images
     images.forEach(image => {
+      // and loop over each feature (guardrail, pole, etc)
       Object.keys(image.features).forEach(feature => {
-        let annotations = (feature in counts)
-          ? image.features[feature] // will be true, false, or 'N/A'
-          : ({ absent: 0, none: 0, present: 0 })
-        let key = image.features[feature].annotation === true
+        // get current annotations for this image
+        let annotations = counts[feature]
+        // are we contributing to the `true`s, `false`s, or `N/A`s?
+        let featureAnnotationKey = image.features[feature].annotation === true
           ? 'present'
           : image.features[feature].annotation === false
             ? 'absent'
             : 'none'
-        if (image.features[feature].annotation === true) {
-          annotations = { ...annotations, [key]: annotations[key] += 1 }
-        }
-        counts[feature] = { ...counts[feature], annotations }
+        // make the appropriate contribution
+        annotations = { ...annotations, [featureAnnotationKey]: annotations[featureAnnotationKey] += 1 }
+        // combine this feature's annotation counts with the existing overall counts object
+        counts = { ...counts, [feature]: annotations }
       })
     })
+    // set the counts we've accumulated
     setAnnotationCounts(counts)
+    // path should be an array of {lat, long} objects
     const path = images.map(({ location }) => location)
+    // set path
     setPathCoordinates(path)
+    // set endpoint markers
     setStartingCoordinates(path[0])
     setEndingCoordinates(path.slice(-1)[0])
   }, [images])
@@ -67,20 +87,22 @@ export const RouteSummaryView = () => {
       </div>
 
       <div className="stats" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <Space direction="horizontal" size="large">
+        <Space direction="vertical" size="large">
           {
-            annotationCounts ? Object.keys(annotationCounts).map(feature => (
-              <Statistic
-                title={
-                  <Space direction="horizontal" align="center" size="small">
-                    <AnnotationIcon style={{ color: annotationCounts[feature] === images.length ? 'var(--color-positive)' : 'var(--color-negative)' }} />
-                    <Text>{ feature }</Text>
-                  </Space>
-                }
-                value={ annotationCounts[feature] }
-                suffix={ ` / ${ images.length }` }
-              />
-            )) : 'Totaling annotations...'
+            annotationCounts ? Object.keys(annotationCounts).map(feature => {
+              return (
+                <Space direction="horizontal" size="large">
+                  <Statistic
+                    title={ <Title level={ 4 }>{ feature[0].toUpperCase() + feature.slice(1) }</Title> }
+                    value={ annotationCounts[feature].present + annotationCounts[feature].absent }
+                    suffix={ ` / ${ images.length }` }
+                  />
+                  <Statistic title="Present" value={ annotationCounts[feature].present } valueStyle={{ color: 'var(--color-positive)' }} />
+                  <Statistic title="Absent" value={ annotationCounts[feature].absent } valueStyle={{ color: 'var(--color-negative)' }} />
+                  <Statistic title="None" value={ annotationCounts[feature].none } valueStyle={{ color: 'var(--color-neutral)' }} />
+                </Space>
+              )
+            }) : 'Totaling annotations...'
           }
         </Space>
         <Space direction="vertical" split={ <Divider /> }>
