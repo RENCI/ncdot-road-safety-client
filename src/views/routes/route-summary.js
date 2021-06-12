@@ -1,6 +1,6 @@
 import React, { Fragment, useContext, useEffect, useMemo, useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
-import { Button, Divider, Space, Statistic, Typography } from 'antd'
+import { Button, Col, Divider, Row, Space, Statistic, Typography } from 'antd'
 import {
   CameraOutlined as ImageIcon,
   CarOutlined as CarIcon,
@@ -80,49 +80,55 @@ export const RouteSummaryView = () => {
         { text: routeID, path: `/routes/${ routeID }` },
       ]} />
 
-      <Divider orientation="left">At a Glance</Divider>
 
       <div className="route-views-actions">
         <Button type="primary" ghost onClick={ () => history.push(`/routes/${ routeID }/1`) } className="route-action-button" icon={ <CarIcon /> }>Drive Route</Button>
       </div>
 
-      <div className="stats" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <Space direction="vertical" size="large">
-          {
-            annotationCounts ? Object.keys(annotationCounts).map(feature => {
-              return (
-                <Space direction="horizontal" size="large">
-                  <Statistic
-                    title={ <Title level={ 4 }>{ feature[0].toUpperCase() + feature.slice(1) }</Title> }
-                    value={ annotationCounts[feature].present + annotationCounts[feature].absent }
-                    suffix={ ` / ${ images.length }` }
-                  />
-                  <Statistic title="Present" value={ annotationCounts[feature].present } valueStyle={{ color: 'var(--color-positive)' }} />
-                  <Statistic title="Absent" value={ annotationCounts[feature].absent } valueStyle={{ color: 'var(--color-negative)' }} />
-                  <Statistic title="None" value={ annotationCounts[feature].none } valueStyle={{ color: 'var(--color-neutral)' }} />
-                </Space>
-              )
-            }) : 'Totaling annotations...'
-          }
-        </Space>
-        <Space direction="vertical" split={ <Divider /> }>
-          <Statistic
-            title={ <Space direction="horizontal" align="center" size="small"><ImageIcon /><Text>Image Count</Text></Space>}
-            value={ images.length }
-          />
-          <Statistic
-            title={ <Space direction="horizontal" align="center" size="small"><CarIcon /><Text>Route Length</Text></Space>}
-            value={ routeLength.toFixed(4) }
-            suffix="miles"
-          />
-        </Space>
-      </div>
+      <Divider orientation="center">At a Glance</Divider>
 
-      <Divider orientation="left">Annotations & Predictions</Divider>
+      <Row gutter={ [40, 40] }>
+        <Col xs={ 24 } md={ 8 } lg={ 6 } xl={ 4 }>
+          <Space direction="vertical">
+            <Statistic
+              title={ <Space direction="horizontal" align="center" size="small"><ImageIcon /><Text>Image Count</Text></Space>}
+              value={ images.length }
+            />
+            <Statistic
+              title={ <Space direction="horizontal" align="center" size="small"><CarIcon /><Text>Route Length</Text></Space>}
+              value={ routeLength.toFixed(4) }
+              suffix="miles"
+            />
+          </Space>
+        </Col>
+
+        <Col xs={ 24 } md={ 16 } lg={ 18 } xl={ 20 }>
+          <Space direction="vertical" size="large">
+            {
+              annotationCounts ? Object.keys(annotationCounts).map(feature => {
+                return (
+                  <Space direction="horizontal" size="large">
+                    <Statistic
+                      title={ <Title level={ 5 }>{ feature[0].toUpperCase() + feature.slice(1) }</Title> }
+                      value={ annotationCounts[feature].present + annotationCounts[feature].absent }
+                      suffix={ ` / ${ images.length }` }
+                    />
+                    <Statistic title="Present" value={ annotationCounts[feature].present } valueStyle={{ color: 'var(--color-positive)' }} />
+                    <Statistic title="Absent" value={ annotationCounts[feature].absent } valueStyle={{ color: 'var(--color-negative)' }} />
+                    <Statistic title="None" value={ annotationCounts[feature].none } valueStyle={{ color: 'var(--color-neutral)' }} />
+                  </Space>
+                )
+              }) : 'Totaling annotations...'
+            }
+          </Space>
+        </Col>
+      </Row>
+
+      <Divider orientation="center">Annotations & Predictions</Divider>
 
       <PredictionsScatterplot />
 
-      <Divider orientation="left">Map</Divider>
+      <Divider orientation="center">Map</Divider>
 
       <Map
         markers={ [startingCoordinates, endingCoordinates] }
