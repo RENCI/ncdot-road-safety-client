@@ -45,11 +45,11 @@ export const ScatterplotPoint = ({
       </g>
       {
         /* vertical indicator */
-        active && <path d={ `M${ x } ${ y },${ x } 200` } strokeWidth="0.5" stroke="#000000" strokeDasharray="5,5" />
+        active && <path d={ `M${ x } ${ y },${ x } 200` } strokeWidth="1" stroke={ fillColor } strokeDasharray="5 2" />
       }
       {
         /* horizontal indicator */
-        active && <path d={ `M0 ${ y },${ x } ${ y }` } strokeWidth="0.5" stroke="#000000" strokeDasharray="5,5" />
+        active && <path d={ `M0 ${ y },${ x } ${ y }` } strokeWidth="1" stroke={ fillColor } strokeDasharray="5 2" />
       }
     </Fragment>
   )
