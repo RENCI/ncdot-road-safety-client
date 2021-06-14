@@ -15,8 +15,8 @@ export const Legend = () => {
     <div className="legend">
       {
         colors.map(item => (
-          <div>
-            <Text key={ `legend-item_${ item.color }` } style={{ color: item.color }}>●</Text> { item.description }
+          <div key={ `legend-item_${ item.color }` } className="legend-item">
+            <Text style={{ color: item.color }}>●</Text> <Text>{ item.description }</Text>
           </div>
         ))
       }
