@@ -89,6 +89,7 @@ export const RouteSummaryView = () => {
 
       <Row gutter={ [40, 40] }>
         <Col xs={ 24 } md={ 8 } lg={ 6 } xl={ 4 }>
+          <Title level={ 4 }>Overall</Title>
           <Space direction="vertical">
             <Statistic
               title={ <Space direction="horizontal" align="center" size="small"><ImageIcon /><Text>Image Count</Text></Space>}
@@ -103,6 +104,7 @@ export const RouteSummaryView = () => {
         </Col>
 
         <Col xs={ 24 } md={ 16 } lg={ 18 } xl={ 20 }>
+          <Title level={ 4 }>Annotations</Title>
           <Space direction="vertical" size="large">
             {
               annotationCounts ? Object.keys(annotationCounts).map(feature => {
