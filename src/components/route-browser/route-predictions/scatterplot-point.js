@@ -11,11 +11,10 @@ export const ScatterplotPoint = ({
   const { imageIndex, images } = useRouteContext()
   const [active, setActive] = useState(false)
 
-  const fillColor = node.data.image.features[node.data.serieId].annotation === 'N/A'
-    ? 'var(--color-neutral)'
-    : node.data.image.features[node.data.serieId].annotation === true
-      ? 'var(--color-positive)'
-      : 'var(--color-negative)'
+  let fillColor = 'var(--color-neutral)'
+  if (node.data?.image?.features[node.data.serieId] && typeof node.data.image.features[node.data.serieId].annotation === 'boolean') {
+    fillColor = node.data.image.features[node.data.serieId].annotation ? 'var(--color-positive)' : 'var(--color-negative)'
+  }
 
   useEffect(() => {
     setActive(+imageIndex === node.data.image.index)
