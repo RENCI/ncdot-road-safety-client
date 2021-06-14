@@ -13,6 +13,7 @@ const features = ['guardrail', 'pole']
 
 const initialFeaturePredictions = features.reduce((obj, feature) => ({ ...obj, [feature]: { id: feature, data: [] } }), {})
 
+const ThresholdLineLayer = ({ height, width }) => <path d={ `M0 ${ height / 2 }, ${ width - 48 } ${ height / 2 }` } stroke="#000" strokeWidth="0.5" strokeDasharray="1 1" />
 
 const Graph = ({ data }) => {
   const history = useHistory()
@@ -59,6 +60,16 @@ const Graph = ({ data }) => {
             tickColor: '#00000099',
           },
         }}
+        layers={[
+          'grid',
+          'axes',
+          ThresholdLineLayer,
+          'nodes',
+          'markers',
+          'mesh',
+          'legends',
+          'annotations',
+        ]}
       />
     </div>
   )
