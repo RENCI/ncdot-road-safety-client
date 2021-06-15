@@ -91,7 +91,7 @@ export const PredictionsScatterplot = ({ key }) => {
           data[feature].data.push({ x: i + 1, y: image.features[feature].probability, image })
         }
         // create dummy nodes?
-        else { data[feature].data.push({ x: i, y: -1 }) }
+        else { data[feature].data.push({ x: i, y: -1, image }) }
       })
     })
     setPredictions(data)

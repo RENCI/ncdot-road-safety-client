@@ -17,7 +17,7 @@ export const ScatterplotPoint = ({
   }
 
   useEffect(() => {
-    setActive(+imageIndex === node.data.image.index)
+    setActive(node.data.image && +imageIndex === node.data.image.index)
   }, [imageIndex])
 
   return (
