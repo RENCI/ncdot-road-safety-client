@@ -15,6 +15,48 @@ const initialFeaturePredictions = features.reduce((obj, feature) => ({ ...obj, [
 
 const ThresholdLineLayer = ({ height, width }) => <path d={ `M0 ${ height / 2 }, ${ width - 48 } ${ height / 2 }` } stroke="#000" strokeWidth="0.5" strokeDasharray="1 1" />
 
+// const AreaLayer = ({ height, width, data }) => {
+const AreaLayer = props => {
+  console.log(props)
+  const { height, width, data } = props
+  const deltaX = (width - 47) / data[0].data.length
+  const barWidth = Math.ceil(deltaX)
+  const featureId = data[0].id
+  return (
+    <g transform={ `scale(1,-1) translate(0,-${ height - 8 })` }>
+      {
+        data[0].data.map(({ x, y, image }) => {
+          let strokeColor = 'var(--color-neutral)'
+          if (image.features[featureId] && typeof image.features[featureId].annotation === 'boolean') {
+            strokeColor = image.features[featureId].annotation ? 'var(--color-positive)' : 'var(--color-negative)'
+          }
+          {/*
+            console.log('===')
+            console.log(image.features[featureId].annotation)
+            console.log(strokeColor)
+          */}
+          if (!x || !y) { return null }
+          return (
+            <line
+              key={ `line-${ x },${ y }` }
+              x1={ (x - 1) * deltaX }
+              y1="0"
+              x2={ (x - 1) * deltaX }
+              y2={ y * 159 }
+              stroke={ strokeColor }
+              strokeWidth={ barWidth }
+              strokeOpacity="0.5"
+            />
+          )
+        }).filter(d => d !== null)
+      }
+    </g>
+  )
+  // return (
+  //   <path d={ `M0 ${ height / 4 }, ${ width - 48 } ${ height / 3 }` } stroke="#000" strokeWidth="0.5" strokeDasharray="1 1" />
+  // )
+}
+
 const Graph = ({ data }) => {
   const history = useHistory()
   const { currentLocation, images, routeID } = useRouteContext()
@@ -64,6 +106,7 @@ const Graph = ({ data }) => {
           'grid',
           'axes',
           ThresholdLineLayer,
+          AreaLayer,
           'nodes',
           'markers',
           'mesh',
@@ -91,7 +134,7 @@ export const PredictionsScatterplot = ({ key }) => {
           data[feature].data.push({ x: i + 1, y: image.features[feature].probability, image })
         }
         // create dummy nodes?
-        else { data[feature].data.push({ x: i, y: -1, image }) }
+        else { data[feature].data.push({ image }) }
       })
     })
     setPredictions(data)
