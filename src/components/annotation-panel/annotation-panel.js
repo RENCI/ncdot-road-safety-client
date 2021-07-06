@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState, useRef } from 'react'
 import { AnnotationBrowserContext, useAccount } from '../../contexts'
 import { Scene } from '../scene'
 import { FlagControl } from './flag-control'
-import { BrowseRouteButton } from './browse-route-button'
+import { RouteActions } from './route-actions'
 import { api } from '../../api'
 import './annotation-panel.css'
 
@@ -138,7 +138,7 @@ export const AnnotationPanel = ({ image, autoAdjust, downsample, flagOptions, us
         onKeyPress={ onKeyPress }
       />      
 
-      { route && imageIndex > -1 && <BrowseRouteButton routeID={ route } imageIndex={ imageIndex } /> }
+      { route && imageIndex > -1 && <RouteActions routeID={ route } imageIndex={ imageIndex } /> }
 
       { popoverVisible && <div className='overlay' /> }
     </div>

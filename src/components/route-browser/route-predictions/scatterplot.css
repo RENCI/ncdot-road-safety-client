@@ -1,0 +1,31 @@
+.predictions-scatterplot__container {
+  height: 175px;
+  cursor:  pointer;
+}
+
+.predictions-scatterplot__tooltip {
+}
+
+.legend {
+  min-height: 60px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  gap: 0.25rem;
+}
+
+@media screen and (min-width: 992px) {
+  .legend {
+    min-height: 120px;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+}
+
+.legend .legend-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.25rem;
+}

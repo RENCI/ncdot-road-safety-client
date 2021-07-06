@@ -1,11 +1,11 @@
-.route-action-buttons-container {
+.route-actions {
   display: block;
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.route-action-buttons-container .route-action-button {
+.route-actions .route-action-button {
   flex: 1 !important;
 }
 

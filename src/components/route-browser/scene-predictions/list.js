@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { useRouteContext } from './context'
-import { api } from '../../api'
+import { useRouteContext } from '../context'
+import { api } from '../../../api'
 import { Card, List, Table, Tooltip, Typography } from 'antd'
 import {
   CheckOutlined as TrueIcon,
   CloseOutlined as FalseIcon,
   QuestionOutlined as UndeterminedIcon,
 } from '@ant-design/icons'
-import './predictions-list.css'
+import './list.css'
 
 const { Meta, Text } = Typography
 

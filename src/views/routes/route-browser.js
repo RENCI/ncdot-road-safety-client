@@ -1,14 +1,18 @@
 import React, { Fragment, useContext, useEffect, useMemo, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useHistory, useParams } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { api } from '../../api'
-import { Col, Divider, Row, Typography } from 'antd'
+import { Button, Col, Divider, Row, Typography } from 'antd'
+import {
+  AreaChartOutlined as SummaryIcon,
+  CarOutlined as CarIcon,
+} from '@ant-design/icons'
 import { Scene } from '../../components/scene'
 import { Breadcrumbs } from '../../components/breadcrumbs'
 import {
-  RouteNavigation,
-  PredictionsGraph,
+  PredictionsScatterplot,
   PredictionsList,
+  RouteNavigation,
   SceneMetadata,
   ScenePrefetch,
   useRouteContext,
@@ -18,7 +22,20 @@ import { Map } from '../../components/map'
 const { Text, Title } = Typography
 
 export const RouteBrowserView = () => {
+  const history = useHistory()
   const { currentLocation, images, imageIndex, index, routeID } = useRouteContext()
+  const [startingCoordinates, setStartingCoordinates] = useState()
+  const [endingCoordinates, setEndingCoordinates] = useState()
+  const [pathCoordinates, setPathCoordinates] = useState([])
+
+  useEffect(() => {
+    if (!routeID || !images.length) {
+      return
+    }
+    setPathCoordinates(images.map(({ location }) => location))
+    setStartingCoordinates({ ...images[0].location })
+    setEndingCoordinates({ ...images.slice(-1)[0].location })
+  }, [images, routeID])
 
   if (!currentLocation) {
     return 'Loading...'
@@ -35,7 +52,11 @@ export const RouteBrowserView = () => {
 
       <Divider />
 
-      <PredictionsGraph />
+      <div className="route-views-actions">
+        <Button type="primary" ghost onClick={ () => history.push(`/routes/${ routeID }/`) } className="route-action-button" icon={ <SummaryIcon /> }>View Route Summary</Button>
+      </div>
+
+      <PredictionsScatterplot />
       <RouteNavigation />
 
       <br />
@@ -47,7 +68,12 @@ export const RouteBrowserView = () => {
 
       <Row gutter={ 32 }>
         <Col md={ 24 } lg={ 18 }>
-          <Map markers={ currentLocation.location ? [currentLocation.location] : [] } height="400px" zoom={ 13 } />
+          <Map
+            height="400px"
+            zoom={ 13 }
+            markers={ [currentLocation.location] }
+            path={ pathCoordinates }
+          />
           <br />
         </Col>
         <Col md={ 24 } lg={ 6 }>
