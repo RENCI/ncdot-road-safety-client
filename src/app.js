@@ -2,7 +2,7 @@ import React from "react"
 import { Layout, Menu } from "antd"
 import { LogoutOutlined, ProfileOutlined, UserOutlined } from "@ant-design/icons"
 import { BrowserRouter as Router, Switch, Route, NavLink, useLocation } from "react-router-dom"
-import { BrowseAnnotationView, RouteView, RoutesListView } from "./views"
+import { BrowseAnnotationView, RouteView, RoutesListView, AnomalyListView } from "./views"
 import { AccountProvider, useAccount, RoutesProvider, AnnotationsProvider, AnnotationBrowserProvider } from "./contexts"
 import { api } from "./api"
 const { Header, Content, Footer } = Layout
@@ -33,6 +33,7 @@ const MenuBar = ({ activePath }) => {
       <Menu theme="dark" mode="horizontal" selectedKeys={ [pathname] }>
         <Menu.Item key="/"><NavLink to="/">Annotate</NavLink></Menu.Item>
         <Menu.Item key="/routes"><NavLink to="/routes">Routes</NavLink></Menu.Item>
+        <Menu.Item key="/anomaly-list"><NavLink to="/anomaly-list">Anomalies</NavLink></Menu.Item>
         <SubMenu key="profile" style={{float: "right"}} icon={<span>{ account.username }&nbsp;&nbsp;<UserOutlined /></span>}>
           <Menu.Item icon={<ProfileOutlined />}> 
             <a href={ api.updateAccount(document.getElementById('user_id').value) }>View Profile</a>  
@@ -57,6 +58,7 @@ export const App = () => {
               <Route exact path="/"><BrowseAnnotationView /></Route>
               <Route exact path="/routes"><RoutesListView /></Route>
               <Route exact path="/routes/:routeID/:imageIndex?"><RouteView /></Route>
+              <Route exact path="/anomaly-list"><AnomalyListView /></Route>
             </Switch>
           </div>
         </Content>
