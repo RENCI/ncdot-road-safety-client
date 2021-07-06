@@ -1,15 +1,33 @@
 import React from 'react'
-import { Anomaly } from './anomaly'
+import PropTypes from 'prop-types'
+import { Table } from 'antd'
+import { columns } from './columns'
 
-export const AnomalyList = anomalies => {
+export const AnomalyList = ({ anomalies }) => {
 
   console.log(anomalies)
 
   return (
-    <>
-      <h3>AnomalyList</h3>
-      <Anomaly />
-      <Anomaly />
-    </>
+    <Table
+      pagination={{
+        position: ['topRight', 'bottomRight'],
+      }}
+      dataSource={ anomalies.map(id => ({
+        key: id,
+        id: id,
+        name: `Image ${ id }`,
+      })) }
+      showSizeChanger={ false }
+      columns={ columns }
+      defaultSortField='id'
+    />
   )
+}
+
+AnomalyList.propTypes = {
+  anomalies: PropTypes.array.isRequired
+}
+
+AnomalyList.defaultProps = {
+  anomalies: []
 }
