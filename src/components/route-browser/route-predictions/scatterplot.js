@@ -13,51 +13,41 @@ const features = ['guardrail', 'pole']
 
 const initialFeaturePredictions = features.reduce((obj, feature) => ({ ...obj, [feature]: { id: feature, data: [] } }), {})
 
-const ThresholdLineLayer = ({ height, width }) => <path d={ `M0 ${ height / 2 }, ${ width - 48 } ${ height / 2 }` } stroke="#000" strokeWidth="0.5" strokeDasharray="1 1" />
-
-// const AreaLayer = ({ height, width, data }) => {
-const AreaLayer = props => {
-  console.log(props)
+const ThresholdLineLayer = props => {
   const { height, width, data } = props
-  const deltaX = (width - 47) / data[0].data.length
-  const barWidth = Math.ceil(deltaX)
-  const featureId = data[0].id
-  return (
-    <g transform={ `scale(1,-1) translate(0,-${ height - 8 })` }>
-      {
-        data[0].data.map(({ x, y, image }) => {
-          let strokeColor = 'var(--color-neutral)'
-          if (image.features[featureId] && typeof image.features[featureId].annotation === 'boolean') {
-            strokeColor = image.features[featureId].annotation ? 'var(--color-positive)' : 'var(--color-negative)'
-          }
-          {/*
-            console.log('===')
-            console.log(image.features[featureId].annotation)
-            console.log(strokeColor)
-          */}
-          if (!x || !y) { return null }
-          return (
-            <line
-              key={ `line-${ x },${ y }` }
-              x1={ (x - 1) * deltaX }
-              y1="0"
-              x2={ (x - 1) * deltaX }
-              y2={ y * 159 }
-              stroke={ strokeColor }
-              strokeWidth={ barWidth }
-              strokeOpacity="0.5"
-            />
-          )
-        }).filter(d => d !== null)
+  const [feature, setFeature] = useState()
+  const [threshold, setThreshold] = useState(0.5)
+  const scaledThreshold = useMemo(() => threshold * (height - 16), [threshold])
+
+  useEffect(() => {
+    setFeature(data[0].id)
+  }, [data])
+
+  useEffect(() => {
+    const fetchThreshold = async () => {
+      try {
+        const { data } = await api.getThreshold(feature)
+        if (!data) {
+          throw new Error('An error occurred while fetching thresholds.')
+        }
+        setThreshold(data.model_threshold)
+      } catch (error) {
+        console.error(error)
       }
+    }
+    if (feature) {
+      fetchThreshold(feature)
+    }
+  }, [feature])
+
+  return (
+    <g transform={ `scale(1,-1) translate(0, -${ height - 8 })` }>
+      <path className="threshold-line" d={ `M0 ${ scaledThreshold }, ${ width - 48 } ${ scaledThreshold }` } stroke="#222" strokeWidth="1" strokeDasharray="5 10" />
     </g>
   )
-  // return (
-  //   <path d={ `M0 ${ height / 4 }, ${ width - 48 } ${ height / 3 }` } stroke="#000" strokeWidth="0.5" strokeDasharray="1 1" />
-  // )
 }
 
-const Graph = ({ data }) => {
+const Graph = ({ data, predictionThreshold }) => {
   const history = useHistory()
   const { currentLocation, images, routeID } = useRouteContext()
   
@@ -90,7 +80,7 @@ const Graph = ({ data }) => {
         }}
         axisRight={ null }
         axisBottom={ null }
-        nodeSize={ 4 }
+        nodeSize={ 5 }
         pointLabelYOffset={ -12 }
         tooltip={ ({ node }) => <GraphTooltip node={ node } /> }
         onClick={ handlePointClick }
@@ -106,7 +96,6 @@ const Graph = ({ data }) => {
           'grid',
           'axes',
           ThresholdLineLayer,
-          AreaLayer,
           'nodes',
           'markers',
           'mesh',
@@ -122,6 +111,7 @@ export const PredictionsScatterplot = ({ key }) => {
   const { images } = useRouteContext()
   const [predictions, setPredictions] = useState([])
   const [selectedFeature, setSelectedFeature] = useState('guardrail')
+  const [threshold, setThreshold] = useState()
 
   const handleFeatureSelect = value => setSelectedFeature(value)
 
@@ -140,10 +130,25 @@ export const PredictionsScatterplot = ({ key }) => {
     setPredictions(data)
   }, [images])
 
+  useEffect(() => {
+    const fetchThreshold = async () => {
+      try {
+        const { data } = await api.getThreshold(selectedFeature)
+        if (!data) {
+          throw new Error('An error occurred while fetching thresholds.')
+        }
+        setThreshold(data.model_threshold)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    fetchThreshold(selectedFeature)
+  }, [selectedFeature])
+
   return (
     <Row gutter={ 32 }>
       <Col xs={ 24 } lg={ 18 }>
-        <Graph data={ [predictions[selectedFeature]] } />
+        <Graph data={ [predictions[selectedFeature]] } predictionThreshold={ threshold } />
       </Col>
       <Col xs={ 24 } lg={ 6 }>
         <Select value={ selectedFeature } onChange={ handleFeatureSelect } style={{ width: '100%' }}>
