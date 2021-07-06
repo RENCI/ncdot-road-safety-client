@@ -3,7 +3,14 @@ import { Layout, Menu } from "antd"
 import { LogoutOutlined, ProfileOutlined, UserOutlined } from "@ant-design/icons"
 import { BrowserRouter as Router, Switch, Route, NavLink, useLocation } from "react-router-dom"
 import { BrowseAnnotationView, RouteView, RoutesListView, AnomalyListView } from "./views"
-import { AccountProvider, useAccount, RoutesProvider, AnnotationsProvider, AnnotationBrowserProvider } from "./contexts"
+import { 
+  AccountProvider, 
+  useAccount, 
+  RoutesProvider, 
+  AnnotationsProvider, 
+  AnnotationBrowserProvider,
+  AnomaliesProvider
+} from "./contexts"
 import { api } from "./api"
 const { Header, Content, Footer } = Layout
 const { SubMenu } = Menu
@@ -11,15 +18,17 @@ const { SubMenu } = Menu
 const ContextProviders = ({ children }) => {
   return (
     <AccountProvider>
-      <RoutesProvider>
-        <AnnotationsProvider>
-          <AnnotationBrowserProvider>
-            <Router>
-              { children }
-            </Router>
-          </AnnotationBrowserProvider>
-        </AnnotationsProvider>
-      </RoutesProvider>
+      <AnomaliesProvider>
+        <RoutesProvider>
+          <AnnotationsProvider>
+            <AnnotationBrowserProvider>
+              <Router>
+                { children }
+              </Router>
+            </AnnotationBrowserProvider>
+          </AnnotationsProvider>
+        </RoutesProvider>
+      </AnomaliesProvider>
     </AccountProvider>
   )
 }
