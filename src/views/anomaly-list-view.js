@@ -1,5 +1,5 @@
-import React, { useState, useContext, useEffect } from 'react'
-import { Typography, Form, Select, Space, Statistic } from 'antd'
+import React, { useState, useContext, useEffect, useMemo } from 'react'
+import { Typography, Form, Select, Space, Statistic, AutoComplete, Divider } from 'antd'
 import { AnnotationsContext } from '../contexts'
 import { AnomalyList } from '../components/anomaly-list'
 import { api } from '../api'
@@ -12,6 +12,21 @@ export const AnomalyListView = () => {
   const [annotationOptions, setAnnotationOptions] = useState([])
   const [annotation, setAnnotation] = useState('')
   const [anomalies, setAnomalies] = useState()
+  const [routeFilter, setRouteFilter] = useState()
+
+  const routeOptions = useMemo(() => {
+    return anomalies ? Array.from(anomalies.reduce((routes, anomaly) => {
+      return routes.add(anomaly.route)
+    }, new Set())).map(route => ({ label: route, value: route }))
+    : null
+  }, [anomalies])
+
+  const filteredAnomalies = useMemo(() => {
+    return anomalies && routeFilter && routeFilter.length > 0 ? 
+      anomalies.filter(({ route }) => route.includes(routeFilter))
+      : anomalies ? [...anomalies]
+      : null
+  }, [anomalies, routeFilter])
 
   const getAnomalies = async annotation => {
     setAnomalies()
@@ -55,9 +70,13 @@ export const AnomalyListView = () => {
     } 
   }, [annotationTypes])
 
+  const onRouteFilterChange = value => {
+    setRouteFilter(value)
+  }
+
   return (
     <>
-      <Title level={ 1 }>Prediction Anomalies</Title>
+      <Title level={ 1 }>Prediction Errors</Title>
 
       <Form>
         <Form.Item label='Select annotation'>
@@ -77,25 +96,38 @@ export const AnomalyListView = () => {
 
       { anomalies ? 
         <>
-          <Space direction='horizontal' size='large'>
-            <Statistic
-              title='Total anomalies'
-              value={ anomalies.length }
-            />
-            <Statistic
-              title='False positives'
-              value={ anomalies.filter(({ type }) => type === 'fp').length }
-              valueStyle={{ color: 'var(--color-negative)' }}
-            />
-            <Statistic
-              title='False negatives'
-              value={ anomalies.filter(({ type }) => type === 'fn').length }
-              valueStyle={{ color: 'var(--color-positive)' }}
-            />
-          </Space>
+            <Space direction='horizontal' size='large'>
+              <Statistic
+                title='Total errors'
+                value={ anomalies.length }
+              />
+              <Statistic
+                title='False positives'
+                value={ anomalies.filter(({ type }) => type === 'fp').length }
+                valueStyle={{ color: 'var(--color-negative)' }}
+              />
+              <Statistic
+                title='False negatives'
+                value={ anomalies.filter(({ type }) => type === 'fn').length }
+                valueStyle={{ color: 'var(--color-positive)' }}
+              />
+            </Space>
 
-          <AnomalyList anomalies={ anomalies } />
-        </> 
+            <Divider />
+
+            <Form>
+              <Form.Item label='Filter routes'>
+                <AutoComplete
+                  options={ routeOptions }
+                  onChange={ onRouteFilterChange }
+                  allowClear={ true }
+                  filterOption={ (inputValue, option) => option.value.includes(inputValue) }
+                />
+              </Form.Item>
+            </Form>
+
+          <AnomalyList anomalies={ filteredAnomalies } />
+        </>
         : <p>Fetching anomalies...</p>
       }
     </>

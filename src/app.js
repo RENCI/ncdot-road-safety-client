@@ -39,7 +39,7 @@ const MenuBar = ({ activePath }) => {
       <Menu theme="dark" mode="horizontal" selectedKeys={ [pathname] }>
         <Menu.Item key="/"><NavLink to="/">Annotate</NavLink></Menu.Item>
         <Menu.Item key="/routes"><NavLink to="/routes">Routes</NavLink></Menu.Item>
-        <Menu.Item key="/anomaly-list"><NavLink to="/anomaly-list">Anomalies</NavLink></Menu.Item>
+        <Menu.Item key="/prediction-errors"><NavLink to="/prediction-errors">Prediction errors</NavLink></Menu.Item>
         <SubMenu key="profile" style={{float: "right"}} icon={<span>{ account.username }&nbsp;&nbsp;<UserOutlined /></span>}>
           <Menu.Item icon={<ProfileOutlined />}> 
             <a href={ api.updateAccount(document.getElementById('user_id').value) }>View Profile</a>  
@@ -64,7 +64,7 @@ export const App = () => {
               <Route exact path="/"><BrowseAnnotationView /></Route>
               <Route exact path="/routes"><RoutesListView /></Route>
               <Route exact path="/routes/:routeID/:imageIndex?"><RouteView /></Route>
-              <Route exact path="/anomaly-list"><AnomalyListView /></Route>
+              <Route exact path="/prediction-errors"><AnomalyListView /></Route>
             </Switch>
           </div>
         </Content>

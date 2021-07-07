@@ -1,6 +1,6 @@
-import React, { Fragment } from 'react'
-import { Link, useHistory } from 'react-router-dom'
-import { Button, Space, Tooltip, Tag } from 'antd'
+import React from 'react'
+import { useHistory } from 'react-router-dom'
+import { Button, Tooltip, Tag } from 'antd'
 import { CarOutlined as CarIcon } from '@ant-design/icons'
 
 // XXX: Borrowed from columns.js in routes-table. 
@@ -10,8 +10,8 @@ const TableActionButton = ({ icon, url, tip }) => {
   return (
     <Tooltip title={ tip }>
       <Button
-        type="default"
-        size="small"
+        type='default'
+        size='small'
         icon={ icon }
         onClick={ () => history.push(url) }
       />
@@ -43,6 +43,7 @@ export const columns = [
       { text: 'False negative', value: 'fn' }
     ],
     onFilter: (value, record) => record.type === value,
+    filterMultiple: false,
     sorter: (a, b) => a.type.localeCompare(b.type),
     render: (text, record) => (
       <Tag color={ colors[record.type] } >
@@ -59,7 +60,7 @@ export const columns = [
     title: 'Actions',
     render: (text, record) => (
       <TableActionButton 
-        tip="Drive this Route" 
+        tip='View Error' 
         icon={ <CarIcon /> } 
         url={ `/routes/${ record.route }/${ record.index}` } 
       />
