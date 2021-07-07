@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useAccount } from '../../contexts'
-import { Collapse, Space, Typography } from 'antd'
+import { Collapse, Spin, Space, Typography } from 'antd'
 import './annotation-summary.css'
 
 const { Title } = Typography
@@ -9,6 +9,10 @@ const { Panel } = Collapse
 
 export const AnnotationSummary = ({ annotationName }) => {
   const { annotationDetails, refreshAnnotationDetails } = useAccount()
+
+  if (!annotationDetails) {
+    return <Spin />
+  }
 
   const currentAnnotations = annotationDetails.current[annotationName]
   const previousAnnotations = annotationDetails.previous[annotationName]
