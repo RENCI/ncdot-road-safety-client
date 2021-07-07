@@ -3,14 +3,19 @@ import { Link } from 'react-router-dom'
 
 export const columns = [
   {
-    title: 'ID',
+    title: 'Image',
     dataIndex: 'id',
-    key: 'id',
+    key: 'image',
   },
   {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
+    title: 'Type',
+    dataIndex: 'typeName',
+    key: 'type',
+  },
+  {
+    title: 'Probability',
+    dataIndex: 'probability',
+    key: 'probability',
   },
   {
     title: 'Actions',

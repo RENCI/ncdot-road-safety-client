@@ -32,5 +32,6 @@ export const api = {
     fp: (feature, round) => axios.get(`/get_holdout_test_info/${ feature }/${ round }/fp`),
     fn: (feature, round) => axios.get(`/get_holdout_test_info/${ feature }/${ round }/fn`),
   },
-  getAnomalies: () => axios.get(`/get_anomalies/`)
+  getFalsePositives: annotation => axios.get(`/get_model_fps/${ annotation }/`),
+  getFalseNegatives: annotation => axios.get(`/get_model_fns/${ annotation }/`)
 }

@@ -8,8 +8,7 @@ import {
   useAccount, 
   RoutesProvider, 
   AnnotationsProvider, 
-  AnnotationBrowserProvider,
-  AnomaliesProvider
+  AnnotationBrowserProvider
 } from "./contexts"
 import { api } from "./api"
 const { Header, Content, Footer } = Layout
@@ -18,17 +17,15 @@ const { SubMenu } = Menu
 const ContextProviders = ({ children }) => {
   return (
     <AccountProvider>
-      <AnomaliesProvider>
-        <RoutesProvider>
-          <AnnotationsProvider>
-            <AnnotationBrowserProvider>
-              <Router>
-                { children }
-              </Router>
-            </AnnotationBrowserProvider>
-          </AnnotationsProvider>
-        </RoutesProvider>
-      </AnomaliesProvider>
+      <RoutesProvider>
+        <AnnotationsProvider>
+          <AnnotationBrowserProvider>
+            <Router>
+              { children }
+            </Router>
+          </AnnotationBrowserProvider>
+        </AnnotationsProvider>
+      </RoutesProvider>
     </AccountProvider>
   )
 }
