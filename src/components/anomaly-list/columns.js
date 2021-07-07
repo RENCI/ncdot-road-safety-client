@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import { Link, useHistory } from 'react-router-dom'
-import { Button, Space, Tooltip } from 'antd'
+import { Button, Space, Tooltip, Tag } from 'antd'
 import { CarOutlined as CarIcon } from '@ant-design/icons'
 
 // XXX: Borrowed from columns.js in routes-table. 
@@ -19,32 +19,51 @@ const TableActionButton = ({ icon, url, tip }) => {
   )
 }
 
-export const columns = [
+const colors = {
+  fp: `var(--color-negative)`,
+  fn: `var(--color-positive)`
+}
+
+export const columns = [  
+  {
+    title: 'Route',
+    dataIndex: 'route',
+    sorter: (a, b) => a.route.localeCompare(b.route)
+  },
   {
     title: 'Image',
     dataIndex: 'id',
-    key: 'image',
+    sorter: (a, b) => a.id.localeCompare(b.id)
   },
   {
     title: 'Type',
-    dataIndex: 'typeName',
-    key: 'type',
+    dataIndex: 'type',  
+    filters: [
+      { text: 'False positive', value: 'fp' },
+      { text: 'False negative', value: 'fn' }
+    ],
+    onFilter: (value, record) => record.type === value,
+    sorter: (a, b) => a.type.localeCompare(b.type),
+    render: (text, record) => (
+      <Tag color={ colors[record.type] } >
+        { record.type === 'fp' ? 'False positive' : 'False negative' }
+      </Tag>
+    )
   },
   {
     title: 'Probability',
     dataIndex: 'probability',
-    key: 'probability',
+    sorter: (a, b) => a.probability - b.probability
   },
   {
     title: 'Actions',
-    key: 'actions',
     render: (text, record) => (
       <TableActionButton 
         tip="Drive this Route" 
         icon={ <CarIcon /> } 
-        url={ `/routes/${ record.route }/1` } 
+        url={ `/routes/${ record.route }/${ record.index}` } 
       />
-    ),
+    )
   },
 ]
 

@@ -4,8 +4,6 @@ import { Table } from 'antd'
 import { columns } from './columns'
 
 export const AnomalyList = ({ anomalies }) => {
-
-  console.log(anomalies)
   return (
     <Table
       pagination={{
@@ -13,8 +11,7 @@ export const AnomalyList = ({ anomalies }) => {
       }}
       dataSource={ anomalies.map(anomaly => ({
         ...anomaly,
-        key: anomaly.id,
-        typeName: anomaly.type === 'fp' ? 'False positive' : 'False negative'
+        key: anomaly.id
       })) }
       showSizeChanger={ false }
       columns={ columns }

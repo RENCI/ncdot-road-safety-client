@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { Typography, Form, Select } from 'antd'
+import { Typography, Form, Select, Space, Statistic } from 'antd'
 import { AnnotationsContext } from '../contexts'
 import { AnomalyList } from '../components/anomaly-list'
 import { api } from '../api'
@@ -19,9 +19,10 @@ export const AnomalyListView = () => {
     const getAnomaly = (anomaly, type) => {
       return {
         route: anomaly.route_id,
+        index: anomaly.route_index,
         id: anomaly.image_base_name,
         type: type,
-        probability: anomaly.certainty
+        probability: +anomaly.certainty
       }
     }
 
@@ -56,7 +57,7 @@ export const AnomalyListView = () => {
 
   return (
     <>
-      <Title level={ 1 }>Anomalies</Title>
+      <Title level={ 1 }>Prediction Anomalies</Title>
 
       <Form>
         <Form.Item label='Select annotation'>
@@ -74,7 +75,27 @@ export const AnomalyListView = () => {
         </Form.Item>
       </Form>
 
-      { anomalies ? <AnomalyList anomalies={ anomalies } /> 
+      { anomalies ? 
+        <>
+          <Space direction='horizontal' size='large'>
+            <Statistic
+              title='Total anomalies'
+              value={ anomalies.length }
+            />
+            <Statistic
+              title='False positives'
+              value={ anomalies.filter(({ type }) => type === 'fp').length }
+              valueStyle={{ color: 'var(--color-negative)' }}
+            />
+            <Statistic
+              title='False negatives'
+              value={ anomalies.filter(({ type }) => type === 'fn').length }
+              valueStyle={{ color: 'var(--color-positive)' }}
+            />
+          </Space>
+
+          <AnomalyList anomalies={ anomalies } />
+        </> 
         : <p>Fetching anomalies...</p>
       }
     </>
