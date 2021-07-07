@@ -96,35 +96,35 @@ export const PredictionErrorView = () => {
 
       { errors ? 
         <>
-            <Space direction='horizontal' size='large'>
-              <Statistic
-                title='Total errors'
-                value={ errors.length }
-              />
-              <Statistic
-                title='False positives'
-                value={ errors.filter(({ type }) => type === 'fp').length }
-                valueStyle={{ color: 'var(--color-negative)' }}
-              />
-              <Statistic
-                title='False negatives'
-                value={ errors.filter(({ type }) => type === 'fn').length }
-                valueStyle={{ color: 'var(--color-positive)' }}
-              />
-            </Space>
+          <Space direction='horizontal' size='large'>
+            <Statistic
+              title='Total errors'
+              value={ errors.length }
+            />
+            <Statistic
+              title='False positives'
+              value={ errors.filter(({ type }) => type === 'fp').length }
+              valueStyle={{ color: 'var(--color-negative)' }}
+            />
+            <Statistic
+              title='False negatives'
+              value={ errors.filter(({ type }) => type === 'fn').length }
+              valueStyle={{ color: 'var(--color-positive)' }}
+            />
+          </Space>
 
-            <Divider />
+          <Divider />
 
-            <Form>
-              <Form.Item label='Filter routes'>
-                <AutoComplete
-                  options={ routeOptions }
-                  onChange={ onRouteFilterChange }
-                  allowClear={ true }
-                  filterOption={ (inputValue, option) => option.value.includes(inputValue) }
-                />
-              </Form.Item>
-            </Form>
+          <Form>
+            <Form.Item label='Filter routes'>
+              <AutoComplete
+                options={ routeOptions }
+                onChange={ onRouteFilterChange }
+                allowClear={ true }
+                filterOption={ (inputValue, option) => option.value.includes(inputValue) }
+              />
+            </Form.Item>
+          </Form>
 
           <PredictionErrors errors={ filterederrors } />
         </>
