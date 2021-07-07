@@ -3,15 +3,15 @@ import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import { columns } from './columns'
 
-export const AnomalyList = ({ anomalies }) => {
+export const PredictionErrors = ({ errors }) => {
   return (
     <Table
       pagination={{
         position: ['topRight', 'bottomRight'],
       }}
-      dataSource={ anomalies.map(anomaly => ({
-        ...anomaly,
-        key: anomaly.id
+      dataSource={ errors.map(error => ({
+        ...error,
+        key: error.id
       })) }
       showSizeChanger={ false }
       columns={ columns }
@@ -20,10 +20,10 @@ export const AnomalyList = ({ anomalies }) => {
   )
 }
 
-AnomalyList.propTypes = {
-  anomalies: PropTypes.array.isRequired
+PredictionErrors.propTypes = {
+  errors: PropTypes.array.isRequired
 }
 
-AnomalyList.defaultProps = {
-  anomalies: []
+PredictionErrors.defaultProps = {
+  errors: []
 }

@@ -2,7 +2,7 @@ import React from "react"
 import { Layout, Menu } from "antd"
 import { LogoutOutlined, ProfileOutlined, UserOutlined } from "@ant-design/icons"
 import { BrowserRouter as Router, Switch, Route, NavLink, useLocation } from "react-router-dom"
-import { BrowseAnnotationView, RouteView, RoutesListView, AnomalyListView } from "./views"
+import { BrowseAnnotationView, RouteView, RoutesListView, PredictionErrorView } from "./views"
 import { 
   AccountProvider, 
   useAccount, 
@@ -64,7 +64,7 @@ export const App = () => {
               <Route exact path="/"><BrowseAnnotationView /></Route>
               <Route exact path="/routes"><RoutesListView /></Route>
               <Route exact path="/routes/:routeID/:imageIndex?"><RouteView /></Route>
-              <Route exact path="/prediction-errors"><AnomalyListView /></Route>
+              <Route exact path="/prediction-errors"><PredictionErrorView /></Route>
             </Switch>
           </div>
         </Content>

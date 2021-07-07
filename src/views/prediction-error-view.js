@@ -1,43 +1,43 @@
 import React, { useState, useContext, useEffect, useMemo } from 'react'
 import { Typography, Form, Select, Space, Statistic, AutoComplete, Divider } from 'antd'
 import { AnnotationsContext } from '../contexts'
-import { AnomalyList } from '../components/anomaly-list'
+import { PredictionErrors } from '../components/prediction-errors'
 import { api } from '../api'
 
 const { Title } = Typography
 const { Option } = Select
 
-export const AnomalyListView = () => {
+export const PredictionErrorView = () => {
   const [annotationTypes] = useContext(AnnotationsContext)
   const [annotationOptions, setAnnotationOptions] = useState([])
   const [annotation, setAnnotation] = useState('')
-  const [anomalies, setAnomalies] = useState()
+  const [errors, setErrors] = useState()
   const [routeFilter, setRouteFilter] = useState()
 
   const routeOptions = useMemo(() => {
-    return anomalies ? Array.from(anomalies.reduce((routes, anomaly) => {
-      return routes.add(anomaly.route)
+    return errors ? Array.from(errors.reduce((routes, error) => {
+      return routes.add(error.route)
     }, new Set())).map(route => ({ label: route, value: route }))
     : null
-  }, [anomalies])
+  }, [errors])
 
-  const filteredAnomalies = useMemo(() => {
-    return anomalies && routeFilter && routeFilter.length > 0 ? 
-      anomalies.filter(({ route }) => route.includes(routeFilter))
-      : anomalies ? [...anomalies]
+  const filterederrors = useMemo(() => {
+    return errors && routeFilter && routeFilter.length > 0 ? 
+      errors.filter(({ route }) => route.includes(routeFilter))
+      : errors ? [...errors]
       : null
-  }, [anomalies, routeFilter])
+  }, [errors, routeFilter])
 
-  const getAnomalies = async annotation => {
-    setAnomalies()
+  const getErrors = async annotation => {
+    setErrors()
 
-    const getAnomaly = (anomaly, type) => {
+    const getError = (error, type) => {
       return {
-        route: anomaly.route_id,
-        index: anomaly.route_index,
-        id: anomaly.image_base_name,
+        route: error.route_id,
+        index: error.route_index,
+        id: error.image_base_name,
         type: type,
-        probability: +anomaly.certainty
+        probability: +error.certainty
       }
     }
 
@@ -45,10 +45,10 @@ export const AnomalyListView = () => {
       const fps = await api.getFalsePositives(annotation)
       const fns = await api.getFalseNegatives(annotation)
 
-      const anomalies = fps.data.fps_info.map(fp => getAnomaly(fp, 'fp'))
-        .concat(fns.data.fns_info.map(fn => getAnomaly(fn, 'fn')))
+      const errors = fps.data.fps_info.map(fp => getError(fp, 'fp'))
+        .concat(fns.data.fns_info.map(fn => getError(fn, 'fn')))
 
-      setAnomalies(anomalies)
+      setErrors(errors)
     }
     catch (error) {
       console.log(error)
@@ -57,7 +57,7 @@ export const AnomalyListView = () => {
 
   const onAnnotationChange = value => {
     setAnnotation(value)
-    getAnomalies(value)
+    getErrors(value)
   }
 
   useEffect(() => {
@@ -66,7 +66,7 @@ export const AnomalyListView = () => {
 
       setAnnotationOptions(options)
       setAnnotation(options[0])
-      getAnomalies(options[0])
+      getErrors(options[0])
     } 
   }, [annotationTypes])
 
@@ -94,21 +94,21 @@ export const AnomalyListView = () => {
         </Form.Item>
       </Form>
 
-      { anomalies ? 
+      { errors ? 
         <>
             <Space direction='horizontal' size='large'>
               <Statistic
                 title='Total errors'
-                value={ anomalies.length }
+                value={ errors.length }
               />
               <Statistic
                 title='False positives'
-                value={ anomalies.filter(({ type }) => type === 'fp').length }
+                value={ errors.filter(({ type }) => type === 'fp').length }
                 valueStyle={{ color: 'var(--color-negative)' }}
               />
               <Statistic
                 title='False negatives'
-                value={ anomalies.filter(({ type }) => type === 'fn').length }
+                value={ errors.filter(({ type }) => type === 'fn').length }
                 valueStyle={{ color: 'var(--color-positive)' }}
               />
             </Space>
@@ -126,9 +126,9 @@ export const AnomalyListView = () => {
               </Form.Item>
             </Form>
 
-          <AnomalyList anomalies={ filteredAnomalies } />
+          <PredictionErrors errors={ filterederrors } />
         </>
-        : <p>Fetching anomalies...</p>
+        : <p>Fetching errors...</p>
       }
     </>
   )
