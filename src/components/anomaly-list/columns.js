@@ -1,5 +1,23 @@
 import React, { Fragment } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
+import { Button, Space, Tooltip } from 'antd'
+import { CarOutlined as CarIcon } from '@ant-design/icons'
+
+// XXX: Borrowed from columns.js in routes-table. 
+// May want to refactor to separate component re-used by both.
+const TableActionButton = ({ icon, url, tip }) => {
+  const history = useHistory()
+  return (
+    <Tooltip title={ tip }>
+      <Button
+        type="default"
+        size="small"
+        icon={ icon }
+        onClick={ () => history.push(url) }
+      />
+    </Tooltip>
+  )
+}
 
 export const columns = [
   {
@@ -21,9 +39,11 @@ export const columns = [
     title: 'Actions',
     key: 'actions',
     render: (text, record) => (
-      <Fragment>
-        <Link to={ `/routes/${ record.id }/1` }>View</Link>
-      </Fragment>
+      <TableActionButton 
+        tip="Drive this Route" 
+        icon={ <CarIcon /> } 
+        url={ `/routes/${ record.route }/1` } 
+      />
     ),
   },
 ]
