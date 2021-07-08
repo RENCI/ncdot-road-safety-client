@@ -58,10 +58,18 @@ const Graph = ({ data, min, max, predictionThreshold }) => {
     }
   }
 
+  // only render data points that are within the zoomed viewing window
+  const visibleData = useMemo(() => {
+    if (!data || !data[0]) {
+      return []
+    }
+    return [{ ...data[0], data: data[0].data.filter(d => min <= d.x && d.x <= max) }]
+  }, [data, min, max])
+
   return (
     <div className="predictions-scatterplot__container">
       <ResponsiveScatterPlot
-        data={ data }
+        data={ visibleData }
         height={ 175 }
         margin={{ top: 0, right: 8, bottom: 0, left: 40 }}
         xScale={{ type: 'linear', min: min, max: max }}
