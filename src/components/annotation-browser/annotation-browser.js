@@ -125,8 +125,6 @@ export const AnnotationBrowser = () => {
           }
         })
       })
-
-      console.log(response)
       
       setSaving(false)
 
