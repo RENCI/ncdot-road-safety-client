@@ -147,6 +147,7 @@ export const PredictionsScatterplot = ({ canZoom }) => {
     setPredictions(data)
   }, [images])
 
+  // set appropriate { min, max } viewing window along horizontal axis
   const extrema = useMemo(() => {
     if (zoom === 1 || !canZoom ) {
       return {
