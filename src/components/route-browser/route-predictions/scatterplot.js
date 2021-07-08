@@ -117,6 +117,36 @@ export const PredictionsScatterplot = ({ canZoom }) => {
   const handleFeatureSelect = value => setSelectedFeature(value)
   const handleZoomSelect = value => setZoom(value)
 
+  useEffect(() => {
+    const fetchThreshold = async () => {
+      try {
+        const { data } = await api.getThreshold(selectedFeature)
+        if (!data) {
+          throw new Error('An error occurred while fetching thresholds.')
+        }
+        setThreshold(data.model_threshold)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    fetchThreshold(selectedFeature)
+  }, [selectedFeature])
+
+  // massage the prediction data into a format usable by this Nivo graph component.
+  useEffect(() => {
+    const data = { ...initialFeaturePredictions }
+    images.forEach((image, i) => {
+      features.forEach(feature => {
+        if (image.features[feature]) {
+          data[feature].data.push({ x: i + 1, y: image.features[feature].probability, image })
+        }
+        // create dummy nodes?
+        else { data[feature].data.push({ image }) }
+      })
+    })
+    setPredictions(data)
+  }, [images])
+
   const extrema = useMemo(() => {
     if (zoom === 1 || !canZoom ) {
       return {
@@ -137,36 +167,6 @@ export const PredictionsScatterplot = ({ canZoom }) => {
     }
     return { min, max }
   }, [images, index, zoom])
-
-  // massage the prediction data into a format usable by this Nivo graph component.
-  useEffect(() => {
-    const data = { ...initialFeaturePredictions }
-    images.forEach((image, i) => {
-      features.forEach(feature => {
-        if (image.features[feature]) {
-          data[feature].data.push({ x: i + 1, y: image.features[feature].probability, image })
-        }
-        // create dummy nodes?
-        else { data[feature].data.push({ image }) }
-      })
-    })
-    setPredictions(data)
-  }, [images])
-
-  useEffect(() => {
-    const fetchThreshold = async () => {
-      try {
-        const { data } = await api.getThreshold(selectedFeature)
-        if (!data) {
-          throw new Error('An error occurred while fetching thresholds.')
-        }
-        setThreshold(data.model_threshold)
-      } catch (error) {
-        console.error(error)
-      }
-    }
-    fetchThreshold(selectedFeature)
-  }, [selectedFeature])
 
   return (
     <Row gutter={ 32 }>
