@@ -7,7 +7,7 @@ export const PredictionErrors = ({ errors }) => {
   return (
     <Table
       pagination={{
-        position: ['topRight', 'bottomRight'],
+        position: ['bottomRight'],
       }}
       dataSource={ errors.map(error => ({
         ...error,
