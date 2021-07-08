@@ -75,6 +75,7 @@ const Graph = ({ data, min, max, predictionThreshold }) => {
         xScale={{ type: 'linear', min: min, max: max }}
         yScale={{ type: 'linear', min: -0.05, max: 1.05, stacked: false, reverse: false }}
         yFormat=" >-.2f"
+        animate={ false }
         enableGridX={ true }
         enableGridY={ true }
         axisTop={ null }
