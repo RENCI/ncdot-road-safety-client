@@ -108,7 +108,7 @@ const Graph = ({ data, min, max, predictionThreshold }) => {
   )
 }
 
-export const PredictionsScatterplot = ({ key }) => {
+export const PredictionsScatterplot = ({ canZoom }) => {
   const { images, index } = useRouteContext()
   const [predictions, setPredictions] = useState([])
   const [selectedFeature, setSelectedFeature] = useState('guardrail')
@@ -118,7 +118,7 @@ export const PredictionsScatterplot = ({ key }) => {
   const handleZoomSelect = value => setZoom(value)
 
   const extrema = useMemo(() => {
-    if (zoom === 1) {
+    if (zoom === 1 || !canZoom ) {
       return {
         min: 1,
         max: images.length,
@@ -139,7 +139,7 @@ export const PredictionsScatterplot = ({ key }) => {
       min: min,
       max: max,
     }
-  }, [index, zoom])
+  }, [images, index, zoom])
 
   // massage the prediction data into a format usable by this Nivo graph component.
   useEffect(() => {
@@ -180,9 +180,13 @@ export const PredictionsScatterplot = ({ key }) => {
         <Select value={ selectedFeature } onChange={ handleFeatureSelect } style={{ width: '100%' }}>
           { features.map(feature => <Select.Option key={ `feature-option-${ feature }` } value={ feature }>{ feature }</Select.Option>) }
         </Select>
-        <Select value={ zoom } onChange={ handleZoomSelect } style={{ width: '100%' }}>
-          { [1, 2, 3, 4, 5].map(level => <Select.Option key={ `zoom-option-${ level }x` } value={ level }>{ `Zoom ${ level }x` }</Select.Option>) }
-        </Select>
+        {
+          canZoom && (
+            <Select value={ zoom } onChange={ handleZoomSelect } style={{ width: '100%' }}>
+              { [1, 2, 3, 4, 5].map(level => <Select.Option key={ `zoom-option-${ level }x` } value={ level }>{ `Zoom ${ level }x` }</Select.Option>) }
+            </Select>
+          )
+        }
         <Legend />
       </Col>
     </Row>
