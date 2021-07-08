@@ -125,20 +125,17 @@ export const PredictionsScatterplot = ({ canZoom }) => {
       }
     }
     const zoomRadius = Math.ceil(images.length / (2 * zoom))
-    let min = Math.max(0, index - zoomRadius)
-    let max = Math.min(images.length, index + zoomRadius)
+    let min = index - zoomRadius
+    let max = index + zoomRadius
     if (min < 1) {
       min = 1
       max = 2 * zoomRadius
     }
     if (max > images.length) {
-      min -= images.length - 2 * zoomRadius
+      min = images.length - 2 * zoomRadius
       max = images.length
     }
-    return {
-      min: min,
-      max: max,
-    }
+    return { min, max }
   }, [images, index, zoom])
 
   // massage the prediction data into a format usable by this Nivo graph component.
@@ -174,7 +171,7 @@ export const PredictionsScatterplot = ({ canZoom }) => {
   return (
     <Row gutter={ 32 }>
       <Col xs={ 24 } lg={ 18 }>
-        <Graph data={ [predictions[selectedFeature]] } predictionThreshold={ threshold } min={ extrema.min } max={ extrema.max } />
+        <Graph data={ [predictions[selectedFeature]] } predictionThreshold={ threshold } { ...extrema } />
       </Col>
       <Col xs={ 24 } lg={ 6 }>
         <Select value={ selectedFeature } onChange={ handleFeatureSelect } style={{ width: '100%' }}>
