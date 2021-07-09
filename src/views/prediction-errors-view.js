@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo } from 'react'
-import { Typography, Form, Select, Space, Statistic, AutoComplete, Divider } from 'antd'
+import React, { useEffect, useState, useMemo } from 'react'
+import { Typography, Form, Select, Space, Statistic, AutoComplete, Divider, Spin } from 'antd'
 import { useAnnotations, usePredictionErrors } from '../contexts'
 import { PredictionErrors } from '../components/prediction-errors'
 import { api } from '../api'
@@ -8,15 +8,16 @@ const { Title } = Typography
 const { Option } = Select
 
 export const PredictionErrorsView = () => {
-  const [{ annotation, errors, filteredErrors, routeFilter, routes }, errorDispatch] = usePredictionErrors()
+  const [{ annotation, allErrors, errors, filteredErrors, routeFilter, routes }, errorDispatch] = usePredictionErrors()
   const [annotationTypes] = useAnnotations()
-
-  console.log(annotation, errors, filteredErrors, routeFilter, routes);
+  const [loading, setLoading] = useState(false)
 
   const annotationOptions = annotationTypes.map(({ name }) => name)
   const routeOptions = useMemo(() => routes.map(route => ({ label: route, value: route })), [routes])
 
   const getErrors = async annotation => {
+    setLoading(true)
+
     const getError = (error, type) => {
       return {
         route: error.route_id,
@@ -34,20 +35,31 @@ export const PredictionErrorsView = () => {
       const errors = fps.data.fps_info.map(fp => getError(fp, 'fp'))
         .concat(fns.data.fns_info.map(fn => getError(fn, 'fn')))
 
-      return errors
+      setLoading(false)
+
+      return errors;
     }
     catch (error) {
       console.log(error)
     }
   }
 
+  const setAnnotation = async annotation => {
+    if (allErrors[annotation]) {
+      errorDispatch({ type: 'setAnnotation', annotation: annotation })
+    }
+    else {
+      const errors = await getErrors(annotation);
+
+      errorDispatch({ type: 'setAnnotationErrors', annotation: annotation, errors: errors })
+      errorDispatch({ type: 'setAnnotation', annotation: annotation })
+    }
+  }
+
   useEffect(() => {    
     const initErrors = async () => {
       if (annotationTypes.length > 0) {
-        const annotation = annotationTypes[0].name
-        const errors = await getErrors(annotation)
-
-        errorDispatch({ type: 'setErrors', annotation: annotation, errors: errors })
+        setAnnotation(annotationTypes[0].name)
       }
     }
 
@@ -55,11 +67,7 @@ export const PredictionErrorsView = () => {
   }, [annotationTypes])
 
   const onAnnotationChange = async value => {
-    const errors = await getErrors(value)
-
-    console.log(errors);
-
-    errorDispatch({ type: 'setErrors', annotation: value, errors: errors })
+    setAnnotation(value)
   }
 
   const onRouteFilterChange = value => {
@@ -86,7 +94,12 @@ export const PredictionErrorsView = () => {
         </Form.Item>
       </Form>
 
-      { errors ? 
+      { loading ?
+        <Space direction='horizontal'>
+          <Spin /> 
+          Loading...
+        </Space>        
+      : errors && 
         <>
           <Space direction='horizontal' size='large'>
             <Statistic
@@ -121,7 +134,6 @@ export const PredictionErrorsView = () => {
 
           <PredictionErrors errors={ filteredErrors } />
         </>
-        : <p>Fetching errors...</p>
       }
     </>
   )
