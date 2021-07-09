@@ -48,23 +48,30 @@ export const PredictionErrorsView = () => {
     }
   }
 
-  const setAnnotation = async annotation => {
-    if (allErrors[annotation]) {
-      errorDispatch({ type: 'setAnnotation', annotation: annotation })
-    }
-    else {
-      const errors = await getErrors(annotation);
-
-      errorDispatch({ type: 'setAnnotationErrors', annotation: annotation, errors: errors })
-      errorDispatch({ type: 'setAnnotation', annotation: annotation })
-    }
+  const setAnnotation = async annotation => {    
+    errorDispatch({ type: 'setAnnotation', annotation: annotation })
   }
 
+  // Initialize annotation type
   useEffect(() => { 
     if (!annotation && annotationTypes.length > 0) {
       setAnnotation(annotationTypes[0].name)
     }
   }, [annotationTypes])
+
+  // Allow the UI to update the annotation type before requesting data
+  useEffect(() => {
+    const updateErrors = async () => {
+      const errors = await getErrors(annotation)
+
+      errorDispatch({ type: 'setAnnotationErrors', annotation: annotation, errors: errors })
+      errorDispatch({ type: 'setAnnotation', annotation: annotation })
+    }
+
+    if (annotation && !allErrors[annotation]) {
+      updateErrors()
+    }
+  }, [allErrors, annotation])
 
   const onAnnotationChange = value => {
     setAnnotation(value)
@@ -118,7 +125,7 @@ export const PredictionErrorsView = () => {
       { loading ?
         <Space direction='horizontal'>
           <Spin /> 
-          <>Loading prediction errors...</>
+          <>Loading { annotation } prediction errors...</>
         </Space>        
       : errors && 
         <>

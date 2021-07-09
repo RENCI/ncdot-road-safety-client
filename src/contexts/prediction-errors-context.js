@@ -39,14 +39,23 @@ const reducer = (state, action) => {
     case 'setAnnotation': {
       const errors = state.allErrors[action.annotation]
 
-      if (!errors) return state
-
-      return {
-        ...state,
-        annotation: action.annotation,
-        errors: errors,
-        filteredErrors: getFilteredErrors(errors, state.routeFilter),
-        routes: getRoutes(errors)
+      if (errors) {
+        return {
+          ...state,
+          annotation: action.annotation,
+          errors: errors,
+          filteredErrors: getFilteredErrors(errors, state.routeFilter),
+          routes: getRoutes(errors)
+        }
+      }
+      else {
+        return {
+          ...state,
+          annotation: action.annotation,
+          errors: [],
+          filteredErrors: [],
+          routes: []
+        }
       }
     }
 
