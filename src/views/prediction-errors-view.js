@@ -8,7 +8,7 @@ import { useAnnotations, usePredictionErrors } from '../contexts'
 import { PredictionErrors } from '../components/prediction-errors'
 import { api } from '../api'
 
-const { Title } = Typography
+const { Title, Text } = Typography
 const { Option } = Select
 
 export const PredictionErrorsView = () => {
@@ -125,7 +125,7 @@ export const PredictionErrorsView = () => {
       { loading ?
         <Space direction='horizontal'>
           <Spin /> 
-          <>Loading { annotation } prediction errors...</>
+          <span>Loading <Text strong>{ annotation }</Text> prediction errors...</span>
         </Space>        
       : errors && 
         <>
