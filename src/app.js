@@ -2,13 +2,14 @@ import React from "react"
 import { Layout, Menu } from "antd"
 import { LogoutOutlined, ProfileOutlined, UserOutlined } from "@ant-design/icons"
 import { BrowserRouter as Router, Switch, Route, NavLink, useLocation } from "react-router-dom"
-import { BrowseAnnotationView, RouteView, RoutesListView, PredictionErrorView } from "./views"
+import { BrowseAnnotationView, RouteView, RoutesListView, PredictionErrorsView } from "./views"
 import { 
   AccountProvider, 
   useAccount, 
   RoutesProvider, 
   AnnotationsProvider, 
-  AnnotationBrowserProvider
+  AnnotationBrowserProvider,
+  PredictionErrorsProvider
 } from "./contexts"
 import { api } from "./api"
 const { Header, Content, Footer } = Layout
@@ -17,15 +18,17 @@ const { SubMenu } = Menu
 const ContextProviders = ({ children }) => {
   return (
     <AccountProvider>
-      <RoutesProvider>
-        <AnnotationsProvider>
-          <AnnotationBrowserProvider>
-            <Router>
-              { children }
-            </Router>
-          </AnnotationBrowserProvider>
-        </AnnotationsProvider>
-      </RoutesProvider>
+      <PredictionErrorsProvider>
+        <RoutesProvider>
+          <AnnotationsProvider>
+            <AnnotationBrowserProvider>
+              <Router>
+                { children }
+              </Router>
+            </AnnotationBrowserProvider>
+          </AnnotationsProvider>
+        </RoutesProvider>
+      </PredictionErrorsProvider>
     </AccountProvider>
   )
 }
@@ -64,7 +67,7 @@ export const App = () => {
               <Route exact path="/"><BrowseAnnotationView /></Route>
               <Route exact path="/routes"><RoutesListView /></Route>
               <Route exact path="/routes/:routeID/:imageIndex?"><RouteView /></Route>
-              <Route exact path="/prediction-errors"><PredictionErrorView /></Route>
+              <Route exact path="/prediction-errors"><PredictionErrorsView /></Route>
             </Switch>
           </div>
         </Content>

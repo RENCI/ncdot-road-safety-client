@@ -1,36 +1,22 @@
-import React, { useState, useContext, useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { Typography, Form, Select, Space, Statistic, AutoComplete, Divider } from 'antd'
-import { AnnotationsContext } from '../contexts'
+import { useAnnotations, usePredictionErrors } from '../contexts'
 import { PredictionErrors } from '../components/prediction-errors'
 import { api } from '../api'
 
 const { Title } = Typography
 const { Option } = Select
 
-export const PredictionErrorView = () => {
-  const [annotationTypes] = useContext(AnnotationsContext)
-  const [annotationOptions, setAnnotationOptions] = useState([])
-  const [annotation, setAnnotation] = useState('')
-  const [errors, setErrors] = useState()
-  const [routeFilter, setRouteFilter] = useState()
+export const PredictionErrorsView = () => {
+  const [{ annotation, errors, filteredErrors, routeFilter, routes }, errorDispatch] = usePredictionErrors()
+  const [annotationTypes] = useAnnotations()
 
-  const routeOptions = useMemo(() => {
-    return errors ? Array.from(errors.reduce((routes, error) => {
-      return routes.add(error.route)
-    }, new Set())).map(route => ({ label: route, value: route }))
-    : null
-  }, [errors])
+  console.log(annotation, errors, filteredErrors, routeFilter, routes);
 
-  const filterederrors = useMemo(() => {
-    return errors && routeFilter && routeFilter.length > 0 ? 
-      errors.filter(({ route }) => route.includes(routeFilter))
-      : errors ? [...errors]
-      : null
-  }, [errors, routeFilter])
+  const annotationOptions = annotationTypes.map(({ name }) => name)
+  const routeOptions = useMemo(() => routes.map(route => ({ label: route, value: route })), [routes])
 
   const getErrors = async annotation => {
-    setErrors()
-
     const getError = (error, type) => {
       return {
         route: error.route_id,
@@ -48,30 +34,36 @@ export const PredictionErrorView = () => {
       const errors = fps.data.fps_info.map(fp => getError(fp, 'fp'))
         .concat(fns.data.fns_info.map(fn => getError(fn, 'fn')))
 
-      setErrors(errors)
+      return errors
     }
     catch (error) {
       console.log(error)
     }
   }
 
-  const onAnnotationChange = value => {
-    setAnnotation(value)
-    getErrors(value)
-  }
+  useEffect(() => {    
+    const initErrors = async () => {
+      if (annotationTypes.length > 0) {
+        const annotation = annotationTypes[0].name
+        const errors = await getErrors(annotation)
 
-  useEffect(() => {
-    if (annotationTypes.length > 0) {
-      const options = annotationTypes.map(({ name }) => name)
+        errorDispatch({ type: 'setErrors', annotation: annotation, errors: errors })
+      }
+    }
 
-      setAnnotationOptions(options)
-      setAnnotation(options[0])
-      getErrors(options[0])
-    } 
+    initErrors()
   }, [annotationTypes])
 
+  const onAnnotationChange = async value => {
+    const errors = await getErrors(value)
+
+    console.log(errors);
+
+    errorDispatch({ type: 'setErrors', annotation: value, errors: errors })
+  }
+
   const onRouteFilterChange = value => {
-    setRouteFilter(value)
+    errorDispatch({ type: 'setRouteFilter', routeFilter: value })
   }
 
   return (
@@ -122,11 +114,12 @@ export const PredictionErrorView = () => {
                 onChange={ onRouteFilterChange }
                 allowClear={ true }
                 filterOption={ (inputValue, option) => option.value.includes(inputValue) }
+                value={ routeFilter }
               />
             </Form.Item>
           </Form>
 
-          <PredictionErrors errors={ filterederrors } />
+          <PredictionErrors errors={ filteredErrors } />
         </>
         : <p>Fetching errors...</p>
       }

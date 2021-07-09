@@ -1,18 +1,18 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Form, Select, Button, notification } from 'antd'
 import axios from 'axios'
-import { AnnotationsContext, RouteBrowserContext } from '../../contexts'
+import { useAnnotations, RouteBrowserContext } from '../../contexts'
 import { api } from '../../api'
 import './annotation-controls.css'
 
 const { Option } = Select
 
 export const AnnotationControls = () => {
+  const [annotationTypes] = useAnnotations()
+  const [image] = useContext(RouteBrowserContext)
   const [saving, setSaving] = useState(false)
   const [saveEnabled, setSaveEnabled] = useState(true)
   const [annotations, setAnnotations] = useState([])
-  const [annotationTypes] = useContext(AnnotationsContext)
-  const [image] = useContext(RouteBrowserContext)
 
   useEffect(() => {
     const annotations = image.annotations.map(({ annotation_name }) => annotation_name)

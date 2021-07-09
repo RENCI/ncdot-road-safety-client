@@ -1,4 +1,4 @@
-import React, { createContext, useReducer, useEffect } from 'react'
+import React, { createContext, useReducer, useEffect, useContext } from 'react'
 import axios from 'axios'
 import { api } from '../api'
 
@@ -41,3 +41,5 @@ export const AnnotationsProvider = ({ children }) => {
     </AnnotationsContext.Provider>
   )
 } 
+
+export const useAnnotations = () => useContext(AnnotationsContext)

@@ -1,3 +1,3 @@
 export * from './browse-annotation'
 export * from './routes'
-export * from './prediction-error-view'
+export * from './prediction-errors-view'
