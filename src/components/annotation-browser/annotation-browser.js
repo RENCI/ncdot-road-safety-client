@@ -2,7 +2,7 @@ import React, { useState, useContext, useRef, useEffect, Fragment } from 'react'
 import { Form, Space, Select, Row, Col, InputNumber, Button, Switch, Spin, Alert, notification } from 'antd'
 import { CloudUploadOutlined, ArrowLeftOutlined, QuestionCircleOutlined } from '@ant-design/icons'
 import axios from 'axios'
-import { AnnotationsContext, AnnotationBrowserContext, useAccount } from '../../contexts'
+import { useAnnotations, AnnotationBrowserContext, useAccount } from '../../contexts'
 import { AnnotationPanel } from '../annotation-panel'
 import { AnnotationSummary } from '../annotation-summary'
 import { api } from '../../api'
@@ -17,7 +17,7 @@ const helpUrls = {
 export const AnnotationBrowser = () => {
   const user = useAccount()
   const [gotImages, setGotImages] = useState(false)
-  const [annotationTypes] = useContext(AnnotationsContext)
+  const [annotationTypes] = useAnnotations()
   const [state, dispatch] = useContext(AnnotationBrowserContext)
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(false)
