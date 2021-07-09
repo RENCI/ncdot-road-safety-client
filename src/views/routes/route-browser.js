@@ -56,7 +56,7 @@ export const RouteBrowserView = () => {
         <Button type="primary" ghost onClick={ () => history.push(`/routes/${ routeID }/`) } className="route-action-button" icon={ <SummaryIcon /> }>View Route Summary</Button>
       </div>
 
-      <PredictionsScatterplot />
+      <PredictionsScatterplot canZoom={ true } />
       <RouteNavigation />
 
       <br />

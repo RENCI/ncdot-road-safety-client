@@ -7,7 +7,6 @@
 }
 
 .legend {
-  min-height: 60px;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -18,7 +17,7 @@
   .legend {
     min-height: 120px;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: center;
   }
 }
 

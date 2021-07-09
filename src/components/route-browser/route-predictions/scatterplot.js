@@ -1,13 +1,14 @@
 import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { Card, Col, Row, Select, Space, Typography } from 'antd'
+import { Button, Card, Col, Row, Select, Space, Typography } from 'antd'
+import { ZoomInOutlined as ZoomInIcon, ZoomOutOutlined as ZoomOutIcon } from '@ant-design/icons'
 import { useRouteContext } from '../context'
 import { api } from '../../../api'
 import { ResponsiveScatterPlot } from '@nivo/scatterplot'
 import { GraphTooltip, Legend, ScatterplotPoint } from './'
 import './scatterplot.css'
 
-const { Text } = Typography
+const { Text, Title } = Typography
 
 const features = ['guardrail', 'pole']
 
@@ -47,7 +48,7 @@ const ThresholdLineLayer = props => {
   )
 }
 
-const Graph = ({ data, predictionThreshold }) => {
+const Graph = ({ data, min, max, predictionThreshold }) => {
   const history = useHistory()
   const { currentLocation, images, routeID } = useRouteContext()
   
@@ -57,15 +58,24 @@ const Graph = ({ data, predictionThreshold }) => {
     }
   }
 
+  // only render data points that are within the zoomed viewing window
+  const visibleData = useMemo(() => {
+    if (!data || !data[0]) {
+      return []
+    }
+    return [{ ...data[0], data: data[0].data.filter(d => min <= d.x && d.x <= max) }]
+  }, [data, min, max])
+
   return (
     <div className="predictions-scatterplot__container">
       <ResponsiveScatterPlot
-        data={ data }
+        data={ visibleData }
         height={ 175 }
         margin={{ top: 0, right: 8, bottom: 0, left: 40 }}
-        xScale={{ type: 'linear', min: 1, max: images.length }}
+        xScale={{ type: 'linear', min: min, max: max }}
         yScale={{ type: 'linear', min: -0.05, max: 1.05, stacked: false, reverse: false }}
         yFormat=" >-.2f"
+        animate={ false }
         enableGridX={ true }
         enableGridY={ true }
         axisTop={ null }
@@ -107,28 +117,14 @@ const Graph = ({ data, predictionThreshold }) => {
   )
 }
 
-export const PredictionsScatterplot = ({ key }) => {
-  const { images } = useRouteContext()
+export const PredictionsScatterplot = ({ canZoom }) => {
+  const { images, index } = useRouteContext()
   const [predictions, setPredictions] = useState([])
   const [selectedFeature, setSelectedFeature] = useState('guardrail')
   const [threshold, setThreshold] = useState()
-
+  const [zoom, setZoom] = useState(1)
   const handleFeatureSelect = value => setSelectedFeature(value)
-
-  // massage the prediction data into a format usable by this Nivo graph component.
-  useEffect(() => {
-    const data = { ...initialFeaturePredictions }
-    images.forEach((image, i) => {
-      features.forEach(feature => {
-        if (image.features[feature]) {
-          data[feature].data.push({ x: i + 1, y: image.features[feature].probability, image })
-        }
-        // create dummy nodes?
-        else { data[feature].data.push({ image }) }
-      })
-    })
-    setPredictions(data)
-  }, [images])
+  const handleZoomSelect = value => setZoom(value)
 
   useEffect(() => {
     const fetchThreshold = async () => {
@@ -145,15 +141,59 @@ export const PredictionsScatterplot = ({ key }) => {
     fetchThreshold(selectedFeature)
   }, [selectedFeature])
 
+  // massage the prediction data into a format usable by this Nivo graph component.
+  useEffect(() => {
+    const data = { ...initialFeaturePredictions }
+    images.forEach((image, i) => {
+      features.forEach(feature => {
+        if (image.features[feature]) {
+          data[feature].data.push({ x: i + 1, y: image.features[feature].probability, image })
+        }
+        // create dummy nodes?
+        else { data[feature].data.push({ image }) }
+      })
+    })
+    setPredictions(data)
+  }, [images])
+
+  // set appropriate { min, max } viewing window along horizontal axis
+  const extrema = useMemo(() => {
+    if (zoom === 1 || !canZoom ) {
+      return {
+        min: 1,
+        max: images.length,
+      }
+    }
+    const zoomRadius = Math.ceil(images.length / (2 * zoom))
+    let min = index - zoomRadius
+    let max = index + zoomRadius
+    if (min < 1) {
+      min = 1
+      max = 2 * zoomRadius
+    }
+    if (max > images.length) {
+      min = images.length - 2 * zoomRadius
+      max = images.length
+    }
+    return { min, max }
+  }, [images, index, zoom])
+
   return (
     <Row gutter={ 32 }>
       <Col xs={ 24 } lg={ 18 }>
-        <Graph data={ [predictions[selectedFeature]] } predictionThreshold={ threshold } />
+        <Graph data={ [predictions[selectedFeature]] } predictionThreshold={ threshold } { ...extrema } />
       </Col>
       <Col xs={ 24 } lg={ 6 }>
         <Select value={ selectedFeature } onChange={ handleFeatureSelect } style={{ width: '100%' }}>
           { features.map(feature => <Select.Option key={ `feature-option-${ feature }` } value={ feature }>{ feature }</Select.Option>) }
         </Select>
+        {
+          canZoom && (
+            <Select value={ zoom } onChange={ handleZoomSelect } style={{ width: '100%' }}>
+              { [1, 2, 3, 4, 5].map(level => <Select.Option key={ `zoom-option-${ level }x` } value={ level }>{ `Zoom ${ level }x` }</Select.Option>) }
+            </Select>
+          )
+        }
         <Legend />
       </Col>
     </Row>

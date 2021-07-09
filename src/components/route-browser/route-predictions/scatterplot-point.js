@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useMemo, useState } from 'react'
 import { useRouteContext } from '../context'
 
 export const ScatterplotPoint = ({
@@ -9,16 +9,15 @@ export const ScatterplotPoint = ({
   onClick,
 }) => {
   const { imageIndex, images } = useRouteContext()
-  const [active, setActive] = useState(false)
 
   let fillColor = 'var(--color-neutral)'
   if (node.data?.image?.features[node.data.serieId] && typeof node.data.image.features[node.data.serieId].annotation === 'boolean') {
     fillColor = node.data.image.features[node.data.serieId].annotation ? 'var(--color-positive)' : 'var(--color-negative)'
   }
 
-  useEffect(() => {
-    setActive(node.data.image && +imageIndex === node.data.image.index)
-  }, [imageIndex])
+  const active = useMemo(() => {
+    return node.data.image && +imageIndex === node.data.image.index
+  }, [node.data, imageIndex])
 
   return (
     <Fragment>
@@ -26,7 +25,7 @@ export const ScatterplotPoint = ({
         {
           /* active node indicator */
           active && (
-            <circle className="active-indicator" r={ size } fill={ fillColor } style={{ mixBlendMode: blendMode }}>
+            <circle className="active-indicator" r={ 3 * size } fill="none" stroke="#111" strokeWidth="1" style={{ mixBlendMode: blendMode }}>
               <animate attributeName="r" begin="0s" dur="1s" repeatCount="indefinite" from="3" to="12"/>
               <animate attributeName="opacity" begin="0s" dur="1s" repeatCount="indefinite" from="1" to="0"/>
             </circle>
