@@ -1,5 +1,9 @@
 import React, { useEffect, useState, useMemo } from 'react'
-import { Typography, Form, Select, Space, Statistic, AutoComplete, Divider, Spin } from 'antd'
+import { 
+  Typography, Form, Select, Space, Statistic, AutoComplete, 
+  Divider, Spin, Row, Col, Button, Tooltip
+} from 'antd'
+import { RedoOutlined } from '@ant-design/icons'
 import { useAnnotations, usePredictionErrors } from '../contexts'
 import { PredictionErrors } from '../components/prediction-errors'
 import { api } from '../api'
@@ -56,18 +60,20 @@ export const PredictionErrorsView = () => {
     }
   }
 
-  useEffect(() => {    
-    const initErrors = async () => {
-      if (annotationTypes.length > 0) {
-        setAnnotation(annotationTypes[0].name)
-      }
+  useEffect(() => { 
+    if (!annotation && annotationTypes.length > 0) {
+      setAnnotation(annotationTypes[0].name)
     }
-
-    initErrors()
   }, [annotationTypes])
 
-  const onAnnotationChange = async value => {
+  const onAnnotationChange = value => {
     setAnnotation(value)
+  }
+
+  const onReloadClick = async () => {
+    const errors = await getErrors(annotation);
+
+    errorDispatch({ type: 'setAnnotationErrors', annotation: annotation, errors: errors })
   }
 
   const onRouteFilterChange = value => {
@@ -79,25 +85,39 @@ export const PredictionErrorsView = () => {
       <Title level={ 1 }>Prediction Errors</Title>
 
       <Form>
-        <Form.Item label='Select annotation'>
-          <Select
-            placeholder='Select annotation'
-            value={ annotation } 
-            onChange={ onAnnotationChange }
-          >
-            { annotationOptions.map((annotation, i) => (
-              <Option key={ i } value={ annotation }>
-                { annotation }
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
+        <Row gutter={[8, 0]}>
+          <Col flex='auto'>
+            <Form.Item label='Select annotation'  style={{ margin: 0, padding: 0 }}>
+              <Select
+                placeholder='Select annotation'
+                value={ annotation } 
+                onChange={ onAnnotationChange }
+              >
+                { annotationOptions.map((annotation, i) => (
+                  <Option key={ i } value={ annotation }>
+                    { annotation }
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col>
+            <Form.Item>       
+              <Tooltip title="Reload prediction errors">      
+                <Button 
+                  icon={<RedoOutlined /> } 
+                  onClick={ onReloadClick }
+                />
+              </Tooltip> 
+            </Form.Item>
+          </Col>
+        </Row>
       </Form>
 
       { loading ?
         <Space direction='horizontal'>
           <Spin /> 
-          Loading...
+          <>Loading prediction errors...</>
         </Space>        
       : errors && 
         <>
