@@ -18,7 +18,7 @@ export const ScatterplotPoint = ({
 
   useEffect(() => {
     setActive(node.data.image && +imageIndex === node.data.image.index)
-  }, [imageIndex])
+  }, [node.data, imageIndex])
 
   return (
     <Fragment>
@@ -26,7 +26,7 @@ export const ScatterplotPoint = ({
         {
           /* active node indicator */
           active && (
-            <circle className="active-indicator" r={ size } fill={ fillColor } style={{ mixBlendMode: blendMode }}>
+            <circle className="active-indicator" r={ 3 * size } fill="none" stroke="#111" strokeWidth="1" style={{ mixBlendMode: blendMode }}>
               <animate attributeName="r" begin="0s" dur="1s" repeatCount="indefinite" from="3" to="12"/>
               <animate attributeName="opacity" begin="0s" dur="1s" repeatCount="indefinite" from="1" to="0"/>
             </circle>
