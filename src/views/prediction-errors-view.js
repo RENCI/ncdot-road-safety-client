@@ -74,6 +74,7 @@ export const PredictionErrorsView = () => {
     const errors = await getErrors(annotation);
 
     errorDispatch({ type: 'setAnnotationErrors', annotation: annotation, errors: errors })
+    errorDispatch({ type: 'setAnnotation', annotation: annotation })
   }
 
   const onRouteFilterChange = value => {
