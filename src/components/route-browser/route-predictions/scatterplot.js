@@ -7,6 +7,7 @@ import { useLocalStorage } from '../../../hooks'
 import { useRouteContext } from '../context'
 import { ResponsiveScatterPlot } from '@nivo/scatterplot'
 import { GraphTooltip, Legend, ScatterplotPoint } from './'
+import { area, curveStep } from 'd3-shape'
 import './scatterplot.css'
 
 const { Text, Title } = Typography
@@ -47,6 +48,14 @@ const ThresholdLineLayer = props => {
       <path className="threshold-line" d={ `M0 ${ scaledThreshold }, ${ width - 48 } ${ scaledThreshold }` } stroke="#222" strokeWidth="1" strokeDasharray="5 10" />
     </g>
   )
+}
+
+const AreaLayer = ({ nodes, xScale, yScale }) => {
+  const areaGenerator = area()
+    .y0(0)
+    .x(d => d.x)
+    .y(d => d.y);
+  return <path d={ areaGenerator(nodes) } fill="red" stroke="blue" strokeWidth="2" />
 }
 
 const Graph = ({ data, min, max, predictionThreshold }) => {
@@ -106,6 +115,7 @@ const Graph = ({ data, min, max, predictionThreshold }) => {
         layers={[
           'grid',
           'axes',
+          AreaLayer,
           ThresholdLineLayer,
           'nodes',
           'markers',
