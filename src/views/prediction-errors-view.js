@@ -7,14 +7,16 @@ import { RedoOutlined } from '@ant-design/icons'
 import { useAnnotations, usePredictionErrors } from '../contexts'
 import { PredictionErrors } from '../components/prediction-errors'
 import { api } from '../api'
+import { useLocalStorage } from '../hooks'
 
 const { Title, Text } = Typography
 const { Option } = Select
 
 export const PredictionErrorsView = () => {
-  const [{ annotation, allErrors, errors, filteredErrors, routeFilter, routes }, errorDispatch] = usePredictionErrors()
+  const [{ allErrors, errors, filteredErrors, routeFilter, routes }, errorDispatch] = usePredictionErrors()
   const [annotationTypes] = useAnnotations()
   const [loading, setLoading] = useState(false)
+  const [selectedFeature, setSelectedFeature] = useLocalStorage('rhf-annotation-feature', 'guardrail')
 
   const annotationOptions = annotationTypes.map(({ name }) => name)
   const routeOptions = useMemo(() => routes.map(route => ({ label: route, value: route })), [routes])
@@ -54,7 +56,7 @@ export const PredictionErrorsView = () => {
 
   // Initialize annotation type
   useEffect(() => { 
-    if (!annotation && annotationTypes.length > 0) {
+    if (!selectedFeature && annotationTypes.length > 0) {
       setAnnotation(annotationTypes[0].name)
     }
   }, [annotationTypes])
@@ -62,26 +64,27 @@ export const PredictionErrorsView = () => {
   // Allow the UI to update the annotation type before requesting data
   useEffect(() => {
     const updateErrors = async () => {
-      const errors = await getErrors(annotation)
+      const errors = await getErrors(selectedFeature)
 
-      errorDispatch({ type: 'setAnnotationErrors', annotation: annotation, errors: errors })
-      errorDispatch({ type: 'setAnnotation', annotation: annotation })
+      errorDispatch({ type: 'setAnnotationErrors', annotation: selectedFeature, errors: errors })
+      errorDispatch({ type: 'setAnnotation', annotation: selectedFeature })
     }
 
-    if (annotation && !allErrors[annotation]) {
+    if (selectedFeature && !allErrors[selectedFeature]) {
       updateErrors()
     }
-  }, [allErrors, annotation])
+  }, [allErrors, selectedFeature])
 
   const onAnnotationChange = value => {
-    setAnnotation(value)
+    setSelectedFeature(value)
+    console.log(value)
   }
 
   const onReloadClick = async () => {
-    const errors = await getErrors(annotation);
+    const errors = await getErrors(selectedFeature);
 
-    errorDispatch({ type: 'setAnnotationErrors', annotation: annotation, errors: errors })
-    errorDispatch({ type: 'setAnnotation', annotation: annotation })
+    errorDispatch({ type: 'setAnnotationErrors', annotation: selectedFeature, errors: errors })
+    errorDispatch({ type: 'setAnnotation', annotation: selectedFeature })
   }
 
   const onRouteFilterChange = value => {
@@ -98,7 +101,7 @@ export const PredictionErrorsView = () => {
             <Form.Item label='Select annotation'  style={{ margin: 0, padding: 0 }}>
               <Select
                 placeholder='Select annotation'
-                value={ annotation } 
+                value={ selectedFeature } 
                 onChange={ onAnnotationChange }
               >
                 { annotationOptions.map((annotation, i) => (
@@ -125,7 +128,7 @@ export const PredictionErrorsView = () => {
       { loading ?
         <Space direction='horizontal'>
           <Spin /> 
-          <span>Loading <Text strong>{ annotation }</Text> prediction errors...</span>
+          <span>Loading <Text strong>{ selectedFeature }</Text> prediction errors...</span>
         </Space>        
       : errors && 
         <>
