@@ -2,8 +2,9 @@ import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Button, Card, Col, Row, Select, Space, Typography } from 'antd'
 import { ZoomInOutlined as ZoomInIcon, ZoomOutOutlined as ZoomOutIcon } from '@ant-design/icons'
-import { useRouteContext } from '../context'
 import { api } from '../../../api'
+import { useLocalStorage } from '../../../hooks'
+import { useRouteContext } from '../context'
 import { ResponsiveScatterPlot } from '@nivo/scatterplot'
 import { GraphTooltip, Legend, ScatterplotPoint } from './'
 import './scatterplot.css'
@@ -120,7 +121,7 @@ const Graph = ({ data, min, max, predictionThreshold }) => {
 export const PredictionsScatterplot = ({ canZoom }) => {
   const { images, index } = useRouteContext()
   const [predictions, setPredictions] = useState([])
-  const [selectedFeature, setSelectedFeature] = useState('guardrail')
+  const [selectedFeature, setSelectedFeature] = useLocalStorage('rhf-annotation-feature', 'guardrail')
   const [threshold, setThreshold] = useState()
   const [zoom, setZoom] = useState(1)
   const handleFeatureSelect = value => setSelectedFeature(value)
