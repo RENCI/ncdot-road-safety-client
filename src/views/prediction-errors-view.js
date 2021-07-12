@@ -16,7 +16,7 @@ export const PredictionErrorsView = () => {
   const [{ allErrors, errors, filteredErrors, routeFilter, routes }, errorDispatch] = usePredictionErrors()
   const [annotationTypes] = useAnnotations()
   const [loading, setLoading] = useState(false)
-  const [selectedFeature, setSelectedFeature] = useLocalStorage('rhf-annotation-feature', 'guardrail')
+  const [selectedFeature, setSelectedFeature] = useLocalStorage('rhf-annotation-feature', '')
 
   const annotationOptions = annotationTypes.map(({ name }) => name)
   const routeOptions = useMemo(() => routes.map(route => ({ label: route, value: route })), [routes])
@@ -51,13 +51,17 @@ export const PredictionErrorsView = () => {
   }
 
   const setAnnotation = async annotation => {    
+    setSelectedFeature(annotation)
     errorDispatch({ type: 'setAnnotation', annotation: annotation })
   }
 
-  // Initialize annotation type
+  // Initialize annotation type and load initial data
   useEffect(() => { 
     if (!selectedFeature && annotationTypes.length > 0) {
       setAnnotation(annotationTypes[0].name)
+    }
+    else if (selectedFeature) {
+      setAnnotation(selectedFeature);
     }
   }, [annotationTypes])
 
@@ -76,8 +80,7 @@ export const PredictionErrorsView = () => {
   }, [allErrors, selectedFeature])
 
   const onAnnotationChange = value => {
-    setSelectedFeature(value)
-    console.log(value)
+    setAnnotation(value)
   }
 
   const onReloadClick = async () => {
