@@ -78,7 +78,7 @@ export const RouteBrowserView = () => {
         </Col>
         <Col md={ 24 } lg={ 6 }>
           <Title level={ 3 }>Feature Predictions</Title>
-          <PredictionsList />
+          <PredictionsList features={ currentLocation.features } />
         </Col>
       </Row>
 

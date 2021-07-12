@@ -1,31 +1,26 @@
 import React, { useEffect, useState } from 'react'
 import { useRouteContext } from '../context'
 import { api } from '../../../api'
-import { Card, List, Table, Tooltip, Typography } from 'antd'
-import {
-  CheckOutlined as TrueIcon,
-  CloseOutlined as FalseIcon,
-  QuestionOutlined as UndeterminedIcon,
-} from '@ant-design/icons'
+import { Card, Space, Typography } from 'antd'
 import './list.css'
 
-const { Meta, Text } = Typography
+const { Text } = Typography
 
-export const PredictionsList = () => {
-  const { currentLocation } = useRouteContext()
-
+export const PredictionsList = ({ features = [] }) => {
   return (
-    <List
-      bordered
-      className="predictions-list"
-      dataSource={ Object.values(currentLocation.features) }
-      renderItem={ feature => {
-        return (
-          <pre key={ feature.key } style={{ fontSize: '75%' }}>
-            { JSON.stringify(feature, null, 2) }
-          </pre>
-        )
-      }}
-    />
+    <Card className="predictions-scatterplot__tooltip">
+      <Space direction="vertical">
+        {
+          ['guardrail', 'pole'].map((feature, i) => (
+            <Space direction="vertical">
+              <Text strong>{ features[feature].name }</Text>
+              <Text>- Annotation: <Text type="secondary">{ features[feature].annotation }</Text></Text>
+              <Text>- Probability: <Text type="secondary">{ features[feature].probability }</Text></Text>
+              <br/>
+            </Space>
+          ))
+        }
+      </Space>
+    </Card>
   )
 }
