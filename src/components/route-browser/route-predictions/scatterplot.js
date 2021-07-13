@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { Button, Card, Col, Row, Select, Space, Typography } from 'antd'
+import { Button, Card, Col, Form, Radio, Row, Select, Space, Typography } from 'antd'
 import { ZoomInOutlined as ZoomInIcon, ZoomOutOutlined as ZoomOutIcon } from '@ant-design/icons'
 import { api } from '../../../api'
 import { useLocalStorage } from '../../../hooks'
@@ -125,7 +125,7 @@ export const PredictionsScatterplot = ({ canZoom }) => {
   const [threshold, setThreshold] = useState()
   const [zoom, setZoom] = useState(1)
   const handleFeatureSelect = value => setSelectedFeature(value)
-  const handleZoomSelect = value => setZoom(value)
+  const handleZoomSelect = event => setZoom(event.target.value)
 
   useEffect(() => {
     const fetchThreshold = async () => {
@@ -185,14 +185,20 @@ export const PredictionsScatterplot = ({ canZoom }) => {
         <Graph data={ [predictions[selectedFeature]] } predictionThreshold={ threshold } { ...extrema } />
       </Col>
       <Col xs={ 24 } lg={ 6 }>
-        <Select value={ selectedFeature } onChange={ handleFeatureSelect } style={{ width: '100%' }}>
-          { features.map(feature => <Select.Option key={ `feature-option-${ feature }` } value={ feature }>{ feature }</Select.Option>) }
-        </Select>
+        <Form.Item label="Feature" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+          <Select value={ selectedFeature } onChange={ handleFeatureSelect } style={{ width: '100%' }}>
+            { features.map(feature => <Select.Option key={ `feature-option-${ feature }` } value={ feature }>{ feature }</Select.Option>) }
+          </Select>
+        </Form.Item>
         {
           canZoom && (
-            <Select value={ zoom } onChange={ handleZoomSelect } style={{ width: '100%' }}>
-              { [1, 2, 3, 4, 5].map(level => <Select.Option key={ `zoom-option-${ level }x` } value={ level }>{ `Zoom ${ level }x` }</Select.Option>) }
-            </Select>
+            <Form.Item label="Zoom" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+              <Radio.Group defaultValue={ 1 } onChange={ handleZoomSelect } size="small">
+                {
+                  [1, 2, 3, 5, 10].map(z => <Radio.Button value={ z }>{ z }&times;</Radio.Button>)
+                }
+              </Radio.Group>
+            </Form.Item>
           )
         }
         <Legend />
