@@ -50,12 +50,14 @@ const ThresholdLineLayer = props => {
   )
 }
 
-const AreaLayer = ({ nodes, xScale, yScale }) => {
+const AreaLayer = ({ nodes, height, xScale, yScale }) => {
   const areaGenerator = area()
-    .y0(0)
     .x(d => d.x)
-    .y(d => d.y);
-  return <path d={ areaGenerator(nodes) } fill="red" stroke="blue" strokeWidth="2" />
+    .y1(d => d.y)
+    .y0(0)
+  return (
+    <path d={ areaGenerator(nodes) } fill="#def" stroke="#1890ff" strokeWidth="0.5" />
+  )
 }
 
 const Graph = ({ data, min, max, predictionThreshold }) => {
