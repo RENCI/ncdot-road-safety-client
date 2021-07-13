@@ -52,9 +52,10 @@ const ThresholdLineLayer = props => {
 
 const AreaLayer = ({ nodes, height, xScale, yScale }) => {
   const areaGenerator = area()
-    .x(d => d.x)
-    .y1(d => d.y)
-    .y0(0)
+    .curve(curveStep)
+    .x0(d => d.x)
+    .y0(d => d.y)
+    .y1(175)
   return (
     <path d={ areaGenerator(nodes) } fill="#def" stroke="#1890ff" strokeWidth="0.5" />
   )
