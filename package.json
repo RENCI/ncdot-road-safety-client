@@ -15,6 +15,7 @@
         "@nivo/scatterplot": "^0.70.1",
         "antd": "~4.10",
         "axios": "^0.21.1",
+        "d3-shape": "^3.0.1",
         "esri-loader": "^2.15.0",
         "react": "^16.13.1",
         "react-dom": "^16.13.1",
