@@ -11,8 +11,12 @@ export const ScatterplotPoint = ({
   const { imageIndex, images } = useRouteContext()
 
   let fillColor = 'var(--color-neutral)'
+  let strokeColor = '#999'
+  let opacity = 0.66
   if (node.data?.image?.features[node.data.serieId] && typeof node.data.image.features[node.data.serieId].annotation === 'boolean') {
     fillColor = node.data.image.features[node.data.serieId].annotation ? 'var(--color-positive)' : 'var(--color-negative)'
+    strokeColor = '#222'
+    opacity = 1
   }
 
   const active = useMemo(() => {
@@ -35,7 +39,9 @@ export const ScatterplotPoint = ({
         <circle
           r={ active ? size : size / 2 }
           fill={ fillColor }
-          style={{ mixBlendMode: blendMode }}
+          style={{ mixBlendMode: blendMode, opacity: opacity }}
+          stroke={ strokeColor }
+          strokeWidth="1"
           onMouseEnter={ onMouseEnter }
           onMouseLeave={ onMouseLeave }
           onClick={ onClick }

@@ -103,7 +103,7 @@ const Graph = ({ data, min, max, predictionThreshold }) => {
         }}
         axisRight={ null }
         axisBottom={ null }
-        nodeSize={ 5 }
+        nodeSize={ 7 }
         pointLabelYOffset={ -12 }
         tooltip={ ({ node }) => <GraphTooltip node={ node } /> }
         onClick={ handlePointClick }
