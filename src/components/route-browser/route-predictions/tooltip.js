@@ -5,11 +5,9 @@ import { PredictionsList } from '../scene-predictions/list'
 
 const { Text } = Typography
 
-const features = ['guardrail', 'pole']
-
 export const GraphTooltip = ({ node }) => {
   const { images } = useRouteContext()
-  
+
   return (
     <Card
       title={ `${node.data.x } / ${ images.length }` }
