@@ -2,7 +2,7 @@ import React, { Fragment, useContext, useEffect, useMemo, useState } from 'react
 import { Link, useHistory, useParams } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { api } from '../../api'
-import { Button, Col, Divider, Row, Typography } from 'antd'
+import { Button, Card, Col, Divider, Row, Typography } from 'antd'
 import {
   AreaChartOutlined as SummaryIcon,
   CarOutlined as CarIcon,
@@ -77,8 +77,10 @@ export const RouteBrowserView = () => {
           <br />
         </Col>
         <Col md={ 24 } lg={ 6 }>
-          <Title level={ 3 }>Feature Predictions</Title>
-          <PredictionsList />
+          <Card className="scene-feature-predictions">
+            <Title level={ 3 }>Feature Predictions</Title>
+            <PredictionsList features={ currentLocation.features } />
+          </Card>
         </Col>
       </Row>
 
