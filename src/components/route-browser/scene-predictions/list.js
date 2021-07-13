@@ -14,7 +14,7 @@ export const PredictionsList = ({ features }) => {
         ['guardrail', 'pole'].map((feature, i) => (
           <Space direction="vertical">
             <Text strong>{ features[feature].name }</Text>
-            <Text>- Annotation: <Text type="secondary">{ features[feature].annotation === true ? 'Present' : 'Absent' }</Text></Text>
+            <Text>- Annotation: <Text type="secondary">{ typeof features[feature].annotation === 'boolean' ? features[feature].annotation ? 'Present' : 'Absent' : 'N/A' }</Text></Text>
             <Text>- Probability: <Text type="secondary">{ features[feature].probability }</Text></Text>
             <br/>
           </Space>
