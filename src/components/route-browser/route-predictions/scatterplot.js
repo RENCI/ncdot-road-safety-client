@@ -134,6 +134,8 @@ const Graph = ({ data, min, max, predictionThreshold }) => {
   )
 }
 
+const ZOOM_LEVELS = [1, 2, 3, 5, 10]
+
 export const PredictionsScatterplot = ({ canZoom }) => {
   const { images, index } = useRouteContext()
   const [predictions, setPredictions] = useState([])
@@ -142,6 +144,12 @@ export const PredictionsScatterplot = ({ canZoom }) => {
   const [zoom, setZoom] = useState(1)
   const handleFeatureSelect = value => setSelectedFeature(value)
   const handleZoomSelect = event => setZoom(event.target.value)
+
+  const handleScroll = event => {
+    const index = ZOOM_LEVELS.indexOf(zoom)
+    if (event.deltaY < 0 && index + 1 < ZOOM_LEVELS.length) { setZoom(ZOOM_LEVELS[index + 1]) } // scroll down
+    if (0 < event.deltaY && 0 < index) { setZoom(ZOOM_LEVELS[index - 1]) } // scroll up
+  }
 
   useEffect(() => {
     const fetchThreshold = async () => {
@@ -213,7 +221,7 @@ export const PredictionsScatterplot = ({ canZoom }) => {
 
   return (
     <Row gutter={ 32 }>
-      <Col xs={ 24 } lg={ 18 }>
+      <Col xs={ 24 } lg={ 18 } onWheel={ handleScroll }>
         <Graph data={ [predictions[selectedFeature]] } predictionThreshold={ threshold } { ...extrema } />
       </Col>
       <Col xs={ 24 } lg={ 6 }>
@@ -225,9 +233,9 @@ export const PredictionsScatterplot = ({ canZoom }) => {
         {
           canZoom && (
             <Form.Item label="Zoom" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-              <Radio.Group defaultValue={ 1 } onChange={ handleZoomSelect } size="small">
+              <Radio.Group value={ zoom } onChange={ handleZoomSelect } size="small">
                 {
-                  [1, 2, 3, 5, 10].map(z => <Radio.Button key={ z } value={ z }>{ z }&times;</Radio.Button>)
+                  ZOOM_LEVELS.map(z => <Radio.Button value={ z }>{ z }&times;</Radio.Button>)
                 }
               </Radio.Group>
             </Form.Item>
