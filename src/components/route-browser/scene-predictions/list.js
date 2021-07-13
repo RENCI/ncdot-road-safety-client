@@ -9,20 +9,18 @@ const { Text } = Typography
 
 export const PredictionsList = ({ features }) => {
   return (
-    <Card className="predictions-scatterplot__tooltip">
-      <Space direction="vertical">
-        {
-          ['guardrail', 'pole'].map((feature, i) => (
-            <Space direction="vertical">
-              <Text strong>{ features[feature].name }</Text>
-              <Text>- Annotation: <Text type="secondary">{ features[feature].annotation === true ? 'Present' : 'Absent' }</Text></Text>
-              <Text>- Probability: <Text type="secondary">{ features[feature].probability }</Text></Text>
-              <br/>
-            </Space>
-          ))
-        }
-      </Space>
-    </Card>
+    <Space direction="vertical">
+      {
+        ['guardrail', 'pole'].map((feature, i) => (
+          <Space direction="vertical">
+            <Text strong>{ features[feature].name }</Text>
+            <Text>- Annotation: <Text type="secondary">{ features[feature].annotation === true ? 'Present' : 'Absent' }</Text></Text>
+            <Text>- Probability: <Text type="secondary">{ features[feature].probability }</Text></Text>
+            <br/>
+          </Space>
+        ))
+      }
+    </Space>
   )
 }
 
