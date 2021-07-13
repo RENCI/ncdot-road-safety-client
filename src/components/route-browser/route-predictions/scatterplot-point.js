@@ -30,7 +30,7 @@ export const ScatterplotPoint = ({
           /* active node indicator */
           active && (
             <circle className="active-indicator" r={ 3 * size } fill="none" stroke="#111" strokeWidth="1" style={{ mixBlendMode: blendMode }}>
-              <animate attributeName="r" begin="0s" dur="1s" repeatCount="indefinite" from="3" to="12"/>
+              <animate attributeName="r" begin="0s" dur="1s" repeatCount="indefinite" from={ active ? size : size / 2 } to={ 3 * size } />
               <animate attributeName="opacity" begin="0s" dur="1s" repeatCount="indefinite" from="1" to="0"/>
             </circle>
           )
