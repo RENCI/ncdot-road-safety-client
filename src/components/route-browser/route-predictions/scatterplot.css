@@ -4,6 +4,7 @@
 }
 
 .predictions-scatterplot__tooltip {
+  line-height: 1;
 }
 
 .legend {
