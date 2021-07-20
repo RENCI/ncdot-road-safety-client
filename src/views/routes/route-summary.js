@@ -109,7 +109,7 @@ export const RouteSummaryView = () => {
             {
               annotationCounts ? Object.keys(annotationCounts).map(feature => {
                 return (
-                  <Space direction="horizontal" size="large">
+                  <Space direction="horizontal" size="large" key={ `feature-annotation-counts-${ feature }` }>
                     <Statistic
                       title={ <Title level={ 5 }>{ feature[0].toUpperCase() + feature.slice(1) }</Title> }
                       value={ annotationCounts[feature].present + annotationCounts[feature].absent }
