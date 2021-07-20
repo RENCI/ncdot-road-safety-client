@@ -149,10 +149,12 @@ export const PredictionsScatterplot = ({ canZoom }) => {
 
   useEffect(() => {
     const handleScroll = event => {
-      event.preventDefault()
       const deltaZ = -event.deltaY / Math.abs(event.deltaY)
       const oldIndex = ZOOM_LEVELS.indexOf(zoom)
       const newIndex = Math.min(Math.max(0, oldIndex + deltaZ), ZOOM_LEVELS.length - 1)
+      if (oldIndex !== newIndex) {
+        event.preventDefault()
+      }
       setZoom(ZOOM_LEVELS[newIndex])
     }
     if (scrollCatcher.current) {
