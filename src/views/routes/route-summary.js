@@ -30,8 +30,8 @@ const initialAnnotationCounts = ['guardrail', 'pole'].reduce((obj, feature) => (
 export const RouteSummaryView = () => {
   const history = useHistory()
   const { routeID, routeLength, images } = useRouteContext()
-  const [startingCoordinates, setStartingCoordinates] = useState({ lat: 0, long: 0 })
-  const [endingCoordinates, setEndingCoordinates] = useState({ lat: 0, long: 0 })
+  const [startingCoordinates, setStartingCoordinates] = useState()
+  const [endingCoordinates, setEndingCoordinates] = useState()
   const [pathCoordinates, setPathCoordinates] = useState([])
   const [annotationCounts, setAnnotationCounts] = useState()
 
@@ -133,7 +133,7 @@ export const RouteSummaryView = () => {
       <Divider orientation="center">Map</Divider>
 
       <Map
-        markers={ [startingCoordinates, endingCoordinates] }
+        markers={ startingCoordinates && endingCoordinates ? [startingCoordinates, endingCoordinates] : [] }
         path={ pathCoordinates }
         height="600px"
         zoom={ 13 }
