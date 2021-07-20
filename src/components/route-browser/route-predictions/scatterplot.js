@@ -158,8 +158,8 @@ export const PredictionsScatterplot = ({ canZoom }) => {
       setZoom(ZOOM_LEVELS[newIndex])
     }
     if (scrollCatcher.current) {
-      scrollCatcher.current.addEventListener('wheel', handleScroll, { passive: false })
-      return () => scrollCatcher.current.removeEventListener('wheel', handleScroll, { passive: false })
+      scrollCatcher.current.addEventListener('wheel', handleScroll)
+      return () => scrollCatcher.current.removeEventListener('wheel', handleScroll)
     }
   }, [zoom])
 
