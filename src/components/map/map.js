@@ -27,13 +27,13 @@ export const Map = ({ height, markers, path, zoom, basemapSelection = true }) =>
       >
         {
           // draw a path if there is one
-          path.length && <Path coordinates={ path } />
+          path.length ? <Path coordinates={ path } /> : <></>
         }
         {
           // draw any markers
-            markers.map(({ key, ...props }, i) => (
-              <Marker key={ `marker-${ i }_-${ props.long },${ props.lat }` } { ...props } />
-            ))
+          markers.map(({ key, ...props }, i) => (
+            <Marker key={ `marker-${ i }_-${ props.long },${ props.lat }` } { ...props } />
+          ))
         }
       </EsriMap>
       {
