@@ -12,7 +12,7 @@ export const PredictionsList = ({ features }) => {
     <Space direction="vertical">
       {
         ['guardrail', 'pole'].map((feature, i) => (
-          <Space direction="vertical">
+          <Space key={ i } direction="vertical">
             <Text strong>{ features[feature].name }</Text>
             <Text>- Annotation: <Text type="secondary">{ typeof features[feature].annotation === 'boolean' ? features[feature].annotation ? 'Present' : 'Absent' : 'N/A' }</Text></Text>
             <Text>- Probability: <Text type="secondary">{ features[feature].probability }</Text></Text>
@@ -25,5 +25,5 @@ export const PredictionsList = ({ features }) => {
 }
 
 PredictionsList.propTypes = {
-  features: PropTypes.array.isRequired,
+  features: PropTypes.object.isRequired,
 }

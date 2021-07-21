@@ -14,7 +14,7 @@ const { Text, Title } = Typography
 
 const features = ['guardrail', 'pole']
 
-const initialFeaturePredictions = features.reduce((obj, feature) => ({ ...obj, [feature]: { id: feature, data: [] } }), {})
+const initializeFeaturePredictions = () => features.reduce((obj, feature) => ({ ...obj, [feature]: { id: feature, data: [] } }), {})
 
 const ThresholdLineLayer = props => {
   const { height, width, data } = props
@@ -157,7 +157,8 @@ export const PredictionsScatterplot = ({ canZoom }) => {
 
   // massage the prediction data into a format usable by this Nivo graph component.
   useEffect(() => {
-    const data = { ...initialFeaturePredictions }
+    const data = initializeFeaturePredictions()
+
     images.forEach((image, i) => {
       features.forEach(feature => {
         if (image.features[feature]) {
@@ -208,7 +209,7 @@ export const PredictionsScatterplot = ({ canZoom }) => {
             <Form.Item label="Zoom" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               <Radio.Group defaultValue={ 1 } onChange={ handleZoomSelect } size="small">
                 {
-                  [1, 2, 3, 5, 10].map(z => <Radio.Button value={ z }>{ z }&times;</Radio.Button>)
+                  [1, 2, 3, 5, 10].map(z => <Radio.Button key={ z } value={ z }>{ z }&times;</Radio.Button>)
                 }
               </Radio.Group>
             </Form.Item>

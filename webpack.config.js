@@ -8,6 +8,7 @@ module.exports = {
     path: path.resolve(__dirname, "../server/rs_core/static/rs_core/js"),
     filename: "index_bundle.js"
   },
+  devtool: "source-map",
   module: {
     rules: [
       {
