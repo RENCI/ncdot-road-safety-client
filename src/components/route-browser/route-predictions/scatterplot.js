@@ -14,7 +14,7 @@ const { Text, Title } = Typography
 
 const features = ['guardrail', 'pole']
 
-const initialFeaturePredictions = features.reduce((obj, feature) => ({ ...obj, [feature]: { id: feature, data: [] } }), {})
+const initializeFeaturePredictions = () => features.reduce((obj, feature) => ({ ...obj, [feature]: { id: feature, data: [] } }), {})
 
 const ThresholdLineLayer = props => {
   const { height, width, data } = props
@@ -157,7 +157,8 @@ export const PredictionsScatterplot = ({ canZoom }) => {
 
   // massage the prediction data into a format usable by this Nivo graph component.
   useEffect(() => {
-    const data = { ...initialFeaturePredictions }
+    const data = initializeFeaturePredictions()
+
     images.forEach((image, i) => {
       features.forEach(feature => {
         if (image.features[feature]) {
