@@ -27,14 +27,18 @@ export const Image = ({
 
   const movementScale = 0.01
 
+
+
   useEffect(() => {
-    setHeight(imageRef.current.clientWidth / aspectRatio)
+    const height = width => aspectRatio ? width / aspectRatio : ""
+
+    setHeight(height(imageRef.current.clientWidth))
 
     if (window.ResizeObserver) {
       resize.current = new ResizeObserver(entries => {
         entries.forEach(entry => {
           if (entry.contentRect) {
-            setHeight(entry.contentRect.width / aspectRatio)
+            setHeight(height(entry.contentRect.width))
           }
         })
       })
