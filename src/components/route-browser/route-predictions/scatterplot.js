@@ -209,7 +209,7 @@ export const PredictionsScatterplot = ({ canZoom }) => {
             <Form.Item label="Zoom" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               <Radio.Group defaultValue={ 1 } onChange={ handleZoomSelect } size="small">
                 {
-                  [1, 2, 3, 5, 10].map(z => <Radio.Button value={ z }>{ z }&times;</Radio.Button>)
+                  [1, 2, 3, 5, 10].map(z => <Radio.Button key={ z } value={ z }>{ z }&times;</Radio.Button>)
                 }
               </Radio.Group>
             </Form.Item>
