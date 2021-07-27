@@ -168,6 +168,20 @@ export const PredictionsScatterplot = ({ canZoom }) => {
         else { data[feature].data.push({ image }) }
       })
     })
+
+    const hasAnnotation = (d, feature) => {
+      return d.image?.features[feature] && typeof d.image.features[feature].annotation === 'boolean'
+    }
+
+    features.forEach(feature => {
+      data[feature].data = data[feature].data.sort((a, b) => {
+        const aAnnot = hasAnnotation(a, feature)
+        const bAnnot = hasAnnotation(b, feature)
+
+        return aAnnot && !bAnnot ? 1 : !aAnnot && bAnnot ? -1 : 0
+      })
+    })
+
     setPredictions(data)
   }, [images])
 
