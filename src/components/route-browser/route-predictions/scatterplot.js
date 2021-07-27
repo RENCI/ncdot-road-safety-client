@@ -51,13 +51,16 @@ const ThresholdLineLayer = props => {
 }
 
 const AreaLayer = ({ nodes, height, xScale, yScale }) => {
+  // Sort by x position for area
+  const data = nodes.slice().sort((a, b) => b.x - a.x)
+
   const areaGenerator = area()
     .curve(curveStep)
     .x0(d => d.x)
     .y0(d => d.y)
     .y1(175)
   return (
-    <path d={ areaGenerator(nodes) } fill="#def" stroke="#1890ff" strokeWidth="0.5" />
+    <path d={ areaGenerator(data) } fill="#def" stroke="#1890ff" strokeWidth="0.5" />
   )
 }
 
@@ -173,8 +176,9 @@ export const PredictionsScatterplot = ({ canZoom }) => {
       return d.image?.features[feature] && typeof d.image.features[feature].annotation === 'boolean'
     }
 
+    // Sort by prediction to render postive/negative above n/a
     features.forEach(feature => {
-      data[feature].data = data[feature].data.sort((a, b) => {
+      data[feature].data.sort((a, b) => {
         const aAnnot = hasAnnotation(a, feature)
         const bAnnot = hasAnnotation(b, feature)
 
