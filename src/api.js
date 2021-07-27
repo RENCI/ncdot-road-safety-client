@@ -33,6 +33,6 @@ export const api = {
     fp: (feature, round) => axios.get(`/get_holdout_test_info/${ feature }/${ round }/fp`),
     fn: (feature, round) => axios.get(`/get_holdout_test_info/${ feature }/${ round }/fn`),
   },
-  getFalsePositives: (annotation, route_id) => axios.get(`/get_model_fps/${ annotation }/${ route_id ? route_id : '' }`),
-  getFalseNegatives: (annotation, route_id) => axios.get(`/get_model_fns/${ annotation }/${ route_id ? route_id : '' }`)
+  getFalsePositives: (annotation, route_id) => axios.get(`/get_model_fps/${ annotation }/${ route_id ? `?route_id=${ route_id }` : '' }`),
+  getFalseNegatives: (annotation, route_id) => axios.get(`/get_model_fns/${ annotation }/${ route_id ? `?route_id=${ route_id }` : '' }`)
 }

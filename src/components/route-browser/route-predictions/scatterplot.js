@@ -17,19 +17,19 @@ const features = ['guardrail', 'pole']
 const initializeFeaturePredictions = () => features.reduce((obj, feature) => ({ ...obj, [feature]: { id: feature, data: [] } }), {})
 
 const ThresholdLineLayer = props => {
+  const { selectedFeature, setSelectedFeature } = useRouteContext()
   const { height, width, data } = props
-  const [feature, setFeature] = useState()
   const [threshold, setThreshold] = useState(0.5)
   const scaledThreshold = useMemo(() => threshold * (height - 16), [threshold])
 
   useEffect(() => {
-    setFeature(data[0].id)
+    setSelectedFeature(data[0].id)
   }, [data])
 
   useEffect(() => {
     const fetchThreshold = async () => {
       try {
-        const { data } = await api.getThreshold(feature)
+        const { data } = await api.getThreshold(selectedFeature)
         if (!data) {
           throw new Error('An error occurred while fetching thresholds.')
         }
@@ -38,10 +38,10 @@ const ThresholdLineLayer = props => {
         console.error(error)
       }
     }
-    if (feature) {
-      fetchThreshold(feature)
+    if (selectedFeature) {
+      fetchThreshold(selectedFeature)
     }
-  }, [feature])
+  }, [selectedFeature])
 
   return (
     <g transform={ `scale(1,-1) translate(0, -${ height - 8 })` }>
@@ -135,9 +135,8 @@ const Graph = ({ data, min, max, predictionThreshold }) => {
 }
 
 export const PredictionsScatterplot = ({ canZoom }) => {
-  const { images, index } = useRouteContext()
+  const { images, index, selectedFeature, setSelectedFeature } = useRouteContext()
   const [predictions, setPredictions] = useState([])
-  const [selectedFeature, setSelectedFeature] = useLocalStorage('rhf-annotation-feature', 'guardrail')
   const [threshold, setThreshold] = useState()
   const [zoom, setZoom] = useState(1)
   const handleFeatureSelect = value => setSelectedFeature(value)
