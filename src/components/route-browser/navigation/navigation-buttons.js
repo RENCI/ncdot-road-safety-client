@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { useHistory } from 'react-router-dom'
 import { Button, Space, Tooltip } from 'antd'
@@ -9,6 +9,7 @@ import {
   ForwardOutlined as FastForwardIcon,
 } from '@ant-design/icons'
 import { useRouteContext } from '../context'
+import { useLocalStorage } from '../../../hooks'
 
 const BrowseButton = ({ path, tooltip, ...props }) => {
   const history = useHistory()
@@ -32,16 +33,32 @@ BrowseButton.propTypes = {
 //
 
 export const NavigationButtons = () => {
-  const { images, index, routeID } = useRouteContext()
-
+  const { images, index, routeID, falseNegatives, falsePositives, selectedFeature, setSelectedFeature } = useRouteContext()
+  
   if (!(index + 1) || !images.length) return '...'
+  
+  const nextErrorIndex = useMemo(() => {
+    // we just need next largest index (farther from 0) that's an fn/fp
+    const errorIndex = [...falseNegatives[selectedFeature], ...falsePositives[selectedFeature]]
+      .sort((i, j) => i < j ? -1 : 1)
+      .find(i => index + 1 < i)
+    return errorIndex
+  }, [falseNegatives, falsePositives, index, selectedFeature])
+
+  const previousErrorIndex = useMemo(() => {
+    // we just need next smallest (closer to 0) index that's an fn/fp
+    const errorIndex = [...falseNegatives[selectedFeature], ...falsePositives[selectedFeature]]
+      .sort((i, j) => i < j ? 1 : -1)
+      .find(i => i < index + 1)
+    return errorIndex
+  }, [falseNegatives, falsePositives, index, selectedFeature])
 
   return (
     <Space className="navigation-buttons-container">
       <BrowseButton
-        path={ `/routes/${ routeID }/${ index - 9 }` }
-        disabled={ index - 9 <= 0 }
-        tooltip="Skip backward ten images"
+        path={ `/routes/${ routeID }/${ previousErrorIndex }` }
+        disabled={ !previousErrorIndex }
+        tooltip={ previousErrorIndex ? `Skip to previous prediction error (${ previousErrorIndex })` : undefined }
         icon={ <FastBackIcon /> }
       />
       <BrowseButton
@@ -57,9 +74,9 @@ export const NavigationButtons = () => {
         icon={ <NextIcon /> }
       />
       <BrowseButton
-        path={ `/routes/${ routeID }/${ index + 11 }` }
-        disabled={ images.length <= index + 10 }
-        tooltip="Skip forward ten images"
+        path={ `/routes/${ routeID }/${ nextErrorIndex }` }
+        disabled={ !nextErrorIndex }
+        tooltip={ nextErrorIndex ? `Skip to next prediction error (${ nextErrorIndex })` : undefined }
         icon={ <FastForwardIcon /> }
       />
     </Space>
