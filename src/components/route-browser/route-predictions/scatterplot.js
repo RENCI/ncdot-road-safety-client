@@ -17,19 +17,19 @@ const features = ['guardrail', 'pole']
 const initializeFeaturePredictions = () => features.reduce((obj, feature) => ({ ...obj, [feature]: { id: feature, data: [] } }), {})
 
 const ThresholdLineLayer = props => {
+  const { selectedFeature, setSelectedFeature } = useRouteContext()
   const { height, width, data } = props
-  const [feature, setFeature] = useState()
   const [threshold, setThreshold] = useState(0.5)
   const scaledThreshold = useMemo(() => threshold * (height - 16), [threshold])
 
   useEffect(() => {
-    setFeature(data[0].id)
+    setSelectedFeature(data[0].id)
   }, [data])
 
   useEffect(() => {
     const fetchThreshold = async () => {
       try {
-        const { data } = await api.getThreshold(feature)
+        const { data } = await api.getThreshold(selectedFeature)
         if (!data) {
           throw new Error('An error occurred while fetching thresholds.')
         }
@@ -38,10 +38,10 @@ const ThresholdLineLayer = props => {
         console.error(error)
       }
     }
-    if (feature) {
-      fetchThreshold(feature)
+    if (selectedFeature) {
+      fetchThreshold(selectedFeature)
     }
-  }, [feature])
+  }, [selectedFeature])
 
   return (
     <g transform={ `scale(1,-1) translate(0, -${ height - 8 })` }>
@@ -51,13 +51,16 @@ const ThresholdLineLayer = props => {
 }
 
 const AreaLayer = ({ nodes, height, xScale, yScale }) => {
+  // Sort by x position for area
+  const data = nodes.slice().sort((a, b) => b.x - a.x)
+
   const areaGenerator = area()
     .curve(curveStep)
     .x0(d => d.x)
     .y0(d => d.y)
     .y1(175)
   return (
-    <path d={ areaGenerator(nodes) } fill="#def" stroke="#1890ff" strokeWidth="0.5" />
+    <path d={ areaGenerator(data) } fill="#def" stroke="#1890ff" strokeWidth="0.5" />
   )
 }
 
@@ -132,9 +135,8 @@ const Graph = ({ data, min, max, predictionThreshold }) => {
 }
 
 export const PredictionsScatterplot = ({ canZoom }) => {
-  const { images, index } = useRouteContext()
+  const { images, index, selectedFeature, setSelectedFeature } = useRouteContext()
   const [predictions, setPredictions] = useState([])
-  const [selectedFeature, setSelectedFeature] = useLocalStorage('rhf-annotation-feature', 'guardrail')
   const [threshold, setThreshold] = useState()
   const [zoom, setZoom] = useState(1)
   const handleFeatureSelect = value => setSelectedFeature(value)
@@ -168,6 +170,21 @@ export const PredictionsScatterplot = ({ canZoom }) => {
         else { data[feature].data.push({ image }) }
       })
     })
+
+    const hasAnnotation = (d, feature) => {
+      return d.image?.features[feature] && typeof d.image.features[feature].annotation === 'boolean'
+    }
+
+    // Sort by prediction to render postive/negative above n/a
+    features.forEach(feature => {
+      data[feature].data.sort((a, b) => {
+        const aAnnot = hasAnnotation(a, feature)
+        const bAnnot = hasAnnotation(b, feature)
+
+        return aAnnot && !bAnnot ? 1 : !aAnnot && bAnnot ? -1 : 0
+      })
+    })
+
     setPredictions(data)
   }, [images])
 

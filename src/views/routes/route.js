@@ -5,6 +5,7 @@ import { Typography } from 'antd'
 import { Scene } from '../../components/scene'
 import { RouteContextProvider } from '../../components/route-browser'
 import { RouteBrowserView, RouteSummaryView } from './'
+import { useLocalStorage } from '../../hooks'
 
 const { Title } = Typography
 
@@ -36,6 +37,9 @@ export const RouteView = () => {
   const [images, setImages] = useState([])
   const [routeLength, setRouteLength] = useState(0)
   const [index, setIndex] = useState(-1)
+  const [falsePositives, setFalsePositives] = useState(features.reduce((obj, feature) => ({ ...obj, [feature]: [] }), {}))
+  const [falseNegatives, setFalseNegatives] = useState(features.reduce((obj, feature) => ({ ...obj, [feature]: [] }), {}))
+  const [selectedFeature, setSelectedFeature] = useLocalStorage('rhf-annotation-feature', 'guardrail')
 
   const currentLocation = useMemo(() => {
     if (images && imageIndex) {
@@ -100,6 +104,41 @@ export const RouteView = () => {
   }, [routeID])
 
   useEffect(() => {
+    const fetchFalseNegativeIndices = async () => {
+      try {
+        const promises = features.map(feature => api.getFalseNegatives(feature, routeID))
+        const responses = await Promise.all(promises)
+        let newErrors = {}
+        responses.forEach((response, i) => {
+          const indices = response.data.fns_info.map(item => item.route_index).sort((i, j) => i < j ? -1 : 1)
+          newErrors[features[i]] = indices
+        })
+        setFalseNegatives(newErrors)
+      } catch (error) {
+        console.info('There was an error fetching false negatives.')
+        console.error(error)
+      }
+    }
+    const fetchFalsePositiveIndices = async () => {
+      try {
+        const promises = features.map(feature => api.getFalsePositives(feature, routeID))
+        const responses = await Promise.all(promises)
+        let newErrors = {}
+        responses.forEach((response, i) => {
+          const indices = response.data.fps_info.map(item => item.route_index).sort((i, j) => i < j ? -1 : 1)
+          newErrors[features[i]] = indices
+        })
+        setFalsePositives(newErrors)
+      } catch (error) {
+        console.info('There was an error fetching false positives.')
+        console.error(error)
+      }
+    }
+    fetchFalsePositiveIndices()
+    fetchFalseNegativeIndices()
+  }, [routeID])
+
+  useEffect(() => {
     if (images.length) {
       const lastImage = images.slice(-1)
       setRouteLength(lastImage[0].mile_post)
@@ -110,7 +149,7 @@ export const RouteView = () => {
   useEffect(() => { document.title = `Route ${ routeID } | RHF` }, [routeID])
 
   return (
-    <RouteContextProvider value={{ routeID, routeLength, images, index, imageIndex, currentLocation }}>
+    <RouteContextProvider value={{ routeID, routeLength, images, index, imageIndex, currentLocation, selectedFeature, setSelectedFeature, falsePositives, falseNegatives }}>
 
       <Title level={ 1 }>Route { routeID }</Title>
 

@@ -129,10 +129,10 @@ export const PredictionErrorsView = () => {
       </Form>
 
       { loading ?
-        <Space direction='horizontal'>
-          <Spin /> 
-          <span>Loading <Text strong>{ selectedFeature }</Text> prediction errors...</span>
-        </Space>        
+        <Spin 
+          className="center-spinner"
+          tip={ <span>Loading <b>{ selectedFeature }</b> prediction errors...</span> } 
+        />       
       : errors && 
         <>
           <Space direction='horizontal' size='large'>
