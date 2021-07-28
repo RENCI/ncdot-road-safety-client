@@ -37,20 +37,11 @@ export const NavigationButtons = () => {
   
   if (!(index + 1) || !images.length) return '...'
   
-  useEffect(() => {
-    ['guardrail', 'pole'].forEach(feature => {
-      console.log(feature.toUpperCase())
-      console.log('FPs', falsePositives[selectedFeature])
-      console.log('FNs', falseNegatives[selectedFeature])
-    })
-  }, [falsePositives, falseNegatives, selectedFeature])
-
   const nextErrorIndex = useMemo(() => {
     // we just need next largest index (farther from 0) that's an fn/fp
     const errorIndex = [...falseNegatives[selectedFeature], ...falsePositives[selectedFeature]]
       .sort((i, j) => i < j ? -1 : 1)
       .find(i => index + 1 < i)
-    console.log(`next fn/fp index: ${ errorIndex }`)
     return errorIndex
   }, [falseNegatives, falsePositives, index, selectedFeature])
 
@@ -59,7 +50,6 @@ export const NavigationButtons = () => {
     const errorIndex = [...falseNegatives[selectedFeature], ...falsePositives[selectedFeature]]
       .sort((i, j) => i < j ? 1 : -1)
       .find(i => i < index + 1)
-    console.log(`prev fn/fp index: ${ errorIndex }`)
     return errorIndex
   }, [falseNegatives, falsePositives, index, selectedFeature])
 
