@@ -58,7 +58,7 @@ export const NavigationButtons = () => {
       <BrowseButton
         path={ `/routes/${ routeID }/${ previousErrorIndex }` }
         disabled={ !previousErrorIndex }
-        tooltip={ previousErrorIndex ? `Skip to previous FN/FP (${ previousErrorIndex })` : undefined }
+        tooltip={ previousErrorIndex ? `Skip to previous prediction error (${ previousErrorIndex })` : undefined }
         icon={ <FastBackIcon /> }
       />
       <BrowseButton
@@ -76,7 +76,7 @@ export const NavigationButtons = () => {
       <BrowseButton
         path={ `/routes/${ routeID }/${ nextErrorIndex }` }
         disabled={ !nextErrorIndex }
-        tooltip={ nextErrorIndex ? `Skip to next FN/FP (${ nextErrorIndex })` : undefined }
+        tooltip={ nextErrorIndex ? `Skip to next prediction error (${ nextErrorIndex })` : undefined }
         icon={ <FastForwardIcon /> }
       />
     </Space>
