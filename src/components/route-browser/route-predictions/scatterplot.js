@@ -1,6 +1,6 @@
-import React, { Fragment, useEffect, useMemo, useState } from 'react'
+import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { Button, Card, Col, Form, Radio, Row, Select, Space, Typography } from 'antd'
+import { Button, Col, Form, Radio, Row, Select, Typography } from 'antd'
 import { ZoomInOutlined as ZoomInIcon, ZoomOutOutlined as ZoomOutIcon } from '@ant-design/icons'
 import { api } from '../../../api'
 import { useLocalStorage } from '../../../hooks'
@@ -64,7 +64,7 @@ const AreaLayer = ({ nodes, height, xScale, yScale }) => {
   )
 }
 
-const Graph = ({ data, min, max, predictionThreshold }) => {
+const Graph = ({ data, min, max }) => {
   const history = useHistory()
   const { currentLocation, images, routeID } = useRouteContext()
   
@@ -134,13 +134,33 @@ const Graph = ({ data, min, max, predictionThreshold }) => {
   )
 }
 
+const ZOOM_LEVELS = [1, 2, 3, 5, 10]
+
 export const PredictionsScatterplot = ({ canZoom }) => {
   const { images, index, selectedFeature, setSelectedFeature } = useRouteContext()
   const [predictions, setPredictions] = useState([])
   const [threshold, setThreshold] = useState()
   const [zoom, setZoom] = useState(1)
+  const scrollCatcher = useRef()
+
   const handleFeatureSelect = value => setSelectedFeature(value)
   const handleZoomSelect = event => setZoom(event.target.value)
+
+  useEffect(() => {
+    const handleScroll = event => {
+      const deltaZ = -event.deltaY / Math.abs(event.deltaY)
+      const oldIndex = ZOOM_LEVELS.indexOf(zoom)
+      const newIndex = Math.min(Math.max(0, oldIndex + deltaZ), ZOOM_LEVELS.length - 1)
+      if (oldIndex !== newIndex) {
+        event.preventDefault()
+      }
+      setZoom(ZOOM_LEVELS[newIndex])
+    }
+    if (scrollCatcher.current) {
+      scrollCatcher.current.addEventListener('wheel', handleScroll)
+      return () => scrollCatcher.current.removeEventListener('wheel', handleScroll)
+    }
+  }, [zoom])
 
   useEffect(() => {
     const fetchThreshold = async () => {
@@ -212,8 +232,11 @@ export const PredictionsScatterplot = ({ canZoom }) => {
 
   return (
     <Row gutter={ 32 }>
-      <Col xs={ 24 } lg={ 18 }>
-        <Graph data={ [predictions[selectedFeature]] } predictionThreshold={ threshold } { ...extrema } />
+      <Col xs={ 24 } lg={ 18 } ref={ scrollCatcher }>
+        <Graph
+          data={ [predictions[selectedFeature]] }
+          { ...extrema }
+        />
       </Col>
       <Col xs={ 24 } lg={ 6 }>
         <Form.Item label="Feature" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
@@ -224,9 +247,9 @@ export const PredictionsScatterplot = ({ canZoom }) => {
         {
           canZoom && (
             <Form.Item label="Zoom" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-              <Radio.Group defaultValue={ 1 } onChange={ handleZoomSelect } size="small">
+              <Radio.Group value={ zoom } onChange={ handleZoomSelect } size="small">
                 {
-                  [1, 2, 3, 5, 10].map(z => <Radio.Button key={ z } value={ z }>{ z }&times;</Radio.Button>)
+                  ZOOM_LEVELS.map(z => <Radio.Button value={ z }>{ z }&times;</Radio.Button>)
                 }
               </Radio.Group>
             </Form.Item>
